@@ -10,7 +10,7 @@
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/edutrack.git
+git clone https://github.com/ASTA91-GIT/edutrack.git
 cd edutrack
 ```
 

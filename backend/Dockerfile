@@ -1,29 +1,13 @@
-version: '3.8'
+FROM python:3.9-slim
 
-services:
-  web:
-    build: .
-    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-    volumes:
-      - .:/app
-      - ./uploads:/app/uploads
-    ports:
-      - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/edutrack
-    depends_on:
-      - db
+WORKDIR /app
 
-  db:
-    image: postgres:13
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=edutrack
-    ports:
-      - "5432:5432"
+COPY requirements.txt .
 
-volumes:
-  postgres_data:
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

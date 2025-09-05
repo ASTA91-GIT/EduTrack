@@ -46,7 +46,7 @@ The problem statement requires developing a **smart system** that automates stud
 
 ### Database
 
-* MySQL / PostgreSQL (student records & attendance logs)
+* MySQL (student records & attendance logs)
 
 ### Additional Integrations
 

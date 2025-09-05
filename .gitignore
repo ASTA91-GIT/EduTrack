@@ -48,6 +48,23 @@ coverage/
 # nyc test coverage
 .nyc_output
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.env
+.venv
+pyenv/
+pipenv/
+.pytest_cache/
+.coverage
+htmlcov/
+
 # Dependency directories
 jspm_packages/
 

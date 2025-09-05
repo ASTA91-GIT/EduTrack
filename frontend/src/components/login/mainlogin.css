@@ -25,7 +25,7 @@ body {
   overflow: hidden;
   width: 768px;
   max-width: 100%;
-  min-height: 480px;
+  min-height: 520px;
 }
 
 .container p {
@@ -37,6 +37,8 @@ body {
 
 .container span {
   font-size: 12px;
+  display: block;
+  margin-bottom: 10px;
 }
 
 .container a {
@@ -73,6 +75,16 @@ body {
   flex-direction: column;
   padding: 0 40px;
   height: 100%;
+}
+
+.form-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 10px 0;
 }
 
 .container input {
@@ -129,7 +141,7 @@ body {
 }
 
 .social-icons {
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .social-icons a {
@@ -209,7 +221,7 @@ body {
   transform: translateX(200%);
 }
 
-/* ✅ Role Dropdown */
+/* Role Dropdown */
 .container select {
   background-color: #eee;
   border: none;
@@ -220,4 +232,9 @@ body {
   width: 100%;
   outline: none;
   cursor: pointer;
+}
+
+/* Forgot password link */
+.forgot-link {
+  margin: 8px 0 15px;
 }

@@ -1,34 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
-
-// Components
-import Navbar from './components/Navbar';
-import Dashboard from './components/Dashboard';
-import StudentList from './components/StudentList';
-import AttendanceTracker from './components/AttendanceTracker';
-import Analytics from './components/Analytics';
-import Login from './components/Login';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import MainLogin from './components/login/MainLogin';
+import Teacher from './components/teacher/Teacher';
+import Student from './components/student/Student';
+// ...other imports
 
 function App() {
-  return (
-    <Router>
-      <div className="App">
-        <Navbar />
-        <div className="container-fluid">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/students" element={<StudentList />} />
-            <Route path="/attendance" element={<AttendanceTracker />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </div>
-      </div>
-    </Router>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<MainLogin />} />
+                <Route path="/teacher" element={<Teacher />} />
+                <Route path="/student" element={<Student />} />
+                {/* ...other routes */}
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
-export default App;
+export default App; 

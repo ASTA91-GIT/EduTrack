@@ -1,0 +1,32 @@
+/* Reset */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,Helvetica,sans-serif;background:#f4f6f9;color:#333}
+
+/* Header */
+header{background:#111827;color:#fff;padding:12px 20px;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+.nav{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:8px;font-weight:bold;font-size:18px}
+.logo{width:32px;height:32px;background:#6366f1;display:grid;place-items:center;border-radius:8px}
+.pill{background:#6366f1;color:#fff;padding:8px 14px;border-radius:999px;text-decoration:none;font-size:14px;transition:0.3s}
+.pill:hover{background:#4f46e5}
+
+/* Container */
+.container{max-width:1100px;margin:20px auto;padding:0 15px;display:grid;gap:20px}
+.card{background:#fff;padding:20px;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,.05)}
+.card h2{margin-bottom:12px;color:#111827}
+
+form{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+form select,form input[type="date"]{padding:8px;border:1px solid #ccc;border-radius:5px}
+form button{background:#6366f1;color:white;border:none;padding:8px 16px;border-radius:5px;cursor:pointer}
+form button:hover{background:#4f46e5}
+
+/* Table */
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ddd;padding:10px;text-align:center}
+th{background:#111827;color:#fff}
+.status-btn{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-weight:bold}
+.present{background:#16a34a;color:white}
+.absent{background:#ef4444;color:white}
+
+.save-btn{margin-top:12px;padding:10px 16px;background:#2563eb;color:white;border:none;border-radius:6px;cursor:pointer}
+.save-btn:hover{background:#1d4ed8}

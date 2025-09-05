@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="teacher.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">Attendance System</div>
+  <nav>
+    <ul>
+      <li><a href="teacher.html">Dashboard</a></li>
+      <li><a href="Manage Students.html">Manage Students</a></li>
+      <li><a href="attendance.html">Attendance</a></li>
+      <li><a href="reports.html">Reports</a></li>
+    </ul>
+  </nav>
+  <div class="profile">
+    <i class="bx bx-user-circle" id="userIcon"></i>
+  </div>
+</header>
+
+<main class="dashboard">
+  <div class="welcome">
+    <h1>Welcome, To Attendance System</h1>
+    <p>This is your personalized dashboard. From here, you can manage students, take attendance, and track reports — all in one place.</p>
+  </div>
+</main>
+
+<!-- Sidebar for User Info -->
+<div id="userSidebar" class="user-sidebar">
+  <div class="sidebar-header">
+    <img id="sidebarAvatar" src="assets/default-profile.png" alt="Avatar">
+    <h3 id="sidebarName">Teacher Name</h3>
+    <p id="sidebarRole">Teacher</p>
+  </div>
+
+  <div class="sidebar-content">
+    <h4>Personal Info</h4>
+    <label for="teacherName">Name:</label>
+    <input type="text" id="teacherName" placeholder="Enter your name">
+
+    <label for="teacherRole">Role:</label>
+    <input type="text" id="teacherRole" placeholder="Enter your role">
+
+    <label for="teacherEmail">Email:</label>
+    <input type="email" id="teacherEmail" placeholder="Enter your email">
+
+    <label for="teacherPassword">Password:</label>
+    <input type="password" id="teacherPassword" placeholder="Enter password">
+
+    <label for="profileUpload">Profile Image:</label>
+    <input type="file" id="profileUpload" accept="image/*">
+
+    <button id="saveInfoBtn">Save Info</button>
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+  </div>
+</div>
+
+<script src="teacher.js"></script>
+</body>
+</html>

@@ -1,21 +1,19 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import MainLogin from './components/login/MainLogin';
-import Teacher from './components/teacher/Teacher';
-import Student from './components/student/Student';
-// ...other imports
 
 function App() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<MainLogin />} />
-                <Route path="/teacher" element={<Teacher />} />
-                <Route path="/student" element={<Student />} />
-                {/* ...other routes */}
-            </Routes>
-        </BrowserRouter>
+        <div style={{ padding: 24 }}>
+            <h2>EduTrack</h2>
+            <p>Use the links below to open the static pages:</p>
+            <ul>
+                <li><a href="/login.html">Login</a></li>
+                <li><a href="/teacher.html">Teacher Dashboard</a></li>
+                <li><a href="/manage-students.html">Manage Students</a></li>
+                <li><a href="/attendance.html">Attendance</a></li>
+                <li><a href="/reports.html">Reports</a></li>
+            </ul>
+        </div>
     );
 }
 
-export default App; 
+export default App;

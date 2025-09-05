@@ -1,21 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link rel="stylesheet" href="main login.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduTrack | Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link rel="stylesheet" href="/login/mainlogin.css" />
 </head>
-
 <body>
-
   <div class="container" id="container">
-
-    <!-- Register -->
     <div class="form-container sign-up">
       <form id="registerForm">
         <h1>Create EduTrack Account</h1>
@@ -24,9 +17,9 @@
           <a href="#" class="icon"><i class="fa-solid fa-user-tie"></i></a>
         </div>
         <span>Register with your institutional email</span>
-        <input type="text" placeholder="Full Name" required>
-        <input type="email" placeholder="Institutional Email" required>
-        <input type="password" placeholder="Password" required>
+        <input type="text" placeholder="Full Name" required />
+        <input type="email" placeholder="Institutional Email" required />
+        <input type="password" placeholder="Password" required />
         <select id="registerRole" required>
           <option value="" disabled selected>Select Role</option>
           <option value="teacher">Teacher</option>
@@ -36,7 +29,6 @@
       </form>
     </div>
 
-    <!-- Login -->
     <div class="form-container sign-in">
       <form id="loginForm">
         <h1>EduTrack Login</h1>
@@ -45,8 +37,8 @@
           <a href="#" class="icon"><i class="fa-solid fa-user-graduate"></i></a>
         </div>
         <span>Login using your credentials</span>
-        <input type="email" id="loginEmail" placeholder="Institutional Email" required>
-        <input type="password" id="loginPassword" placeholder="Password" required>
+        <input type="email" id="loginEmail" placeholder="Institutional Email" required />
+        <input type="password" id="loginPassword" placeholder="Password" required />
         <select id="loginRole" required>
           <option value="" disabled selected>Select Role</option>
           <option value="teacher">Teacher</option>
@@ -57,7 +49,6 @@
       </form>
     </div>
 
-    <!-- Toggle Panel -->
     <div class="toggle-container">
       <div class="toggle">
         <div class="toggle-panel toggle-left">
@@ -74,7 +65,7 @@
     </div>
   </div>
 
-  <script src="main login.js"></script>
+  <script src="/login/mainlogin.js"></script>
 </body>
-
 </html>
+

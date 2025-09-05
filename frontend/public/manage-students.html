@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack – Manage Students</title>
+  <link rel="stylesheet" href="/students/Manage Students.css" />
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <div class="logo">📘</div>
+        <span>Teacher Console</span>
+      </div>
+      <div class="actions">
+        <a href="/teacher.html" class="pill">⬅ Back to Dashboard</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Add Branch</h2>
+      <form id="branchForm">
+        <input type="text" id="branchName" placeholder="Branch Name (e.g. BSc IT)" required />
+        <button type="submit">Add Branch</button>
+      </form>
+      <ul id="branchList"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Add Division</h2>
+      <form id="divisionForm">
+        <select id="branchSelect" required></select>
+        <input type="text" id="divisionName" placeholder="Division (e.g. FY-A)" required />
+        <button type="submit">Add Division</button>
+      </form>
+      <ul id="divisionList"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Add Subject</h2>
+      <form id="subjectForm">
+        <select id="branchSelectForSubject" required></select>
+        <select id="divisionSelectForSubject" required></select>
+        <input type="text" id="subjectName" placeholder="Subject (e.g. Mathematics)" required />
+        <button type="submit">Add Subject</button>
+      </form>
+      <ul id="subjectList"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Add Student</h2>
+      <form id="studentForm">
+        <select id="branchSelectForStudent" required></select>
+        <select id="divisionSelectForStudent" required></select>
+        <select id="subjectSelectForStudent" required></select>
+        <input type="text" id="rollNo" placeholder="Roll No" required />
+        <input type="text" id="studentName" placeholder="Student Name" required />
+        <button type="submit">Add Student</button>
+      </form>
+
+      <table id="studentTable">
+        <thead>
+          <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Branch</th>
+            <th>Division</th>
+            <th>Subject</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="/students/Manage Students.js"></script>
+</body>
+</html>
+

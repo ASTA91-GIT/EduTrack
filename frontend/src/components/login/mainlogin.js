@@ -64,8 +64,8 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
 
   // Redirect by role
   if (role === "teacher") {
-    window.location.href = "teacher.html";
+    window.location.href = "/teacher.html";
   } else if (role === "student") {
-    window.location.href = "student.html";
+    window.location.href = "/student.html";
   }
 });

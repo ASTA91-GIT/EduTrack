@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack – Attendance</title>
+  <link rel="stylesheet" href="/attendance/attendance.css" />
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <div class="logo">📋</div>
+        <span>Attendance Page</span>
+      </div>
+      <div class="actions">
+        <a href="/teacher.html" class="pill">⬅ Back to Dashboard</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Mark Attendance</h2>
+      <form id="attendanceFilter">
+        <select id="branchSelect" required></select>
+        <select id="divisionSelect" required></select>
+        <select id="subjectSelect" required></select>
+        <input type="date" id="attendanceDate" required />
+        <button type="submit">Load Students</button>
+      </form>
+
+      <table id="attendanceTable">
+        <thead>
+          <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <button id="saveAttendance" class="save-btn">💾 Save Attendance</button>
+    </section>
+  </main>
+
+  <script src="/attendance/attendance.js"></script>
+</body>
+</html>
+

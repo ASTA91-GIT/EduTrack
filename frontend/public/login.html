@@ -4,11 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduTrack | Login</title>
+
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-  <link rel="stylesheet" href="/login/mainlogin.css" />
+
+  <!-- Global + Login Styles -->
+  <link rel="stylesheet" href="styles/global.css" />
+  <link rel="stylesheet" href="login/mainlogin.css" />
+
+  <link rel="icon" type="image/png" href="images/favicon.png" />
 </head>
 <body>
   <div class="container" id="container">
+    <!-- Register -->
     <div class="form-container sign-up">
       <form id="registerForm">
         <h1>Create EduTrack Account</h1>
@@ -29,6 +37,7 @@
       </form>
     </div>
 
+    <!-- Login -->
     <div class="form-container sign-in">
       <form id="loginForm">
         <h1>EduTrack Login</h1>
@@ -47,8 +56,19 @@
         <a href="#">Forgot Password?</a>
         <button type="submit">Login</button>
       </form>
+
+      <!-- ✅ Page Links -->
+      <div class="page-links">
+        <p>Quick Navigation:</p>
+        <a href="manage-students.html">Student</a> |
+        <a href="teacher.html">Teacher</a> |
+        <a href="attendance.html">Attendance</a> |
+        <a href="dashboard.html">Dashboard</a> |
+        <a href="reports.html">Reports</a>
+      </div>
     </div>
 
+    <!-- Toggle -->
     <div class="toggle-container">
       <div class="toggle">
         <div class="toggle-panel toggle-left">
@@ -65,7 +85,7 @@
     </div>
   </div>
 
-  <script src="/login/mainlogin.js"></script>
+  <!-- Scripts -->
+  <script src="login/mainlogin.js"></script>
 </body>
 </html>
-

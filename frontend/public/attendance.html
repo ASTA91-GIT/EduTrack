@@ -4,8 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduTrack – Attendance</title>
-  <link rel="stylesheet" href="/attendance/attendance.css" />
+  <link rel="stylesheet" href="attendance/attendance.css" />
 </head>
+<script src="js/auth.js"></script>
+<script>
+  protectPage("attendance");  // only attendance role allowed
+</script>
+
 <body>
   <header>
     <div class="nav">
@@ -14,7 +19,7 @@
         <span>Attendance Page</span>
       </div>
       <div class="actions">
-        <a href="/teacher.html" class="pill">⬅ Back to Dashboard</a>
+        <a href="teacher.html" class="pill">⬅ Back to Dashboard</a>
       </div>
     </div>
   </header>
@@ -45,7 +50,7 @@
     </section>
   </main>
 
-  <script src="/attendance/attendance.js"></script>
+  <script src="attendance/attendance.js"></script>
 </body>
 </html>
 

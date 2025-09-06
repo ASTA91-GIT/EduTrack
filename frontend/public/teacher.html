@@ -5,17 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduTrack – Teacher Dashboard</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="/teacher/teacher.css" />
+  <link rel="stylesheet" href="teacher/teacher.css" />
 </head>
+<script src="js/auth.js"></script>
+<script>
+  protectPage("teacher");  // only teachers allowed
+</script>
+
 <body>
   <header>
     <div class="logo">EduTrack</div>
     <nav>
       <ul>
-        <li><a href="/teacher.html">Dashboard</a></li>
-        <li><a href="/manage-students.html">Manage Students</a></li>
-        <li><a href="/attendance.html">Attendance</a></li>
-        <li><a href="/reports.html">Reports</a></li>
+        <li><a href="teacher.html">Dashboard</a></li>
+        <li><a href="manage-students.html">Manage Students</a></li>
+        <li><a href="attendance.html">Attendance</a></li>
+        <li><a href="reports.html">Reports</a></li>
       </ul>
     </nav>
     <div class="profile">
@@ -53,7 +58,7 @@
     </div>
   </div>
 
-  <script src="/teacher/teacher.js"></script>
+  <script src="teacher/teacher.js"></script>
 </body>
 </html>
 

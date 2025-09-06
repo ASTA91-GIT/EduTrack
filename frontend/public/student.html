@@ -4,15 +4,105 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduTrack – Student</title>
-  <style>
-    body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 2rem; }
-    a { color: #3f37c9; }
-  </style>
+  <link rel="stylesheet" href="students/manage-students.css" />
 </head>
+
+<script src="js/auth.js"></script>
+<script>
+  protectPage("student");  // only students allowed
+</script>
+
 <body>
-  <h1>Student Area</h1>
-  <p>Login successful. This is a placeholder page.</p>
-  <p><a href="/login.html">Back to Login</a></p>
+  <!-- Header / Navbar -->
+  <header class="nav">
+    <div class="brand">
+      <div class="logo">🎓</div>
+      <span>Student Dashboard</span>
+    </div>
+    <div class="actions">
+      <span id="welcome-message"></span>
+      <button id="logout-btn">Logout</button>
+    </div>
+  </header>
+
+  <!-- Navigation Links -->
+  <nav class="student-nav">
+    <a href="attendance.html">Attendance</a> |
+    <a href="reports.html">Reports</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container">
+    <div class="dashboard-header">
+      <h1>Student Dashboard</h1>
+      <p id="dashboard-subtitle">Welcome back! Here's your academic summary.</p>
+    </div>
+
+    <div class="dashboard-cards">
+      <!-- Attendance Card -->
+      <div class="card" id="attendance-card">
+        <div class="card-header">
+          <h3 class="card-title">Attendance</h3>
+          <div class="card-icon">📊</div>
+        </div>
+        <div class="attendance-progress">
+          <div class="progress-bar">
+            <div class="progress-value" style="width: 0%"></div>
+          </div>
+          <div class="progress-info">
+            <span id="attendance-percent">0%</span>
+            <span id="attendance-count">0/0 days</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grades Card -->
+      <div class="card" id="grades-card">
+        <div class="card-header">
+          <h3 class="card-title">Grades</h3>
+          <div class="card-icon">📝</div>
+        </div>
+        <div class="grades-list" id="grades-list">
+          <!-- Grades will be injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Upcoming Assignments -->
+      <div class="card" id="assignments-card">
+        <div class="card-header">
+          <h3 class="card-title">Upcoming Assignments</h3>
+          <div class="card-icon">📅</div>
+        </div>
+        <div class="assignments-list" id="assignments-list">
+          <!-- Assignments will be injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Today's Schedule -->
+      <div class="card" id="schedule-card">
+        <div class="card-header">
+          <h3 class="card-title">Today's Schedule</h3>
+          <div class="card-icon">⏰</div>
+        </div>
+        <div class="schedule-list" id="schedule-list">
+          <!-- Schedule will be injected dynamically -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Display logged-in student name
+    const user = JSON.parse(localStorage.getItem("aamsCurrentUser"));
+    const welcomeDiv = document.getElementById("welcome-message");
+    if (user) {
+      welcomeDiv.innerHTML = `<strong>${user.name}</strong> (${user.email})`;
+    } else {
+      welcomeDiv.innerHTML = `Guest`;
+    }
+
+    // Logout button
+    document.getElementById("logout-btn").addEventListener("click", logout);
+  </script>
 </body>
 </html>
-

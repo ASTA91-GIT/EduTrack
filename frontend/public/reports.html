@@ -4,8 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduTrack – Reports</title>
-  <link rel="stylesheet" href="/reports/reports.css" />
+  <link rel="stylesheet" href="reports/reports.css" />
 </head>
+<script src="js/auth.js"></script>
+<script>
+  protectPage();  // only checks login, no role restriction
+</script>
+
 <body>
   <header>
     <div class="nav">
@@ -14,7 +19,7 @@
         <span>Reports</span>
       </div>
       <div class="actions">
-        <a href="/teacher.html" class="pill">⬅ Back to Dashboard</a>
+        <a href="teacher.html" class="pill">⬅ Back to Dashboard</a>
       </div>
     </div>
   </header>
@@ -59,7 +64,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="/reports/reports.js"></script>
+  <script src="reports/reports.js"></script>
 </body>
 </html>
 

@@ -64,4 +64,6 @@
   function init() { setBranches(getBranches()); renderBranchList(); renderDivisionList(); renderSubjectList(); populateBranchSelects(); studentTableBody.innerHTML = ""; }
   document.addEventListener("DOMContentLoaded", init);
 })();
+document.getElementById("logout-btn")?.addEventListener("click", logout);
+document.getElementById("logoutBtn")?.addEventListener("click", logout);
 

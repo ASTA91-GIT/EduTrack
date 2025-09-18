@@ -109,3 +109,4 @@ INSERT INTO attendance (student_id, subject_id, attendance_date, status, marked_
 (3, 1, '2023-10-01', 'absent', 1),
 (1, 3, '2023-10-02', 'present', 1),
 (2, 3, '2023-10-02', 'absent', 1);
+SHOW TABLE

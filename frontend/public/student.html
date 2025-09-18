@@ -104,5 +104,23 @@
     // Logout button
     document.getElementById("logout-btn").addEventListener("click", logout);
   </script>
+  <script src="js/auth.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Role-based access:
+    // - student.html & attendance.html → "student"
+    // - manage-students.html, reports.html, teacher.html → "teacher"
+    protectPage("teacher"); // or "student" depending on page
+
+    // Update back/dashboard link dynamically
+    const user = getCurrentUser();
+    const dashboardLink = document.querySelector('.actions a, nav a');
+    if(dashboardLink && user){
+        if(user.role === "teacher") dashboardLink.href = "teacher.html";
+        if(user.role === "student") dashboardLink.href = "student.html";
+    }
+});
+</script>
+
 </body>
 </html>

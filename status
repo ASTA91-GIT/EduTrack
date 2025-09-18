@@ -1,0 +1,37 @@
+[33m0523321[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Ignore My-project folder
+[33m6fb645d[m Refactored student dashboard, separated CSS, removed static data for backend integration
+[33mf6296ed[m Updated EduTrack submodule reference
+[33mdd7d76a[m Initial commit - Added EduTrack project files including login system and styles
+[33m9487615[m Update attendance.js
+[33md267720[m Update attendance.css
+[33m2fcbf45[m Update mainlogin.css
+[33m7d50d4c[m Update mainlogin.js
+[33m21993e9[m Update reports.css
+[33m302ab53[m Update Manage Students.js
+[33m035620d[m Update Manage Students.css
+[33mfa7a20a[m Update teacher.html
+[33m72a4c5e[m Update student.html
+[33md6143a4[m Update reports.html
+[33mbc6dd70[m Update manage-students.html
+[33m107b09a[m Update login.html
+[33ma6da11b[m Update attendance.html
+[33mdbfcfee[m Create auth.js
+[33m4dddf07[m Update README.md
+[33m5c4b0be[m Optimize project structure: Update backend with JWT auth, connection pooling, and CORS policy; Remove React components from frontend; Update documentation and environment configs
+[33m209e110[m Update README.md
+[33m30c8506[m nothing
+[33m3c69e32[m linked all files to main login.html
+[33m80cc1cb[m connected all files correctly
+[33mb5d26b0[m Changed everything
+[33m1dbe47e[m Remove duplicate files from frontend root directory
+[33m5a597bb[m sorted frontend
+[33m1506141[m removed files relaqted to backend
+[33m7a5038d[m Updated backend structure and removed unnecessary files
+[33m3b2204e[m Delete PERSONAL WORKSPACE/My-project directory
+[33m92be7bd[m portfolio removed fromnavigation
+[33m6b64ee0[m Add files via upload
+[33m250f0ac[m Update and rename schema.sql to database.sql
+[33m3d92165[m Update Dockerfile
+[33md6195e9[m Add backend application with FastAPI, authentication, face recognition, and database models
+[33m6c8b0e5[m Initial commit: EduTrack - Student Attendance Monitoring System
+[33m0397fd1[m Initial commit: EduTrack - Student Attendance Monitoring System

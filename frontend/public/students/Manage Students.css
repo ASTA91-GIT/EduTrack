@@ -1,0 +1,220 @@
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6f9;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* Header / Navbar */
+header, .nav {
+  background: #111827;
+  color: #fff;
+  padding: 12px 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: auto;
+  border-radius: 6px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  background: #6366f1;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#logout-btn {
+  background: #6366f1;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#logout-btn:hover {
+  background: #4f46e5;
+}
+
+/* Navigation Links */
+.student-nav {
+  max-width: 1100px;
+  margin: 10px auto;
+  padding: 10px 20px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.student-nav a {
+  text-decoration: none;
+  color: #111827;
+  margin-right: 12px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.student-nav a:hover {
+  background: #f3f6fd;
+  color: #6366f1;
+}
+
+/* Main Content Container */
+.container {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 0 15px;
+  display: grid;
+  gap: 20px;
+}
+
+/* Dashboard Cards */
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.card-icon {
+  font-size: 1.5rem;
+}
+
+/* Attendance Progress */
+.attendance-progress {
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.progress-value {
+  height: 100%;
+  width: 0%; /* to be updated dynamically */
+  background: #2ecc71;
+  border-radius: 4px;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* Grades, Assignments, Schedule lists */
+.grades-list, .assignments-list, .schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Table styling if needed */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background: #111827;
+  color: #fff;
+}
+
+/* Form styling placeholder for backend input */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+form input, form select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  flex: 1;
+}
+
+form button {
+  background: #6366f1;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background: #4f46e5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav, .student-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

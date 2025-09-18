@@ -46,7 +46,7 @@ The problem statement requires developing a **smart system** that automates stud
 
 ### Database
 
-* MySQL / PostgreSQL (student records & attendance logs)
+* MySQL (student records & attendance logs)
 
 ### Additional Integrations
 
@@ -91,8 +91,22 @@ The problem statement requires developing a **smart system** that automates stud
 
 ## 👨‍💻 Team
 
-* **Team Name:** To be added
-* **Members:** To be added
+## 👨‍💻 Team
+
+**🚀 Team Name: Quantum Coders**
+**👥 Members:**
+
+**ASTA91-GIT**
+
+**Tanishk672006**
+
+**Purva2907**
+
+**Sakshi-kosbe**
+
+**swanandmuddewad**
+
+**sahilparte89**
 
 ---
 

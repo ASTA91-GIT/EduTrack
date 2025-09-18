@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack – Teacher Dashboard</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="teacher/teacher.css" />
+</head>
+<script src="js/auth.js"></script>
+<script>
+  protectPage("teacher");  // only teachers allowed
+</script>
+
+<body>
+  <header>
+    <div class="logo">EduTrack</div>
+    <nav>
+      <ul>
+        <li><a href="teacher.html">Dashboard</a></li>
+        <li><a href="manage-students.html">Manage Students</a></li>
+        <li><a href="attendance.html">Attendance</a></li>
+        <li><a href="reports.html">Reports</a></li>
+      </ul>
+    </nav>
+    <div class="profile">
+      <i class="bx bx-user-circle" id="userIcon"></i>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <div class="welcome">
+      <h1>Welcome to EduTrack</h1>
+      <p>Manage students, take attendance, and see reports in one place.</p>
+    </div>
+  </main>
+
+  <div id="userSidebar" class="user-sidebar">
+    <div class="sidebar-header">
+      <img id="sidebarAvatar" src="/teacher/assets/default-profile.png" alt="Avatar" />
+      <h3 id="sidebarName">Teacher Name</h3>
+      <p id="sidebarRole">Teacher</p>
+    </div>
+    <div class="sidebar-content">
+      <h4>Personal Info</h4>
+      <label for="teacherName">Name:</label>
+      <input type="text" id="teacherName" placeholder="Enter your name" />
+      <label for="teacherRole">Role:</label>
+      <input type="text" id="teacherRole" placeholder="Enter your role" />
+      <label for="teacherEmail">Email:</label>
+      <input type="email" id="teacherEmail" placeholder="Enter your email" />
+      <label for="teacherPassword">Password:</label>
+      <input type="password" id="teacherPassword" placeholder="Enter password" />
+      <label for="profileUpload">Profile Image:</label>
+      <input type="file" id="profileUpload" accept="image/*" />
+      <button id="saveInfoBtn">Save Info</button>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <script src="teacher/teacher.js"></script>
+</body>
+</html>
+

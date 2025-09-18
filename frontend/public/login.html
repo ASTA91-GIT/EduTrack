@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack | Login</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+  <!-- Global + Login Styles -->
+  <link rel="stylesheet" href="styles/global.css" />
+  <link rel="stylesheet" href="login/mainlogin.css" />
+
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+</head>
+<body>
+  <div class="container" id="container">
+    <!-- Register -->
+    <div class="form-container sign-up">
+      <form id="registerForm">
+        <h1>Create EduTrack Account</h1>
+        <div class="social-icons">
+          <a href="#" class="icon"><i class="fa-solid fa-user-graduate"></i></a>
+          <a href="#" class="icon"><i class="fa-solid fa-user-tie"></i></a>
+        </div>
+        <span>Register with your institutional email</span>
+        <input type="text" placeholder="Full Name" required />
+        <input type="email" placeholder="Institutional Email" required />
+        <input type="password" placeholder="Password" required />
+        <select id="registerRole" required>
+          <option value="" disabled selected>Select Role</option>
+          <option value="teacher">Teacher</option>
+          <option value="student">Student</option>
+        </select>
+        <button type="submit">Register</button>
+      </form>
+    </div>
+
+    <!-- Login -->
+    <div class="form-container sign-in">
+      <form id="loginForm">
+        <h1>EduTrack Login</h1>
+        <div class="social-icons">
+          <a href="#" class="icon"><i class="fa-solid fa-user-tie"></i></a>
+          <a href="#" class="icon"><i class="fa-solid fa-user-graduate"></i></a>
+        </div>
+        <span>Login using your credentials</span>
+        <input type="email" id="loginEmail" placeholder="Institutional Email" required />
+        <input type="password" id="loginPassword" placeholder="Password" required />
+        <select id="loginRole" required>
+          <option value="" disabled selected>Select Role</option>
+          <option value="teacher">Teacher</option>
+          <option value="student">Student</option>
+        </select>
+        <a href="#">Forgot Password?</a>
+        <button type="submit">Login</button>
+      </form>
+
+      <!-- ✅ Page Links -->
+      <div class="page-links">
+        <p>Quick Navigation:</p>
+        <a href="manage-students.html">Student</a> |
+        <a href="teacher.html">Teacher</a> |
+        <a href="attendance.html">Attendance</a> |
+        <a href="dashboard.html">Dashboard</a> |
+        <a href="reports.html">Reports</a>
+      </div>
+    </div>
+
+    <!-- Toggle -->
+    <div class="toggle-container">
+      <div class="toggle">
+        <div class="toggle-panel toggle-left">
+          <h1>Welcome Back!</h1>
+          <p>Login to access attendance & analytics</p>
+          <button class="hidden" id="login">Login</button>
+        </div>
+        <div class="toggle-panel toggle-right">
+          <h1>Hello!</h1>
+          <p>Create an account to manage or view attendance</p>
+          <button class="hidden" id="register">Register</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="login/mainlogin.js"></script>
+</body>
+</html>

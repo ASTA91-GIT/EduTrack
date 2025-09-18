@@ -1,0 +1,121 @@
+/* Copied from src/components/reports/reports.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6f9;
+  color: #333;
+}
+header {
+  background: #111827;
+  color: #fff;
+  padding: 12px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.nav {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 18px;
+}
+.logo {
+  width: 32px;
+  height: 32px;
+  background: #6366f1;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+}
+.pill {
+  background: #1f2937;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  color: #fff;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.pill:hover {
+  background: #4f46e5;
+}
+.container {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 0 15px;
+  display: grid;
+  gap: 20px;
+}
+.card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+.card h2 {
+  margin-bottom: 12px;
+  color: #111827;
+  font-size: 18px;
+}
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+form select,
+form input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  flex: 1;
+}
+form button {
+  background: #6366f1;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+form button:hover {
+  background: #4f46e5;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+th {
+  background: #111827;
+  color: #fff;
+}
+td {
+  background: #f9fafb;
+}
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+canvas {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 10px;
+}

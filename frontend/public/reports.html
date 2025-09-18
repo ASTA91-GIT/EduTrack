@@ -4,67 +4,58 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduTrack – Reports</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="reports/reports.css" />
 </head>
-<script src="js/auth.js"></script>
-<script>
-  protectPage();  // only checks login, no role restriction
-</script>
-
 <body>
+  <script src="js/auth.js"></script>
+
   <header>
-    <div class="nav">
-      <div class="brand">
-        <div class="logo">📊</div>
-        <span>Reports</span>
-      </div>
-      <div class="actions">
-        <a href="teacher.html" class="pill">⬅ Back to Dashboard</a>
-      </div>
+    <div class="logo">EduTrack</div>
+    <nav>
+      <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="attendance.html">Attendance</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="tests.html">Tests</a></li>
+        <li><a href="assignments.html">Assignments</a></li>
+        <li><a href="reports.html" class="active">Reports</a></li>
+        <li><a href="notifications.html">Notifications</a></li>
+      </ul>
+    </nav>
+    <div class="profile">
+      <i class="bx bx-user-circle" id="userIcon"></i>
     </div>
   </header>
 
-  <main class="container">
-    <section class="card">
-      <h2>Filter Reports</h2>
-      <form id="reportFilter">
-        <select id="branchSelect" required></select>
-        <select id="divisionSelect" required></select>
-        <select id="subjectSelect" required></select>
-        <input type="date" id="fromDate" required />
-        <input type="date" id="toDate" required />
-        <button type="submit">Generate Report</button>
-      </form>
-    </section>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img id="sidebarAvatar" src="/teacher/assets/default-profile.png" alt="Avatar" />
+      <h3 id="sidebarName">User Name</h3>
+      <p id="sidebarRole">Role</p>
+    </div>
+    <div class="sidebar-content">
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+  </div>
 
-    <section class="card">
-      <h2>Attendance Report</h2>
-      <table id="reportTable">
-        <thead>
-          <tr>
-            <th>Roll No</th>
-            <th>Student</th>
-            <th>Total</th>
-            <th>Present</th>
-            <th>Absent</th>
-            <th>%</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
+  <main class="reports">
+    <div class="welcome">
+      <h1 id="welcomeMessage">Welcome!</h1>
+      <p id="roleMessage"></p>
+    </div>
 
-    <section class="card">
-      <h2>Analytics</h2>
-      <div class="charts">
-        <canvas id="chartOverall"></canvas>
-        <canvas id="chartPerStudent"></canvas>
-      </div>
-    </section>
+    <div id="reportCards" class="cards">
+      <!-- Cards will be dynamically generated -->
+    </div>
+
+    <div class="charts">
+      <canvas id="attendanceChart"></canvas>
+      <canvas id="gradesChart"></canvas>
+    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="reports/reports.js"></script>
 </body>
 </html>
-

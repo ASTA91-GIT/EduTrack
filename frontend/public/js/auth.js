@@ -35,6 +35,8 @@ async function login(email, password) {
     const user = {
       email,
       role: data.role || "student", // adjust if backend sends role differently
+      id: data.user_id,
+      full_name: data.full_name,
     };
 
     localStorage.setItem("aamsCurrentUser", JSON.stringify(user));
@@ -75,6 +77,17 @@ function getAuthHeaders() {
     "Authorization": `Bearer ${token}`,
     "Content-Type": "application/json",
   };
+}
+
+// Authenticated fetch wrapper with 401 handling
+async function authFetch(input, init = {}) {
+  const headers = Object.assign({}, init.headers || {}, getAuthHeaders());
+  const opts = Object.assign({}, init, { headers });
+  const response = await fetch(input, opts);
+  if (response.status === 401) {
+    try { logout(); } catch {}
+  }
+  return response;
 }
 
 // Logout function

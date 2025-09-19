@@ -1,10 +1,12 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from .database import engine, get_db
 from . import models
-from .routes import users, attendance, auth
+from .routes import users, auth
 import os
 from dotenv import load_dotenv
+import time
 
 # Load environment variables from .env file
 load_dotenv()
@@ -33,15 +35,53 @@ app.add_middleware(
     max_age=600,  # Cache preflight requests for 10 minutes
 )
 
-# Include routers
-app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
-app.include_router(users.router, prefix="/api/users", tags=["Users"])
-app.include_router(attendance.router, prefix="/api/attendance", tags=["Attendance"])
+# Simple in-memory rate limiting (per IP, per window)
+RATE_LIMIT_REQUESTS = int(os.getenv("RATE_LIMIT_REQUESTS", "100"))
+RATE_LIMIT_WINDOW_SEC = int(os.getenv("RATE_LIMIT_WINDOW_SEC", "60"))
+_rate_store = {}
+
+@app.middleware("http")
+async def error_and_rate_middleware(request: Request, call_next):
+    try:
+        # Rate limit
+        ip = request.client.host if request.client else "unknown"
+        now = time.time()
+        window = int(now // RATE_LIMIT_WINDOW_SEC)
+        key = f"{ip}:{window}"
+        count = _rate_store.get(key, 0)
+        if count >= RATE_LIMIT_REQUESTS:
+            return JSONResponse(status_code=429, content={"detail": "Too Many Requests"})
+        _rate_store[key] = count + 1
+
+        response = await call_next(request)
+        return response
+    except Exception as exc:
+        return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
+
+# Include routers with API versioning
+API_V1_PREFIX = "/api/v1"
+app.include_router(auth.router, prefix=f"{API_V1_PREFIX}/auth", tags=["Authentication"])
+# users router kept under v1 for consistency if exists
+try:
+    app.include_router(users.router, prefix=f"{API_V1_PREFIX}/users", tags=["Users"])
+except Exception:
+    pass
+
+# Placeholder includes for new route modules if present
+try:
+    from .routes import notifications, reports, attendance, students, appeals
+    app.include_router(attendance.router, prefix=f"{API_V1_PREFIX}/attendance", tags=["Attendance"])
+    app.include_router(notifications.router, prefix=f"{API_V1_PREFIX}/notifications", tags=["Notifications"])
+    app.include_router(reports.router, prefix=f"{API_V1_PREFIX}/reports", tags=["Reports"])
+    app.include_router(students.router, prefix=f"{API_V1_PREFIX}/students", tags=["Students"])
+    app.include_router(appeals.router, prefix=f"{API_V1_PREFIX}/appeals", tags=["Appeals"])
+except Exception:
+    pass
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to EduTrack API"}
 
-@app.get("/api/health")
+@app.get(f"{API_V1_PREFIX}/health")
 def health_check(db=Depends(get_db)):
     return {"status": "healthy", "database": "connected"}

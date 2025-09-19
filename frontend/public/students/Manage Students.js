@@ -1,4 +1,5 @@
 // Copied from src/components/students/Manage Students.js
+requireTeacher?.();
 (() => {
   "use strict";
   const NS = "aams";

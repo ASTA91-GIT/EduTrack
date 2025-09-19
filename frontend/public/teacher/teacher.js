@@ -1,4 +1,5 @@
 // Copied from src/components/teacher/teacher.js
+requireTeacher?.();
 const userIcon = document.getElementById("userIcon");
 const userSidebar = document.getElementById("userSidebar");
 userIcon.addEventListener("click", () => { userSidebar.classList.toggle("active"); });
@@ -22,6 +23,4 @@ window.addEventListener("load", () => {
 });
 profileUpload.addEventListener("change", e => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = () => { sidebarAvatar.src = reader.result; localStorage.setItem("teacherProfileImage", reader.result); }; reader.readAsDataURL(file); } });
 saveInfoBtn.addEventListener("click", () => { localStorage.setItem("teacherName", teacherName.value); localStorage.setItem("teacherRole", teacherRole.value); localStorage.setItem("teacherEmail", teacherEmail.value); localStorage.setItem("teacherPassword", teacherPassword.value); sidebarName.textContent = teacherName.value; sidebarRole.textContent = teacherRole.value; alert("Teacher Info Saved!"); });
-logoutBtn.addEventListener("click", () => { if (confirm("Do you want to Logout or Stay?")) { window.location.href = "/login.html"; } });
-document.getElementById("logout-btn")?.addEventListener("click", logout);
-document.getElementById("logoutBtn")?.addEventListener("click", logout);
+logoutBtn.addEventListener("click", () => { logout(); });

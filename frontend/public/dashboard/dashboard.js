@@ -14,51 +14,61 @@ document.addEventListener("DOMContentLoaded", async () => {
     if(!user) { window.location.href="login.html"; return; }
 
     // Dynamic welcome & role message
+    const safeName = (user.full_name || "").toString();
     if(user.role === "teacher"){
-        welcomeMessage.textContent = `Welcome Teacher ${user.full_name || ""}!`;
+        welcomeMessage.textContent = `Welcome Teacher ${safeName}!`;
         roleMessage.textContent = `Manage your classes efficiently.`;
     } else {
-        welcomeMessage.textContent = `Hey ${user.full_name || ""}!`;
+        welcomeMessage.textContent = `Hey ${safeName}!`;
         roleMessage.textContent = `Stay motivated! Your attendance is key to success.`;
     }
 
     // Sidebar info
-    document.getElementById("sidebarName").textContent = user.full_name || "User";
+    document.getElementById("sidebarName").textContent = safeName || "User";
     document.getElementById("sidebarRole").textContent = user.role;
-    document.getElementById("teacherName").value = user.full_name || "";
+    document.getElementById("teacherName").value = safeName || "";
     document.getElementById("teacherRole").value = user.role;
-    document.getElementById("teacherEmail").value = user.email || "";
+    document.getElementById("teacherEmail").value = (user.email || "").toString();
 
     // Logout
     logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("aamsCurrentUser");
-        window.location.href="login.html";
+        try { logout(); } catch { window.location.href="login.html"; }
     });
 
     saveInfoBtn.addEventListener("click", () => alert("Personal info saved (mock)."));
 
-    // Fetch dashboard cards from backend
+    // Fetch dashboard cards from backend (authenticated)
     try {
-        const res = await fetch(`http://127.0.0.1:8000/api/dashboard?role=${user.role}`);
-        const data = await res.json();
+        const cardsRes = await authFetch(`http://127.0.0.1:8000/api/dashboard?role=${encodeURIComponent(user.role)}`);
+        if (!cardsRes.ok) throw new Error("Failed to load dashboard cards");
+        const data = await cardsRes.json();
 
         dashboardCards.innerHTML = "";
-        data.cards.forEach(card => {
+        (data.cards || []).forEach(card => {
             const div = document.createElement("div");
-            div.className="card";
-            div.innerHTML=`<i class='${card.icon}'></i><h3>${card.title}</h3>`;
-            div.addEventListener("click",()=>window.location.href=card.link);
+            div.className = "card";
+            const icon = (card.icon || "").toString();
+            const title = (card.title || "").toString();
+            div.innerHTML = `<i class='${icon.replace(/'/g, "&apos;")}'></i><h3></h3>`;
+            const h3 = div.querySelector("h3");
+            h3.textContent = title;
+            const link = (card.link || "").toString();
+            div.addEventListener("click",()=>{ if (link) window.location.href = link; });
             dashboardCards.appendChild(div);
         });
 
-        // Fetch chart data
-        const attendanceRes = await fetch(`http://127.0.0.1:8000/api/attendance?user_id=${user.id}`);
-        const attendanceData = await attendanceRes.json();
-        renderChart("attendanceChart", attendanceData.subjects, attendanceData.percentages, "Attendance %");
+        // Fetch chart data (authenticated)
+        const attendanceRes = await authFetch(`http://127.0.0.1:8000/api/attendance?user_id=${encodeURIComponent(user.id)}`);
+        if (attendanceRes.ok) {
+            const attendanceData = await attendanceRes.json();
+            renderChart("attendanceChart", attendanceData.subjects || [], attendanceData.percentages || [], "Attendance %");
+        }
 
-        const testsRes = await fetch(`http://127.0.0.1:8000/api/tests/upcoming?user_id=${user.id}`);
-        const testsData = await testsRes.json();
-        renderChart("testsChart", testsData.tests, testsData.scores, "Upcoming Tests");
+        const testsRes = await authFetch(`http://127.0.0.1:8000/api/tests/upcoming?user_id=${encodeURIComponent(user.id)}`);
+        if (testsRes.ok) {
+            const testsData = await testsRes.json();
+            renderChart("testsChart", testsData.tests || [], testsData.scores || [], "Upcoming Tests");
+        }
 
     } catch(err){
         console.error("Dashboard fetch error:", err);

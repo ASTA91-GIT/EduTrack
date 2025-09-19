@@ -12,18 +12,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    const role = user.role.toLowerCase();
+    const role = String(user.role || "").toLowerCase();
 
     // Sidebar info
-    document.getElementById("sidebarName").textContent = user.full_name || "User";
+    document.getElementById("sidebarName").textContent = (user.full_name || "User").toString();
     document.getElementById("sidebarRole").textContent = role.charAt(0).toUpperCase() + role.slice(1);
 
     // Welcome message
     if(role === "teacher") {
-        welcomeMessage.textContent = `Welcome, Teacher ${user.full_name || ""}`;
+        welcomeMessage.textContent = `Welcome, Teacher ${(user.full_name || "").toString()}`;
         roleMessage.textContent = "Overview of class performance.";
     } else if(role === "student") {
-        welcomeMessage.textContent = `Hey ${user.full_name || ""}!`;
+        welcomeMessage.textContent = `Hey ${(user.full_name || "").toString()}!`;
         roleMessage.textContent = "Check your performance and attendance summary.";
     }
 
@@ -42,15 +42,18 @@ document.addEventListener("DOMContentLoaded", () => {
     cardsData.forEach(card => {
         const div = document.createElement("div");
         div.className = "card";
-        div.innerHTML = `<i class='${card.icon}'></i><h3>${card.title}</h3>`;
-        div.addEventListener("click", () => window.location.href = card.link);
+        const icon = (card.icon || "").toString().replace(/'/g, "&apos;");
+        const title = (card.title || "").toString();
+        div.innerHTML = `<i class='${icon}'></i><h3></h3>`;
+        div.querySelector("h3").textContent = title;
+        const href = (card.link || "").toString();
+        div.addEventListener("click", () => { if (href) window.location.href = href; });
         reportCards.appendChild(div);
     });
 
     // Logout button
     logoutBtn.addEventListener("click", () => {
-        logoutUser();
-        window.location.href = "login.html";
+        logout();
     });
 
     // Charts placeholders

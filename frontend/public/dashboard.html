@@ -4,12 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduTrack – Dashboard</title>
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="no-referrer">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' https://unpkg.com 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; connect-src 'self' http://127.0.0.1:8000 http://localhost:8000; font-src 'self' https://unpkg.com; frame-ancestors 'none'; base-uri 'self'">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="dashboard/dashboard.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <script src="js/auth.js"></script>
+  <script>protectPage(["teacher","student"]);</script>
 
   <header>
     <div class="logo">EduTrack</div>

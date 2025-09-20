@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   } else if (currentPath.includes('reports')) {
     import('./components/reports/reports.js');
   } else if (currentPath.includes('students')) {
-    import('./components/students/students.js');
+    import('./components/students/Manage-students.js');
   } else if (currentPath.includes('teacher')) {
     import('./components/teacher/teacher.js');
   }

@@ -1,0 +1,185 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  background: #f5f7fb;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+header {
+  width: 100%;
+  background: linear-gradient(135deg, #6c63ff, #3f37c9);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 30px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+}
+nav ul li a {
+  text-decoration: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 5px 0;
+  transition: all 0.3s ease;
+}
+nav ul li a:hover {
+  color: #ffeb3b;
+  transform: scale(1.05) translateY(-2px);
+}
+.profile {
+  font-size: 2.2rem;
+  cursor: pointer;
+}
+.dashboard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 50px;
+}
+.welcome {
+  max-width: 100%;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  margin-bottom: 30px;
+}
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s;
+  text-align: center;
+  width: 200px;
+  border: 2px solid #6c63ff;
+}
+.card i {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #6c63ff;
+}
+.card h3 {
+  font-size: 1.1rem;
+  color: #333;
+}
+.card:hover {
+  transform: scale(1.05);
+}
+.charts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+.chart-card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  width: 400px;
+}
+.user-sidebar {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 350px;
+  height: 100%;
+  background: white;
+  box-shadow: -6px 0 20px rgba(0, 0, 0, 0.2);
+  border-left: 1px solid #ccc;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s ease;
+  padding: 20px;
+  overflow-y: auto;
+}
+.user-sidebar.active {
+  right: 0;
+}
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+.sidebar-header img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border: 3px solid #6c63ff;
+}
+.sidebar-header h3 {
+  font-size: 1.4rem;
+  margin-bottom: 5px;
+  color: #3f37c9;
+}
+.sidebar-header p {
+  font-size: 1rem;
+  color: #555;
+}
+.sidebar-content label {
+  margin-top: 10px;
+  font-weight: 500;
+}
+.sidebar-content input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+}
+.sidebar-content button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #6c63ff;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+.sidebar-content button:hover {
+  background: #3f37c9;
+  transform: scale(1.03);
+}
+.logout-btn {
+  background: #ff4d4d;
+  margin-top: 10px;
+}
+.logout-btn:hover {
+  background: #cc0000;
+  transform: scale(1.03);
+}

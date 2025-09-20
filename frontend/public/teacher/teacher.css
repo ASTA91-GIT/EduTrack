@@ -1,4 +1,4 @@
-/* Copied from src/components/teacher/teacher.css */
+/* Reset & Base */
 * {
   margin: 0;
   padding: 0;
@@ -6,16 +6,18 @@
   font-family: "Poppins", sans-serif;
 }
 body {
+  min-height: 100vh;
   background: #f5f7fb;
   color: #333;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
+
+/* HEADER */
 header {
   width: 100%;
   background: linear-gradient(135deg, #6c63ff, #3f37c9);
-  color: white;
+  color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,31 +25,113 @@ header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
-.logo { font-size: 1.6rem; font-weight: 700; letter-spacing: 1px; }
-nav ul { list-style: none; display: flex; gap: 25px; }
-nav ul li a { text-decoration: none; color: white; font-size: 1rem; font-weight: 500; position: relative; padding: 5px 0; transition: all 0.3s ease; }
-nav ul li a::after { content: ""; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; background: #ffeb3b; transition: width 0.4s ease; }
-nav ul li a:hover { color: #ffeb3b; transform: scale(1.05) translateY(-2px); }
-nav ul li a:hover::after { width: 100%; }
-.profile { font-size: 2.2rem; cursor: pointer; }
-.dashboard { flex: 1; display: flex; justify-content: center; align-items: center; padding: 50px; }
-.welcome { max-width: 800px; background: white; padding: 50px; border-radius: 20px; box-shadow: 0 12px 30px rgba(0,0,0,0.15); text-align: center; animation: fadeIn 1s ease-in-out; }
-.welcome h1 { font-size: 2.4rem; margin-bottom: 20px; color: #3f37c9; }
-.welcome p { font-size: 1.1rem; color: #555; line-height: 1.7; }
-.user-sidebar { position: fixed; top: 0; right: -350px; width: 350px; height: 100%; background: white; box-shadow: -6px 0 20px rgba(0,0,0,0.2); border-left: 1px solid #ccc; z-index: 2000; display: flex; flex-direction: column; transition: right 0.3s ease; padding: 20px; overflow-y: auto; }
-.user-sidebar.active { right: 0; }
-.sidebar-header { text-align: center; margin-bottom: 25px; }
-.sidebar-header img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 3px solid #6c63ff; }
-.sidebar-header h3 { font-size: 1.4rem; margin-bottom: 5px; color: #3f37c9; }
-.sidebar-header p { font-size: 1rem; color: #555; }
-.sidebar-content label { margin-top: 10px; font-weight: 500; }
-.sidebar-content input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px; }
-.sidebar-content button { width: 100%; margin-top: 15px; padding: 12px; border: none; border-radius: 8px; background: #6c63ff; color: white; font-weight: 500; cursor: pointer; transition: background 0.3s, transform 0.2s; }
-.sidebar-content button:hover { background: #3f37c9; transform: scale(1.03); }
-.logout-btn { background: #ff4d4d; margin-top: 10px; }
-.logout-btn:hover { background: #cc0000; transform: scale(1.03); }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-@media(max-width:768px){ .user-sidebar { width: 90%; } .welcome { padding: 30px; } .welcome h1 { font-size: 2rem; } }
+header .logo { font-size: 1.6rem; font-weight: 700; }
+header nav ul { display: flex; list-style: none; gap: 25px; }
+header nav ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  transition: all 0.3s;
+  position: relative;
+}
+header nav ul li a.active, header nav ul li a:hover {
+  color: #ffeb3b;
+}
+header .profile { font-size: 2rem; cursor: pointer; }
 
+/* DASHBOARD */
+.dashboard { flex: 1; padding: 30px; display: flex; flex-direction: column; align-items: center; }
+.stats-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+.stat-card {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  min-width: 150px;
+  text-align: center;
+  transition: transform 0.3s;
+}
+.stat-card:hover { transform: translateY(-5px); }
+.stat-card h3 { font-size: 2rem; color: #3f37c9; margin-bottom: 5px; }
+.stat-card p { font-size: 1rem; color: #555; }
+
+/* WELCOME SECTION */
+.welcome {
+  max-width: 800px;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+}
+.welcome h1 { font-size: 2.2rem; margin-bottom: 15px; color: #3f37c9; }
+.welcome p { font-size: 1rem; color: #555; }
+
+/* PROFILE SIDEBAR */
+.profile-sidebar {
+  position: fixed;
+  right: -350px;
+  top: 0;
+  width: 350px;
+  height: 100%;
+  background: #fff;
+  border-left: 1px solid #ccc;
+  box-shadow: -6px 0 20px rgba(0,0,0,0.2);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  z-index: 2000;
+}
+.profile-sidebar.active { right: 0; }
+.profile-sidebar .sidebar-header { text-align: center; margin-bottom: 25px; }
+.profile-sidebar .sidebar-header img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #6c63ff;
+  margin-bottom: 10px;
+}
+.profile-sidebar .sidebar-header h3 { color: #3f37c9; font-size: 1.3rem; }
+.profile-sidebar .sidebar-header p { color: #555; font-size: 1rem; }
+.profile-sidebar .sidebar-content label { margin-top: 10px; font-weight: 500; }
+.profile-sidebar .sidebar-content input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+}
+.profile-sidebar .sidebar-content button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #6c63ff;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.profile-sidebar .sidebar-content button.logout-btn {
+  background: #ff4d4d;
+}
+.profile-sidebar .sidebar-content button:hover { transform: scale(1.03); }
+.profile-sidebar .sidebar-content button.logout-btn:hover { background: #cc0000; }
+
+/* MEDIA QUERIES */
+@media (max-width: 768px) {
+  .stats-container { flex-direction: column; }
+  .profile-sidebar { width: 90%; }
+}

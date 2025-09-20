@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Reports</title>
+  <title>EduTrack – Dashboard</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="reports/reports.css" />
+  <link rel="stylesheet" href="dashboard/dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <script src="js/auth.js"></script>
@@ -16,10 +17,10 @@
       <ul>
         <li><a href="dashboard.html">Dashboard</a></li>
         <li><a href="attendance.html">Attendance</a></li>
+        <li><a href="reports.html">Reports</a></li>
         <li><a href="events.html">Events</a></li>
         <li><a href="tests.html">Tests</a></li>
         <li><a href="assignments.html">Assignments</a></li>
-        <li><a href="reports.html" class="active">Reports</a></li>
         <li><a href="notifications.html">Notifications</a></li>
       </ul>
     </nav>
@@ -28,34 +29,49 @@
     </div>
   </header>
 
-  <div class="sidebar" id="sidebar">
+  <aside id="userSidebar" class="user-sidebar">
     <div class="sidebar-header">
       <img id="sidebarAvatar" src="/teacher/assets/default-profile.png" alt="Avatar" />
       <h3 id="sidebarName">User Name</h3>
       <p id="sidebarRole">Role</p>
     </div>
     <div class="sidebar-content">
+      <h4>Personal Info</h4>
+      <label>Name:</label>
+      <input type="text" id="teacherName" />
+      <label>Role:</label>
+      <input type="text" id="teacherRole" />
+      <label>Email:</label>
+      <input type="email" id="teacherEmail" />
+      <label>Password:</label>
+      <input type="password" id="teacherPassword" />
+      <label>Profile Image:</label>
+      <input type="file" id="profileUpload" accept="image/*" />
+      <button id="saveInfoBtn">Save Info</button>
       <button id="logoutBtn" class="logout-btn">Logout</button>
     </div>
-  </div>
+  </aside>
 
-  <main class="reports">
+  <main class="dashboard">
     <div class="welcome">
       <h1 id="welcomeMessage">Welcome!</h1>
-      <p id="roleMessage"></p>
+      <p id="roleMessage">Your dashboard overview</p>
     </div>
 
-    <div id="reportCards" class="cards">
-      <!-- Cards will be dynamically generated -->
-    </div>
+    <div class="cards" id="dashboardCards"></div>
 
     <div class="charts">
-      <canvas id="attendanceChart"></canvas>
-      <canvas id="gradesChart"></canvas>
+      <div class="chart-card">
+        <h3>Attendance Overview</h3>
+        <canvas id="attendanceChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Upcoming Tests</h3>
+        <canvas id="testsChart"></canvas>
+      </div>
     </div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="reports/reports.js"></script>
+  <script src="dashboard/dashboard.js"></script>
 </body>
 </html>

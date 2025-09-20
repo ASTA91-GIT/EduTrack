@@ -6,12 +6,25 @@
   <title>EduTrack – Attendance</title>
   <link rel="stylesheet" href="attendance/attendance.css" />
 </head>
-<script src="js/auth.js"></script>
-<script>
-  protectPage("attendance");  // only attendance role allowed
-</script>
 
 <body>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Protect attendance page: only students
+      protectPage("student");
+
+      // Update back button dynamically based on role
+      const user = getCurrentUser();
+      const dashboardLink = document.querySelector('.actions a');
+      if (user.role === "teacher") {
+        dashboardLink.href = "teacher.html";
+      } else if (user.role === "student") {
+        dashboardLink.href = "student.html"; // adjust if you have a student dashboard
+      }
+    });
+  </script>
+
   <header>
     <div class="nav">
       <div class="brand">
@@ -53,4 +66,3 @@
   <script src="attendance/attendance.js"></script>
 </body>
 </html>
-

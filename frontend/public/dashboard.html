@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack – Dashboard</title>
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="no-referrer">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' https://unpkg.com 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; connect-src 'self' http://127.0.0.1:8000 http://localhost:8000; font-src 'self' https://unpkg.com; frame-ancestors 'none'; base-uri 'self'">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="dashboard/dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <script src="js/auth.js"></script>
+  <script>protectPage(["teacher","student"]);</script>
+
+  <header>
+    <div class="logo">EduTrack</div>
+    <nav>
+      <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="attendance.html">Attendance</a></li>
+        <li><a href="reports.html">Reports</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="tests.html">Tests</a></li>
+        <li><a href="assignments.html">Assignments</a></li>
+        <li><a href="notifications.html">Notifications</a></li>
+      </ul>
+    </nav>
+    <div class="profile">
+      <i class="bx bx-user-circle" id="userIcon"></i>
+    </div>
+  </header>
+
+  <aside id="userSidebar" class="user-sidebar">
+    <div class="sidebar-header">
+      <img id="sidebarAvatar" src="/teacher/assets/default-profile.png" alt="Avatar" />
+      <h3 id="sidebarName">User Name</h3>
+      <p id="sidebarRole">Role</p>
+    </div>
+    <div class="sidebar-content">
+      <h4>Personal Info</h4>
+      <label>Name:</label>
+      <input type="text" id="teacherName" />
+      <label>Role:</label>
+      <input type="text" id="teacherRole" />
+      <label>Email:</label>
+      <input type="email" id="teacherEmail" />
+      <label>Password:</label>
+      <input type="password" id="teacherPassword" />
+      <label>Profile Image:</label>
+      <input type="file" id="profileUpload" accept="image/*" />
+      <button id="saveInfoBtn">Save Info</button>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+  </aside>
+
+  <main class="dashboard">
+    <div class="welcome">
+      <h1 id="welcomeMessage">Welcome!</h1>
+      <p id="roleMessage">Your dashboard overview</p>
+    </div>
+
+    <div class="cards" id="dashboardCards"></div>
+
+    <div class="charts">
+      <div class="chart-card">
+        <h3>Attendance Overview</h3>
+        <canvas id="attendanceChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Upcoming Tests</h3>
+        <canvas id="testsChart"></canvas>
+      </div>
+    </div>
+  </main>
+
+  <script src="dashboard/dashboard.js"></script>
+</body>
+</html>

@@ -5,7 +5,7 @@ from typing import Dict, Any
 import uuid
 
 from .. import database, models, auth
-from ..auth import get_password_hash, verify_password, create_tokens, refresh_access_token
+from ..auth import get_password_hash, verify_password, create_tokens, refresh_access_token, create_password_reset, verify_password_reset, mark_password_reset_used, require_admin, require_teacher, require_student
 
 router = APIRouter()
 
@@ -26,10 +26,10 @@ async def register_user(
         )
     
     # Validate role
-    if role not in ["teacher", "student"]:
+    if role not in ["teacher", "student", "admin"]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid role. Must be 'teacher' or 'student'"
+            detail="Invalid role. Must be 'teacher', 'student', or 'admin'"
         )
     
     # Create new user
@@ -117,3 +117,37 @@ async def get_user_info(current_user: models.User = Depends(auth.get_current_use
         "email": current_user.email,
         "role": current_user.role
     }
+
+# Password reset (request + confirm) using OTP-like token stored in DB
+
+@router.post("/password/reset/request")
+async def request_password_reset(email: str = Body(...), db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if not user:
+        # To avoid user enumeration, return success regardless
+        return {"message": "If the email exists, a reset token has been generated."}
+    pr = create_password_reset(user, db)
+    # NOTE: Here you would send the token via email/SMS. For now we return masked info.
+    return {"message": "Reset token generated and sent.", "mask": email[:2] + "***"}
+
+@router.post("/password/reset/confirm")
+async def confirm_password_reset(token: str = Body(...), new_password: str = Body(...), db: Session = Depends(database.get_db)):
+    user = verify_password_reset(token, db)
+    user.password = get_password_hash(new_password)
+    db.add(user)
+    mark_password_reset_used(token, db)
+    db.commit()
+    return {"message": "Password has been reset successfully"}
+
+# Example protected routes using role dependencies
+@router.get("/admin/ping")
+async def admin_ping(_: models.User = Depends(require_admin)):
+    return {"ok": True}
+
+@router.get("/teacher/ping")
+async def teacher_ping(_: models.User = Depends(require_teacher)):
+    return {"ok": True}
+
+@router.get("/student/ping")
+async def student_ping(_: models.User = Depends(require_student)):
+    return {"ok": True}

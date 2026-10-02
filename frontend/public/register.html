@@ -27,15 +27,8 @@
 
       <h1>Create Account</h1>
 
-      <div class="role-selection">
-        <label>
-          <input type="radio" name="role" value="teacher" required />
-          <i class="fa-solid fa-user-tie"></i> Teacher
-        </label>
-        <label>
-          <input type="radio" name="role" value="student" />
-          <i class="fa-solid fa-user-graduate"></i> Student
-        </label>
+      <div class="role-selection" style="display:none;">
+        <input type="hidden" name="role" value="student" id="regRole" />
       </div>
 
       <input type="text" id="regName" placeholder="Full Name" required />

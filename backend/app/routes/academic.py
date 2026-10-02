@@ -72,3 +72,21 @@ def get_events(
 ):
     events = db.query(models.Event).order_by(models.Event.event_date.asc()).all()
     return events
+
+# --- TIMETABLE ---
+@router.get("/timetable")
+def get_timetable(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    # For now, return all timetables (can be filtered by class_name later)
+    return db.query(models.Timetable).all()
+
+# --- LECTURES ---
+@router.get("/lectures")
+def get_lectures(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    return db.query(models.Lecture).order_by(models.Lecture.lecture_date.asc()).all()
+

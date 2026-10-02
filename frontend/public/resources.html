@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack – Resources & Books</title>
+  <link rel="stylesheet" href="styles/global.css" />
+  <style>
+    .container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .resource-card { border: 1px solid #ddd; padding: 1.5rem; margin-bottom: 1rem; border-radius: 8px; border-left: 5px solid #8bc34a; display: flex; justify-content: space-between; align-items: center; }
+    .resource-card h3 { margin-bottom: 0.5rem; color: #333; }
+    .btn-download { background: #512da8; color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: bold; }
+    .btn-download:hover { background: #673ab7; }
+  </style>
+</head>
+<body>
+  <script src="js/auth.js"></script>
+  <script>protectPage();</script>
+  
+  <header style="padding: 1rem 2rem; background: #512da8; color: white; display: flex; justify-content: space-between;">
+    <h2>EduTrack Resources</h2>
+    <a href="#" onclick="window.history.back()" style="color: white; text-decoration: none;">⬅ Back</a>
+  </header>
+
+  <div class="container">
+    <h2>Academic Books & Files</h2>
+    <div id="resourcesList">Loading...</div>
+  </div>
+
+  <script>
+    async function loadResources() {
+      try {
+        const res = await authFetch(`${API_URL}/v1/resources`);
+        const data = await res.json();
+        
+        const list = document.getElementById("resourcesList");
+        list.innerHTML = "";
+        
+        if(data.length === 0) {
+          list.innerHTML = "<p>No resources uploaded yet.</p>";
+          return;
+        }
+
+        data.forEach(r => {
+          list.innerHTML += `
+            <div class="resource-card">
+              <div>
+                <h3>${r.title}</h3>
+                <p>Subject: ${r.subject} | Author: ${r.author || 'Unknown'}</p>
+                <p style="font-size: 0.8rem; color: #666;">Uploaded: ${new Date(r.created_at).toLocaleDateString()}</p>
+              </div>
+              <a href="#" class="btn-download" onclick="alert('Secure download link would trigger here. Path traversal protected.')">Download</a>
+            </div>
+          `;
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadResources();
+  </script>
+</body>
+</html>

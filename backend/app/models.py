@@ -186,4 +186,43 @@ class Assignment(Base):
     title = Column(String(255), nullable=False)
     due_date = Column(DateTime, nullable=False)
     
-    faculty = relationship("User", backref="created_assignments")
+    faculty = relationship("User", backref="created_assignments")
+
+class Timetable(Base):
+    __tablename__ = "timetables"
+    id = Column(Integer, primary_key=True)
+    day = Column(String(20), nullable=False)
+    start_time = Column(String(10), nullable=False)
+    end_time = Column(String(10), nullable=False)
+    subject = Column(String(255), nullable=False)
+    faculty_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    class_name = Column(String(255), nullable=False)
+    room = Column(String(100), nullable=True)
+    
+    faculty = relationship("User", backref="timetables")
+
+class Lecture(Base):
+    __tablename__ = "lectures"
+    id = Column(Integer, primary_key=True)
+    title = Column(String(255), nullable=False)
+    subject = Column(String(255), nullable=False)
+    faculty_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    class_name = Column(String(255), nullable=False)
+    lecture_date = Column(DateTime, nullable=False)
+    description = Column(Text, nullable=True)
+    
+    faculty = relationship("User", backref="lectures")
+
+class Resource(Base):
+    __tablename__ = "resources"
+    id = Column(Integer, primary_key=True)
+    title = Column(String(255), nullable=False)
+    author = Column(String(255), nullable=True)
+    subject = Column(String(255), nullable=False)
+    uploader_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    file_path = Column(String(500), nullable=False)
+    file_type = Column(String(50), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    
+    uploader = relationship("User", backref="uploaded_resources")
+

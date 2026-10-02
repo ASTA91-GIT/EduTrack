@@ -77,6 +77,7 @@ _optional_routers = [
     ("attendance_sessions", "attendance_sessions",  "Attendance Sessions"),
     ("academic",            "academic",             "Academic"),
     ("users",               "users",                "Users"),
+    ("resources",           "resources",            "Resources"),
 ]
 
 for module_name, prefix, tag in _optional_routers:

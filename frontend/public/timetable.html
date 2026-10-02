@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack – Timetable</title>
+  <link rel="stylesheet" href="styles/global.css" />
+  <style>
+    .container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background: #512da8; color: white; }
+  </style>
+</head>
+<body>
+  <script src="js/auth.js"></script>
+  <script>protectPage();</script>
+  
+  <header style="padding: 1rem 2rem; background: #512da8; color: white; display: flex; justify-content: space-between;">
+    <h2>EduTrack Timetable</h2>
+    <a href="#" onclick="window.history.back()" style="color: white; text-decoration: none;">⬅ Back</a>
+  </header>
+
+  <div class="container">
+    <h2>Weekly Schedule</h2>
+    
+    <table id="timetable">
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Time</th>
+          <th>Subject</th>
+          <th>Class</th>
+          <th>Room</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="5">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    async function loadTimetable() {
+      try {
+        const res = await authFetch(`${API_URL}/v1/academic/timetable`);
+        const data = await res.json();
+        
+        const tbody = document.querySelector("#timetable tbody");
+        tbody.innerHTML = "";
+        
+        if(data.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='5'>No schedule found.</td></tr>";
+          return;
+        }
+
+        data.forEach(t => {
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${t.day}</strong></td>
+              <td>${t.start_time} - ${t.end_time}</td>
+              <td>${t.subject}</td>
+              <td>${t.class_name}</td>
+              <td>${t.room || 'TBA'}</td>
+            </tr>
+          `;
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadTimetable();
+  </script>
+</body>
+</html>

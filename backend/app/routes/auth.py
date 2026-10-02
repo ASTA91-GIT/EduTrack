@@ -14,22 +14,18 @@ async def register_user(
     name: str = Body(...),
     email: str = Body(...),
     password: str = Body(...),
-    role: str = Body(...),
+    role: str = Body(default="student"),
     db: Session = Depends(database.get_db)
 ):
+    # Force role to always be student regardless of frontend
+    role = "student"
+    
     # Check if user already exists
     existing_user = db.query(models.User).filter(models.User.email == email).first()
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already registered"
-        )
-    
-    # Validate role
-    if role not in ["teacher", "student", "admin"]:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid role. Must be 'teacher', 'student', or 'admin'"
         )
     
     # Create new user

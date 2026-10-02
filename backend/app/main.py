@@ -69,12 +69,13 @@ except Exception:
 
 # Placeholder includes for new route modules if present
 try:
-    from .routes import notifications, reports, attendance, students, appeals
+    from .routes import notifications, reports, attendance, students, appeals, attendance_sessions
     app.include_router(attendance.router, prefix=f"{API_V1_PREFIX}/attendance", tags=["Attendance"])
     app.include_router(notifications.router, prefix=f"{API_V1_PREFIX}/notifications", tags=["Notifications"])
     app.include_router(reports.router, prefix=f"{API_V1_PREFIX}/reports", tags=["Reports"])
     app.include_router(students.router, prefix=f"{API_V1_PREFIX}/students", tags=["Students"])
     app.include_router(appeals.router, prefix=f"{API_V1_PREFIX}/appeals", tags=["Appeals"])
+    app.include_router(attendance_sessions.router, prefix=f"{API_V1_PREFIX}/attendance_sessions", tags=["Attendance Sessions"])
 except Exception:
     pass
 

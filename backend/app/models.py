@@ -114,3 +114,33 @@ class PasswordReset(Base):
     used = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     user = relationship("User", back_populates="password_resets")
+
+# Attendance Session models
+class AttendanceSession(Base):
+    __tablename__ = "attendance_sessions"
+    id = Column(Integer, primary_key=True)
+    faculty_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    subject = Column(String(255), nullable=False)  # could be FK to subjects
+    class_name = Column(String(255), nullable=False)  # could be FK to classes
+    session_token = Column(String(255), unique=True, nullable=False, index=True)
+    expires_at = Column(DateTime, nullable=False)
+    status = Column(String(50), default="active", nullable=False)  # active, closed
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    # Relationships
+    faculty = relationship("User", backref="attendance_sessions")
+    __table_args__ = (
+        Index('idx_attendance_session_token', 'session_token'),
+    )
+
+class AttendanceSessionRecord(Base):
+    __tablename__ = "attendance_session_records"
+    id = Column(Integer, primary_key=True)
+    session_id = Column(Integer, ForeignKey("attendance_sessions.id", ondelete="CASCADE"), nullable=False)
+    student_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    marked_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    __table_args__ = (
+        Index('uq_student_session', 'student_id', 'session_id', unique=True),
+    )
+    # Relationships
+    session = relationship("AttendanceSession", backref="records")
+    student = relationship("User", backref="attendance_session_records")

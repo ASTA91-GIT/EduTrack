@@ -1,75 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Manage Students</title>
-  <link rel="stylesheet" href="styles/global.css" />
-  <style>
-    .container { max-width: 1200px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
-    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #ddd; }
-    th { background: #512da8; color: white; }
-    .status-active { color: green; font-weight: bold; }
-    .status-inactive { color: red; font-weight: bold; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Students | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-  <script src="js/auth.js"></script>
-  <script>protectPage(["admin", "teacher"]);</script>
-  
-  <header style="padding: 1rem 2rem; background: #512da8; color: white; display: flex; justify-content: space-between;">
-    <h2>Manage Students</h2>
-    <a href="#" onclick="window.history.back()" style="color: white; text-decoration: none;">⬅ Back</a>
-  </header>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
 
-  <div class="container">
-    <h2>All Students Directory</h2>
-    
-    <table id="studentsTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Status</th>
-          <th>Enrolled</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td colspan="4">Loading...</td></tr>
-      </tbody>
-    </table>
+    <main class="main-content">
+      <div id="topbar-mount"></div>
+
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Enrolled Students Directory</h1>
+            <p class="page-subtitle">Inspect registered student cohort, attendance status, and institutional profiles</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="users"></i>
+              <span>All Students</span>
+            </div>
+            <span class="badge badge-primary" id="studentCountBadge">--</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table" id="studentsTable">
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Institutional Email</th>
+                  <th>Status</th>
+                  <th>Enrollment Date</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTbody">
+                <tr>
+                  <td colspan="4">
+                    <div class="empty-state">
+                      <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+                      <div class="empty-title">Loading Students...</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
   </div>
 
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
+    protectPage(['admin', 'teacher']);
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'dashboard',
+        pageTitle: 'Students',
+        breadcrumb: 'Students Directory'
+      });
+
+      await loadStudents();
+    });
+
     async function loadStudents() {
       try {
-        const res = await authFetch(`${API_URL}/v1/users/students`);
-        const data = await res.json();
+        const res = await authFetch('/api/v1/users/students');
+        if (!res.ok) throw new Error('Failed to load students');
+        const list = await res.json();
         
-        const tbody = document.querySelector("#studentsTable tbody");
-        tbody.innerHTML = "";
-        
-        if(data.length === 0) {
-          tbody.innerHTML = "<tr><td colspan='4'>No students found.</td></tr>";
+        document.getElementById('studentCountBadge').textContent = `${list.length} Enrolled`;
+        const tbody = document.getElementById('studentsTbody');
+
+        if (list.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="4">
+                <div class="empty-state">
+                  <div class="empty-icon-wrap"><i data-lucide="user-x"></i></div>
+                  <div class="empty-title">No Students Registered Yet</div>
+                  <div class="empty-subtitle">Student profiles will appear here once registered.</div>
+                </div>
+              </td>
+            </tr>
+          `;
+          lucide.createIcons();
           return;
         }
 
-        data.forEach(s => {
-          tbody.innerHTML += `
-            <tr>
-              <td>${s.name}</td>
-              <td>${s.email}</td>
-              <td class="${s.is_active ? 'status-active' : 'status-inactive'}">${s.is_active ? 'Active' : 'Inactive'}</td>
-              <td>${new Date(s.created_at).toLocaleDateString()}</td>
-            </tr>
-          `;
-        });
+        tbody.innerHTML = list.map(s => `
+          <tr>
+            <td style="font-weight: 600; color: var(--text);">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="user-avatar-circle" style="width: 32px; height: 32px; font-size: 12px;">
+                  ${(s.name || 'S').charAt(0).toUpperCase()}
+                </div>
+                <span>${escapeHtml(s.name)}</span>
+              </div>
+            </td>
+            <td>${escapeHtml(s.email)}</td>
+            <td>
+              <span class="badge ${s.is_active ? 'badge-success' : 'badge-danger'}">
+                ${s.is_active ? 'Active' : 'Inactive'}
+              </span>
+            </td>
+            <td>${new Date(s.created_at || Date.now()).toLocaleDateString()}</td>
+          </tr>
+        `).join('');
+
+        lucide.createIcons();
       } catch (err) {
-        console.error(err);
+        console.warn('Student directory error:', err.message);
       }
     }
-    loadStudents();
   </script>
 </body>
 </html>

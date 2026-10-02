@@ -1,76 +1,648 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Attendance Analytics</title>
-  <link rel="stylesheet" href="styles/global.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Attendance Center | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    .container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .chart-container { margin-top: 2rem; }
+    .qr-card-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .qr-frame {
+      background: #FFFFFF;
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      display: inline-block;
+      margin: 16px 0;
+      position: relative;
+    }
+
+    .qr-frame img {
+      display: block;
+      width: 220px;
+      height: 220px;
+      border-radius: 8px;
+    }
+
+    .token-timer-bar {
+      width: 220px;
+      height: 4px;
+      background: var(--surface-2);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .token-timer-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    .live-pulse {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--success);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--success);
+      box-shadow: 0 0 10px var(--success);
+      animation: pulseAnim 1.5s infinite;
+    }
+
+    @keyframes pulseAnim {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.7; }
+    }
+
+    /* Fullscreen QR Modal */
+    .fullscreen-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 10, 18, 0.95);
+      backdrop-filter: blur(16px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 32px;
+    }
+
+    .fullscreen-modal.active {
+      display: flex;
+    }
+
+    .fullscreen-qr-img {
+      width: 420px;
+      height: 420px;
+      background: #FFFFFF;
+      padding: 20px;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .new-row-highlight {
+      animation: highlightRow 2s ease-out;
+    }
+
+    @keyframes highlightRow {
+      0% { background-color: rgba(124, 92, 255, 0.3); }
+      100% { background-color: transparent; }
+    }
   </style>
 </head>
 <body>
-  <script src="js/auth.js"></script>
-  <script>protectPage();</script>
-  
-  <header style="padding: 1rem 2rem; background: #512da8; color: white; display: flex; justify-content: space-between;">
-    <h2>Attendance Analytics</h2>
-    <a href="#" onclick="window.history.back()" style="color: white; text-decoration: none;">⬅ Back</a>
-  </header>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
 
-  <div class="container">
-    <h2>Detailed Attendance Trends</h2>
-    <div class="chart-container">
-      <canvas id="attendanceChart"></canvas>
+    <main class="main-content">
+      <div id="topbar-mount"></div>
+
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Live Attendance Center</h1>
+            <p class="page-subtitle">Dynamic QR presence with 30m GPS geofencing & real-time verification feed</p>
+          </div>
+          <div id="sessionHeaderActions" style="display: flex; gap: 10px;">
+            <!-- Start or End Button dynamically rendered -->
+          </div>
+        </div>
+
+        <!-- Setup Form View (When no session active) -->
+        <div id="setupSessionView" class="card" style="max-width: 680px; margin: 0 auto;">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="radio"></i>
+              <span>Initialize Live Attendance Session</span>
+            </div>
+            <span class="badge badge-primary">GPS Geofenced</span>
+          </div>
+
+          <form id="startSessionForm">
+            <div class="form-group">
+              <label class="form-label" for="sessionSubject">Subject / Course</label>
+              <input type="text" id="sessionSubject" class="form-control" placeholder="e.g. Database Systems" required />
+            </div>
+
+            <div class="grid-cols-2" style="margin-bottom: 0;">
+              <div class="form-group">
+                <label class="form-label" for="sessionClass">Class / Batch</label>
+                <input type="text" id="sessionClass" class="form-control" placeholder="e.g. CS-A" required />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="sessionClassroom">Classroom Anchor</label>
+                <select id="sessionClassroom" class="form-control">
+                  <option value="Room 101 - CS Lab">Room 101 - CS Lab (30m Radius)</option>
+                  <option value="Room 203 - Tech Hall">Room 203 - Tech Hall (30m Radius)</option>
+                  <option value="Hall A - Main Auditorium">Hall A - Main Auditorium (35m Radius)</option>
+                  <option value="Room 405 - Seminar Room">Room 405 - Seminar Room (30m Radius)</option>
+                  <option value="CURRENT_LOCATION">📍 Use My Current Location as Room Anchor</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-cols-2" style="margin-bottom: 0;">
+              <div class="form-group">
+                <label class="form-label" for="sessionDuration">Session Duration</label>
+                <select id="sessionDuration" class="form-control">
+                  <option value="5">5 Minutes</option>
+                  <option value="10" selected>10 Minutes</option>
+                  <option value="15">15 Minutes</option>
+                  <option value="30">30 Minutes</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Geofence Boundary</label>
+                <input type="text" class="form-control" value="30 Meters (Enforced on Server)" disabled />
+              </div>
+            </div>
+
+            <button type="submit" id="initBtn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 12px;">
+              <i data-lucide="play-circle"></i>
+              <span>Launch Live Session</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Live Active Session Dashboard (Hidden until started) -->
+        <div id="activeSessionDashboard" style="display: none;">
+          <!-- 4 Stat Counters -->
+          <div class="grid-cols-4">
+            <div class="card stat-card">
+              <div class="stat-icon success">
+                <i data-lucide="user-check"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Present Students</span>
+                <span class="stat-value" id="presentCountVal">0</span>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon warning">
+                <i data-lucide="user-x"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Absent / Pending</span>
+                <span class="stat-value" id="absentCountVal">0</span>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon primary">
+                <i data-lucide="map-pin"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Geofence Radius</span>
+                <span class="stat-value" id="geofenceRadiusVal">30m</span>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon secondary">
+                <i data-lucide="timer"></i>
+              </div>
+              <div class="stat-content">
+                <span class="stat-label">Time Remaining</span>
+                <span class="stat-value" id="sessionTimeRemainingVal">--:--</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Section Grid -->
+          <div class="grid-cols-12">
+            <!-- Left (4 cols): Dynamic Rotating QR -->
+            <div class="span-4">
+              <div class="card qr-card-container">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                  <span class="live-pulse">
+                    <span class="live-dot"></span>
+                    <span>LIVE SESSION</span>
+                  </span>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="openFullscreenQR()">
+                    <i data-lucide="maximize-2"></i>
+                    <span>Projector</span>
+                  </button>
+                </div>
+
+                <div class="qr-frame">
+                  <img id="qrDisplayImg" alt="Attendance QR Code" src="" />
+                </div>
+
+                <div class="token-timer-bar">
+                  <div class="token-timer-fill" id="tokenTimerFill"></div>
+                </div>
+
+                <div style="margin-top: 12px; font-size: 12.5px; color: var(--text-secondary);">
+                  Rotating dynamic token • <span id="tokenSecondsLeft" style="color: var(--primary); font-weight: 700;">15s</span>
+                </div>
+
+                <div style="margin-top: 16px; background: var(--surface-elevated); padding: 12px; border-radius: var(--radius-md); width: 100%; text-align: left; border: 1px solid var(--border);">
+                  <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Active Class Details</div>
+                  <div id="activeSubjectClassTxt" style="font-size: 14px; font-weight: 600; color: var(--text); margin-top: 4px;">--</div>
+                  <div id="activeClassroomTxt" style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">--</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right (8 cols): Real-Time Student Verification Feed -->
+            <div class="span-8">
+              <div class="card" style="height: 100%; display: flex; flex-direction: column;">
+                <div class="card-header">
+                  <div class="card-title">
+                    <i data-lucide="activity"></i>
+                    <span>Real-Time Student Verification Feed</span>
+                  </div>
+                  <span class="badge badge-success" id="connectionStatusBadge">
+                    <i data-lucide="wifi"></i>
+                    <span>Connected</span>
+                  </span>
+                </div>
+
+                <div class="table-responsive" style="flex: 1;">
+                  <table class="table" id="liveAttendeesTable">
+                    <thead>
+                      <tr>
+                        <th>Student</th>
+                        <th>Verification Time</th>
+                        <th>Distance</th>
+                        <th>GPS Accuracy</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="liveAttendeesBody">
+                      <tr>
+                        <td colspan="5">
+                          <div class="empty-state" style="padding: 36px 0;">
+                            <div class="empty-icon-wrap"><i data-lucide="clock"></i></div>
+                            <div class="empty-title">Waiting for Student Scans</div>
+                            <div class="empty-subtitle">Live verifications will appear here instantly as students scan and verify.</div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Fullscreen Projector Modal -->
+  <div class="fullscreen-modal" id="fullscreenModal" onclick="closeFullscreenQR()">
+    <div style="text-align: center; margin-bottom: 20px;">
+      <h2 style="font-size: 26px; font-weight: 800; color: #FFFFFF;" id="fsModalTitle">Database Systems</h2>
+      <p style="font-size: 16px; color: #94A3B8; margin-top: 4px;">Scan with mobile browser • 30-meter GPS Geofence Enforced</p>
+    </div>
+    <img id="fsQrImg" class="fullscreen-qr-img" src="" alt="Fullscreen QR" onclick="event.stopPropagation()" />
+    <div style="margin-top: 24px;">
+      <button class="btn btn-secondary" onclick="closeFullscreenQR()">
+        <i data-lucide="x"></i>
+        <span>Close Fullscreen (Esc)</span>
+      </button>
     </div>
   </div>
 
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
-    async function loadAttendanceChart() {
-      try {
-        const user = getCurrentUser();
-        // If teacher/admin, get trend
-        if (user.role !== 'student') {
-          const res = await authFetch(`${API_URL}/v1/dashboard/analytics/attendance-trend`);
-          const data = await res.json();
-          
-          const ctx = document.getElementById('attendanceChart').getContext('2d');
-          new Chart(ctx, {
-            type: 'bar',
-            data: {
-              labels: data.dates,
-              datasets: [{
-                label: 'Students Present (Institution Wide)',
-                data: data.counts,
-                backgroundColor: '#2196f3',
-              }]
-            }
+    protectPage(['teacher', 'admin']);
+
+    let currentSessionToken = null;
+    let ws = null;
+    let refreshIntervalTimer = null;
+    let countdownTimer = null;
+    let sessionRemainingSeconds = 600;
+    let tokenCountdown = 15;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'attendance',
+        pageTitle: 'Live Attendance Center',
+        breadcrumb: 'Attendance'
+      });
+
+      // Populate form if query params exist
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('subject')) {
+        document.getElementById('sessionSubject').value = urlParams.get('subject');
+      }
+      if (urlParams.get('class_name')) {
+        document.getElementById('sessionClass').value = urlParams.get('class_name');
+      }
+
+      // Check if session token in URL
+      const existingSession = urlParams.get('session');
+      if (existingSession) {
+        currentSessionToken = existingSession;
+        await attachToSession(existingSession);
+      }
+    });
+
+    const form = document.getElementById('startSessionForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const initBtn = document.getElementById('initBtn');
+      initBtn.disabled = true;
+      initBtn.innerHTML = `<span>Anchoring Classroom & Launching...</span>`;
+
+      const subject = document.getElementById('sessionSubject').value.trim();
+      const className = document.getElementById('sessionClass').value.trim();
+      const classroom = document.getElementById('sessionClassroom').value;
+      const duration = parseInt(document.getElementById('sessionDuration').value, 10);
+
+      let teacherLat = null;
+      let teacherLon = null;
+
+      if (classroom === 'CURRENT_LOCATION') {
+        try {
+          const pos = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+              enableHighAccuracy: true,
+              timeout: 10000,
+            });
           });
-        } else {
-          // If student, get their subject distribution
-          const res = await authFetch(`${API_URL}/v1/dashboard/student`);
-          const data = await res.json();
-          
-          const ctx = document.getElementById('attendanceChart').getContext('2d');
-          new Chart(ctx, {
-            type: 'polarArea',
-            data: {
-              labels: data.subjects.map(s => s.subject),
-              datasets: [{
-                label: 'Attendance %',
-                data: data.subjects.map(s => s.percentage),
-                backgroundColor: ['#4caf50', '#ff9800', '#f44336', '#2196f3', '#9c27b0'],
-              }]
-            }
-          });
+          teacherLat = pos.coords.latitude;
+          teacherLon = pos.coords.longitude;
+        } catch (locErr) {
+          alert('Could not acquire your current GPS coordinates. Using campus default room.');
         }
+      }
+
+      try {
+        const res = await authFetch('/api/v1/attendance_sessions/session', {
+          method: 'POST',
+          body: JSON.stringify({
+            subject,
+            class_name: className,
+            classroom_name: classroom === 'CURRENT_LOCATION' ? 'Current Location Anchor' : classroom,
+            latitude: teacherLat,
+            longitude: teacherLon,
+            duration_minutes: duration,
+          })
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || 'Failed to start attendance session');
+        }
+
+        const data = await res.json();
+        currentSessionToken = data.session_token;
+        await attachToSession(data.session_token);
       } catch (err) {
-        console.error(err);
+        alert(err.message);
+        initBtn.disabled = false;
+        initBtn.innerHTML = `<i data-lucide="play-circle"></i><span>Launch Live Session</span>`;
+        lucide.createIcons();
+      }
+    });
+
+    async function attachToSession(token) {
+      document.getElementById('setupSessionView').style.display = 'none';
+      document.getElementById('activeSessionDashboard').style.display = 'block';
+
+      // Header End action
+      document.getElementById('sessionHeaderActions').innerHTML = `
+        <button class="btn btn-danger" onclick="endCurrentSession()">
+          <i data-lucide="stop-circle"></i>
+          <span>End Attendance</span>
+        </button>
+      `;
+
+      // Fetch initial session info
+      await fetchSessionDetails(token);
+
+      // Connect WebSocket for zero-delay live updates
+      connectWebSocket(token);
+
+      // Start dynamic QR refresh cycle (15s)
+      startQrRefreshLoop(token);
+
+      // Start countdown timer
+      startSessionTimer();
+
+      lucide.createIcons();
+    }
+
+    async function fetchSessionDetails(token) {
+      try {
+        const res = await authFetch(`/api/v1/attendance_sessions/session/${token}`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        document.getElementById('presentCountVal').textContent = data.present_count || 0;
+        document.getElementById('absentCountVal').textContent = data.absent_count || 0;
+        document.getElementById('geofenceRadiusVal').textContent = `${data.geofence_radius || 30}m`;
+        document.getElementById('activeSubjectClassTxt').textContent = `${data.subject} (${data.class_name})`;
+        document.getElementById('activeClassroomTxt').textContent = `Room: ${data.classroom_name} • 30m Geofence Active`;
+        document.getElementById('fsModalTitle').textContent = `${data.subject} - ${data.class_name}`;
+
+        sessionRemainingSeconds = data.remaining_seconds || 600;
+
+        renderAttendeesList(data.attendees || []);
+      } catch (err) {
+        console.warn('Session detail error:', err);
       }
     }
-    loadAttendanceChart();
+
+    function renderAttendeesList(attendees) {
+      const tbody = document.getElementById('liveAttendeesBody');
+      if (!attendees || attendees.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5">
+              <div class="empty-state" style="padding: 36px 0;">
+                <div class="empty-icon-wrap"><i data-lucide="clock"></i></div>
+                <div class="empty-title">Waiting for Student Scans</div>
+                <div class="empty-subtitle">Live verifications will appear here instantly as students scan and verify.</div>
+              </div>
+            </td>
+          </tr>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      tbody.innerHTML = attendees.map(a => `
+        <tr class="new-row-highlight">
+          <td style="font-weight: 600; color: var(--text);">
+            <div>${escapeHtml(a.name)}</div>
+            <div style="font-size: 11px; color: var(--text-muted);">${escapeHtml(a.email || '')}</div>
+          </td>
+          <td>${escapeHtml(a.marked_at || '--')}</td>
+          <td><span style="font-weight: 600; color: var(--secondary);">${a.distance !== null ? a.distance + ' m' : '--'}</span></td>
+          <td><span style="font-size: 12px; color: var(--text-muted);">±${a.accuracy !== null ? a.accuracy + ' m' : '--'}</span></td>
+          <td><span class="badge badge-success">Verified</span></td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function connectWebSocket(token) {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.hostname}:8000/api/v1/attendance_sessions/ws/${token}`;
+
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        document.getElementById('connectionStatusBadge').className = 'badge badge-success';
+        document.getElementById('connectionStatusBadge').innerHTML = `<i data-lucide="wifi"></i><span>Connected</span>`;
+        lucide.createIcons();
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          if (msg.type === 'STUDENT_VERIFIED') {
+            onStudentVerified(msg.student, msg.present_count);
+          } else if (msg.type === 'SESSION_CLOSED') {
+            alert('This attendance session has ended.');
+          }
+        } catch (e) {}
+      };
+
+      ws.onclose = () => {
+        document.getElementById('connectionStatusBadge').className = 'badge badge-warning';
+        document.getElementById('connectionStatusBadge').innerHTML = `<i data-lucide="wifi-off"></i><span>Reconnecting...</span>`;
+        setTimeout(() => {
+          if (currentSessionToken) connectWebSocket(currentSessionToken);
+        }, 3000);
+      };
+    }
+
+    function onStudentVerified(student, newCount) {
+      // 1. Update present count with animation
+      const countEl = document.getElementById('presentCountVal');
+      countEl.textContent = newCount;
+      countEl.style.transform = 'scale(1.2)';
+      setTimeout(() => countEl.style.transform = 'scale(1)', 300);
+
+      // Decrement absent count if greater than 0
+      const absentEl = document.getElementById('absentCountVal');
+      const curAbsent = parseInt(absentEl.textContent, 10);
+      if (curAbsent > 0) absentEl.textContent = curAbsent - 1;
+
+      // 2. Prepend row to table
+      const tbody = document.getElementById('liveAttendeesBody');
+      const emptyCheck = tbody.querySelector('.empty-state');
+      if (emptyCheck) tbody.innerHTML = '';
+
+      const tr = document.createElement('tr');
+      tr.className = 'new-row-highlight';
+      tr.innerHTML = `
+        <td style="font-weight: 600; color: var(--text);">
+          <div>${escapeHtml(student.name)}</div>
+          <div style="font-size: 11px; color: var(--text-muted);">${escapeHtml(student.email || '')}</div>
+        </td>
+        <td>${escapeHtml(student.time)}</td>
+        <td><span style="font-weight: 600; color: var(--secondary);">${student.distance} m</span></td>
+        <td><span style="font-size: 12px; color: var(--text-muted);">±${student.accuracy} m</span></td>
+        <td><span class="badge badge-success">Verified</span></td>
+      `;
+      tbody.insertBefore(tr, tbody.firstChild);
+    }
+
+    function startQrRefreshLoop(token) {
+      updateQrImage(token);
+
+      refreshIntervalTimer = setInterval(async () => {
+        tokenCountdown--;
+        if (tokenCountdown <= 0) {
+          tokenCountdown = 15;
+          await refreshQrToken(token);
+        }
+        document.getElementById('tokenSecondsLeft').textContent = `${tokenCountdown}s`;
+        const pct = (tokenCountdown / 15) * 100;
+        document.getElementById('tokenTimerFill').style.width = `${pct}%`;
+      }, 1000);
+    }
+
+    async function refreshQrToken(token) {
+      try {
+        const res = await authFetch(`/api/v1/attendance_sessions/session/${token}/refresh-qr`);
+        if (res.ok) {
+          const data = await res.json();
+          updateQrImage(token, data.qr_token);
+        }
+      } catch (err) {}
+    }
+
+    function updateQrImage(token, qrToken = null) {
+      const qrUrl = `/api/v1/attendance_sessions/session/${token}/qr${qrToken ? `?t=${qrToken}` : ''}`;
+      document.getElementById('qrDisplayImg').src = qrUrl;
+      document.getElementById('fsQrImg').src = qrUrl;
+    }
+
+    function startSessionTimer() {
+      countdownTimer = setInterval(() => {
+        sessionRemainingSeconds--;
+        if (sessionRemainingSeconds <= 0) {
+          clearInterval(countdownTimer);
+          document.getElementById('sessionTimeRemainingVal').textContent = '00:00';
+          alert('Session duration expired.');
+          return;
+        }
+        const mins = Math.floor(sessionRemainingSeconds / 60);
+        const secs = sessionRemainingSeconds % 60;
+        document.getElementById('sessionTimeRemainingVal').textContent = 
+          `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    async function endCurrentSession() {
+      if (!confirm('Are you sure you want to conclude this live attendance session?')) return;
+      try {
+        await authFetch(`/api/v1/attendance_sessions/session/${currentSessionToken}/close`, { method: 'POST' });
+        alert('Attendance session ended successfully.');
+        window.location.href = 'teacher.html';
+      } catch (err) {
+        alert('Error closing session');
+      }
+    }
+
+    function openFullscreenQR() {
+      document.getElementById('fullscreenModal').classList.add('active');
+    }
+
+    function closeFullscreenQR() {
+      document.getElementById('fullscreenModal').classList.remove('active');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeFullscreenQR();
+    });
   </script>
 </body>
 </html>

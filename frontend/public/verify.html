@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Presence Verification | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    .mobile-verification-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: radial-gradient(circle at 50% 10%, rgba(124, 92, 255, 0.12) 0%, transparent 50%), var(--bg);
+    }
+
+    .verification-box {
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 32px 24px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      position: relative;
+    }
+
+    .state-icon-container {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .state-icon-container.loading {
+      background: rgba(124, 92, 255, 0.15);
+      color: var(--primary);
+      animation: rotateIcon 1.5s infinite linear;
+    }
+
+    .state-icon-container.success {
+      background: rgba(34, 197, 94, 0.18);
+      color: var(--success);
+      box-shadow: 0 0 24px rgba(34, 197, 94, 0.25);
+    }
+
+    .state-icon-container.error {
+      background: rgba(239, 68, 68, 0.18);
+      color: var(--danger);
+      box-shadow: 0 0 24px rgba(239, 68, 68, 0.25);
+    }
+
+    .state-icon-container.warning {
+      background: rgba(245, 158, 11, 0.18);
+      color: var(--warning);
+      box-shadow: 0 0 24px rgba(245, 158, 11, 0.25);
+    }
+
+    .state-icon-container i, .state-icon-container svg {
+      width: 36px;
+      height: 36px;
+      stroke-width: 2.2;
+    }
+
+    @keyframes rotateIcon {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .receipt-card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .receipt-row:last-child {
+      border-bottom: none;
+    }
+
+    .receipt-label {
+      color: var(--text-muted);
+    }
+
+    .receipt-value {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    #qrReader {
+      width: 100%;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-verification-wrap">
+    <div class="verification-box">
+      <!-- EduTrack Header -->
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px;">
+        <div class="brand-icon-wrap" style="width: 32px; height: 32px;">
+          <i data-lucide="graduation-cap" style="width: 18px; height: 18px;"></i>
+        </div>
+        <span style="font-weight: 700; font-size: 16px; color: var(--text);">EduTrack Presence</span>
+      </div>
+
+      <!-- State: Scanner active (default if no query params) -->
+      <div id="stateScanner" style="display: none;">
+        <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">Scan Classroom QR</h2>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+          Point camera at the rotating QR on your teacher's display
+        </p>
+
+        <div id="qrReader"></div>
+
+        <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
+          Camera not working?
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+          <input type="text" id="manualTokenInput" class="form-control" placeholder="Enter session token" />
+          <button class="btn btn-primary" onclick="handleManualToken()">Submit</button>
+        </div>
+      </div>
+
+      <!-- State: In-Progress (GPS + Verification) -->
+      <div id="stateProgress" style="display: none;">
+        <div class="state-icon-container loading">
+          <i data-lucide="loader-2"></i>
+        </div>
+        <h2 style="font-size: 18px; font-weight: 700;" id="progressTitle">Requesting Location...</h2>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-top: 6px;" id="progressSubtitle">
+          Acquiring high-precision GPS coordinates for 30m geofence verification
+        </p>
+      </div>
+
+      <!-- State: Success -->
+      <div id="stateSuccess" style="display: none;">
+        <div class="state-icon-container success">
+          <i data-lucide="check-check"></i>
+        </div>
+        <h2 style="font-size: 20px; font-weight: 800; color: var(--text);">Attendance Verified</h2>
+        <p style="font-size: 13px; color: var(--success); margin-top: 4px; font-weight: 600;">
+          Presence confirmed inside classroom boundary
+        </p>
+
+        <div class="receipt-card">
+          <div class="receipt-row">
+            <span class="receipt-label">Subject</span>
+            <span class="receipt-value" id="rcptSubject">--</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Class</span>
+            <span class="receipt-value" id="rcptClass">--</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Classroom</span>
+            <span class="receipt-value" id="rcptRoom">--</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Timestamp</span>
+            <span class="receipt-value" id="rcptTime">--</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Calculated Distance</span>
+            <span class="receipt-value" id="rcptDistance">--</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">GPS Accuracy</span>
+            <span class="receipt-value" id="rcptAccuracy">--</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Status</span>
+            <span class="badge badge-success">Verified</span>
+          </div>
+        </div>
+
+        <a href="student.html" class="btn btn-primary" style="width: 100%;">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Return to Dashboard</span>
+        </a>
+      </div>
+
+      <!-- State: Error / Outside Boundary / Expired -->
+      <div id="stateError" style="display: none;">
+        <div class="state-icon-container error" id="errorIconContainer">
+          <i data-lucide="shield-x"></i>
+        </div>
+        <h2 style="font-size: 18px; font-weight: 800; color: var(--text);" id="errorTitle">Verification Failed</h2>
+        <p style="font-size: 13.5px; color: var(--text-secondary); margin-top: 6px;" id="errorSubtitle">
+          Could not confirm classroom presence.
+        </p>
+
+        <div style="background: var(--surface-elevated); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; margin: 20px 0; text-align: left;">
+          <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Resolution</div>
+          <div style="font-size: 13px; color: var(--text); margin-top: 4px;" id="errorResolution">
+            Please make sure you are inside the classroom and rescan the rotating code.
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-secondary" onclick="retryVerification()" style="flex: 1;">
+            <i data-lucide="rotate-ccw"></i>
+            <span>Try Again</span>
+          </button>
+          <a href="student.html" class="btn btn-ghost" style="flex: 1;">
+            <span>Dashboard</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    protectPage(['student']);
+
+    let targetSessionToken = null;
+    let targetQrToken = null;
+    let html5QrScanner = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      targetSessionToken = urlParams.get('session');
+      targetQrToken = urlParams.get('t') || targetSessionToken;
+
+      if (targetSessionToken) {
+        startVerificationWorkflow(targetSessionToken, targetQrToken);
+      } else {
+        showScannerState();
+      }
+    });
+
+    function showScannerState() {
+      hideAllStates();
+      document.getElementById('stateScanner').style.display = 'block';
+
+      try {
+        html5QrScanner = new Html5QrcodeScanner("qrReader", { fps: 10, qrbox: 220 });
+        html5QrScanner.render(onScanSuccess, onScanError);
+      } catch (err) {
+        console.warn('Scanner init note:', err);
+      }
+    }
+
+    function onScanSuccess(decodedText) {
+      if (html5QrScanner) {
+        try { html5QrScanner.clear(); } catch (e) {}
+      }
+
+      // Check if URL format: .../verify.html?session=TOKEN&t=QRTOKEN
+      try {
+        if (decodedText.includes('session=')) {
+          const url = new URL(decodedText);
+          const s = url.searchParams.get('session');
+          const t = url.searchParams.get('t') || s;
+          startVerificationWorkflow(s, t);
+          return;
+        }
+      } catch (e) {}
+
+      // Fallback direct token
+      startVerificationWorkflow(decodedText, decodedText);
+    }
+
+    function onScanError(errorMessage) {}
+
+    function handleManualToken() {
+      const val = document.getElementById('manualTokenInput').value.trim();
+      if (!val) return;
+      if (html5QrScanner) {
+        try { html5QrScanner.clear(); } catch (e) {}
+      }
+      startVerificationWorkflow(val, val);
+    }
+
+    async function startVerificationWorkflow(sessionToken, qrToken) {
+      targetSessionToken = sessionToken;
+      targetQrToken = qrToken;
+
+      hideAllStates();
+      document.getElementById('stateProgress').style.display = 'block';
+      updateProgress('Requesting GPS Position...', 'Acquiring high-precision coordinates for classroom proximity check');
+
+      if (!navigator.geolocation) {
+        showError('GPS Unsupported', 'Your browser does not support geolocation.', 'Please open EduTrack in Chrome, Safari, or Firefox with location access.');
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          updateProgress('Verifying Presence...', 'Validating geofence distance and security token on server');
+          await submitVerification(position.coords);
+        },
+        (geoError) => {
+          let msg = 'Could not access device location.';
+          let res = 'Please enable location permissions in your browser settings and try again.';
+          if (geoError.code === 1) {
+            msg = 'Location Permission Denied';
+            res = 'Tap the lock/permission icon in your browser address bar and grant Location access.';
+          } else if (geoError.code === 2) {
+            msg = 'GPS Signal Unavailable';
+            res = 'Please ensure device location/GPS is toggled on and move near a window.';
+          } else if (geoError.code === 3) {
+            msg = 'Location Request Timed Out';
+            res = 'GPS took too long to respond. Tap Try Again.';
+          }
+          showError(msg, 'GPS verification required.', res);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 12000,
+          maximumAge: 0
+        }
+      );
+    }
+
+    async function submitVerification(coords) {
+      try {
+        const res = await authFetch('/api/v1/attendance_sessions/session/verify-gps', {
+          method: 'POST',
+          body: JSON.stringify({
+            session_token: targetSessionToken,
+            qr_token: targetQrToken,
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            accuracy: coords.accuracy || 10.0,
+          })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          const detail = data.detail || 'Attendance verification failed';
+          let title = 'Verification Rejected';
+          let resolution = 'Please rescan the rotating code while standing inside the classroom.';
+
+          if (res.status === 409) {
+            title = 'Already Marked';
+            resolution = 'Your presence has already been successfully recorded for this class session.';
+          } else if (detail.includes('Outside classroom')) {
+            title = 'Outside Classroom Geofence';
+            resolution = 'You must be physically within 30 meters of the classroom.';
+          } else if (detail.includes('accuracy')) {
+            title = 'Poor GPS Accuracy';
+            resolution = 'Your phone GPS reported low accuracy. Turn on Wi-Fi to assist location accuracy.';
+          } else if (detail.includes('expired')) {
+            title = 'QR Token Expired';
+            resolution = 'QR tokens rotate every 15 seconds. Please scan the current code on screen.';
+          }
+
+          showError(title, detail, resolution);
+          return;
+        }
+
+        // Show Success
+        hideAllStates();
+        document.getElementById('stateSuccess').style.display = 'block';
+        document.getElementById('rcptSubject').textContent = data.subject || 'Academic Session';
+        document.getElementById('rcptClass').textContent = data.class_name || '--';
+        document.getElementById('rcptRoom').textContent = data.classroom_name || 'Classroom';
+        document.getElementById('rcptTime').textContent = data.time || new Date().toLocaleTimeString();
+        document.getElementById('rcptDistance').textContent = `${data.distance} m`;
+        document.getElementById('rcptAccuracy').textContent = `±${data.accuracy} m`;
+        lucide.createIcons();
+
+      } catch (networkErr) {
+        showError('Network Error', 'Could not communicate with the academic verification server.', 'Check your internet connection and try again.');
+      }
+    }
+
+    function updateProgress(title, sub) {
+      document.getElementById('progressTitle').textContent = title;
+      document.getElementById('progressSubtitle').textContent = sub;
+    }
+
+    function showError(title, subtitle, resolution) {
+      hideAllStates();
+      document.getElementById('stateError').style.display = 'block';
+      document.getElementById('errorTitle').textContent = title;
+      document.getElementById('errorSubtitle').textContent = subtitle;
+      document.getElementById('errorResolution').textContent = resolution;
+      lucide.createIcons();
+    }
+
+    function retryVerification() {
+      if (targetSessionToken) {
+        startVerificationWorkflow(targetSessionToken, targetQrToken);
+      } else {
+        showScannerState();
+      }
+    }
+
+    function hideAllStates() {
+      document.getElementById('stateScanner').style.display = 'none';
+      document.getElementById('stateProgress').style.display = 'none';
+      document.getElementById('stateSuccess').style.display = 'none';
+      document.getElementById('stateError').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

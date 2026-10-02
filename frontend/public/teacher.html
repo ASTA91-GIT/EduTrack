@@ -1,366 +1,283 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Faculty Dashboard | EduTrack</title>
+  <title>Faculty Command Center | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-  <style>
-    .grid-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-    
-    .stat-card {
-      padding: 1.5rem;
-      border-radius: var(--radius-lg);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .stat-card-title {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.5rem;
-    }
-    
-    .stat-card-value {
-      font-size: 2.25rem;
-      font-weight: 700;
-      color: var(--primary);
-      line-height: 1.2;
-    }
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-    }
-    
-    .section-card {
-      background: var(--surface);
-      padding: 1.5rem;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .section-card h2 {
-      font-size: 1.25rem;
-      color: var(--text-main);
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .qr-container {
-      text-align: center;
-      margin-top: 1.5rem;
-      display: none;
-      padding: 1.5rem;
-      background: var(--surface-hover);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-    }
-    
-    .qr-container h3 {
-      font-size: 1.125rem;
-      margin-bottom: 1rem;
-    }
-    
-    .qr-container img {
-      max-width: 250px;
-      border: 10px solid white;
-      box-shadow: var(--shadow-md);
-      border-radius: var(--radius-md);
-      margin-bottom: 1rem;
-    }
-    
-    .session-info {
-      padding: 1rem;
-      background: var(--primary-light);
-      background: rgba(37, 99, 235, 0.1);
-      border-radius: var(--radius-md);
-      color: var(--primary-dark);
-      font-weight: 600;
-      font-size: 0.875rem;
-    }
-
-    .session-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    
-    .session-item {
-      padding: 1.25rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--surface);
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    
-    .session-item:hover {
-      border-color: var(--primary-light);
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .session-item.active {
-      border-color: var(--success);
-      background: var(--success-light);
-    }
-    
-    .session-meta {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
-    }
-
-    @media (max-width: 1024px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <div class="app-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-logo">
-        <img src="assets/edutrack-icon.svg" alt="EduTrack">
-        <span style="font-weight: 700; font-size: 1.25rem; color: var(--text-main);">EduTrack</span>
-      </div>
-      
-      <nav class="sidebar-nav">
-        <a href="teacher.html" class="nav-item active"><i class="fa-solid fa-chalkboard-user"></i> Dashboard</a>
-        <a href="attendance.html" class="nav-item"><i class="fa-solid fa-clipboard-check"></i> Attendance</a>
-        <a href="timetable.html" class="nav-item"><i class="fa-solid fa-calendar-alt"></i> Timetable</a>
-        <a href="lectures.html" class="nav-item"><i class="fa-solid fa-video"></i> Lectures</a>
-        <a href="events.html" class="nav-item"><i class="fa-solid fa-calendar-star"></i> Events</a>
-        <a href="resources.html" class="nav-item"><i class="fa-solid fa-book-open"></i> Resources</a>
-        <a href="reports.html" class="nav-item"><i class="fa-solid fa-file-contract"></i> Reports</a>
-      </nav>
-      
-      <div style="margin-top: auto; border-top: 1px solid var(--border); padding-top: 1.5rem;">
-        <button id="logout-btn" class="btn btn-secondary w-full" style="color: var(--danger); border-color: var(--danger-light);"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
-      </div>
-    </aside>
+    <div id="sidebar-mount"></div>
 
-    <!-- Main Content -->
     <main class="main-content">
-      <header class="topbar">
-        <div>
-          <h1 class="page-title" id="welcome-message">Faculty Dashboard</h1>
-          <p class="text-muted" style="margin-top: 0.25rem;">Manage attendance sessions and monitor your classes.</p>
-        </div>
-        <div class="user-profile">
-          <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
-        </div>
-      </header>
+      <div id="topbar-mount"></div>
 
-      <div id="loading" class="text-center mt-4">
-        <div class="skeleton" style="height: 150px; margin-bottom: 2rem;"></div>
-        <div class="skeleton" style="height: 400px;"></div>
-      </div>
-
-      <div id="dashboard-content" style="display: none;">
-        <!-- Stats Grid -->
-        <div class="grid-stats">
-          <div class="stat-card">
-            <div class="stat-card-title">Total Students</div>
-            <div class="stat-card-value" id="stat-students">0</div>
+      <div class="page-container">
+        <!-- Top Action Banner -->
+        <div class="card" style="background: linear-gradient(135deg, rgba(124, 92, 255, 0.12) 0%, rgba(34, 211, 238, 0.08) 100%); border: 1px solid rgba(124, 92, 255, 0.25); display: flex; justify-content: space-between; align-items: center; padding: 24px; margin-bottom: 24px; border-radius: var(--radius-lg);">
+          <div style="display: flex; align-items: center; gap: 18px;">
+            <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--primary); display: flex; align-items: center; justify-content: center; color: #FFFFFF; box-shadow: 0 4px 16px var(--primary-glow);">
+              <i data-lucide="radio" style="width: 28px; height: 28px;"></i>
+            </div>
+            <div>
+              <h2 style="font-size: 18px; font-weight: 700; color: var(--text);">Ready for Class Presence?</h2>
+              <p style="font-size: 13.5px; color: var(--text-secondary); margin-top: 3px;">
+                Launch dynamic rotating QR codes with 30-meter GPS geofencing and real-time live attendance feed.
+              </p>
+            </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-card-title">Sessions Created</div>
-            <div class="stat-card-value" id="stat-sessions" style="color: var(--accent);">0</div>
+          <a href="attendance.html" class="btn btn-primary btn-lg" style="gap: 10px;">
+            <i data-lucide="play-circle"></i>
+            <span>Start Live Attendance</span>
+          </a>
+        </div>
+
+        <div class="page-header">
+          <div>
+            <h1 class="page-title" id="greetingHeader">Faculty Command Center</h1>
+            <p class="page-subtitle">Real-time attendance session management and institutional analytics</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <a href="attendance.html" class="btn btn-secondary">
+              <i data-lucide="clipboard-list"></i>
+              <span>Attendance Center</span>
+            </a>
           </div>
         </div>
 
-        <div class="main-grid">
-          <!-- Create Session -->
-          <div class="section-card">
-            <h2>Start Attendance Session</h2>
-            
-            <div class="form-group">
-              <label class="form-label">Subject</label>
-              <select id="session-subject" class="form-select">
-                <option value="Data Structures">Data Structures</option>
-                <option value="Database Systems">Database Systems</option>
-                <option value="Operating Systems">Operating Systems</option>
-                <option value="Computer Networks">Computer Networks</option>
-                <option value="Software Engineering">Software Engineering</option>
-                <option value="Machine Learning">Machine Learning</option>
-              </select>
+        <!-- 4 Stat Cards -->
+        <div class="grid-cols-4">
+          <div class="card stat-card">
+            <div class="stat-icon primary">
+              <i data-lucide="users"></i>
             </div>
-            
-            <div class="form-group">
-              <label class="form-label">Class/Section</label>
-              <select id="session-class" class="form-select">
-                <option value="CS-A">CS-A</option>
-                <option value="CS-B">CS-B</option>
-              </select>
+            <div class="stat-content">
+              <span class="stat-label">Total Students Enrolled</span>
+              <span class="stat-value" id="totalStudentsVal">--</span>
             </div>
-            
-            <div class="form-group" style="margin-bottom: 1.5rem;">
-              <label class="form-label">Duration (Minutes)</label>
-              <input type="number" id="session-duration" class="form-input" value="5" min="1" max="60">
-            </div>
-            
-            <button class="btn btn-primary w-full" id="start-session-btn" style="padding: 0.875rem; font-size: 1rem;">
-              <i class="fa-solid fa-qrcode"></i> Generate QR Code
-            </button>
+          </div>
 
-            <div id="qr-container" class="qr-container">
-              <h3>Scan to Mark Attendance</h3>
-              <img id="qr-image" src="" alt="QR Code">
-              <div class="session-info">
-                <div style="margin-bottom: 0.25rem;">Session Token: <span id="session-token" style="font-family: monospace; font-size: 1.125rem;"></span></div>
-                <div id="session-timer" style="color: var(--danger);">Expires in: --:--</div>
+          <div class="card stat-card">
+            <div class="stat-icon success">
+              <i data-lucide="activity"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Total Sessions Hosted</span>
+              <span class="stat-value" id="totalSessionsVal">--</span>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon secondary">
+              <i data-lucide="radio"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Active Live Sessions</span>
+              <span class="stat-value" id="activeSessionsVal">--</span>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon warning">
+              <i data-lucide="shield-check"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Verification Mode</span>
+              <span class="stat-value" style="font-size: 18px;">GPS + Dynamic QR</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid-cols-12">
+          <!-- Left Column (8 cols): Recent Attendance Sessions -->
+          <div class="span-8">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="history"></i>
+                  <span>Recent Attendance Sessions</span>
+                </div>
+                <a href="attendance.html" class="btn btn-ghost btn-sm">
+                  <span>View Attendance Center</span>
+                  <i data-lucide="chevron-right"></i>
+                </a>
+              </div>
+
+              <div id="sessionsTableWrap">
+                <div class="empty-state">
+                  <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+                  <div class="empty-title">Loading Sessions...</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Recent Sessions -->
-          <div class="section-card">
-            <h2>Recent Sessions</h2>
-            <div class="session-list" id="recent-sessions">
-              <!-- Injected by JS -->
+          <!-- Right Column (4 cols): Today's Faculty Schedule -->
+          <div class="span-4">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="calendar-days"></i>
+                  <span>My Scheduled Classes</span>
+                </div>
+                <span class="badge badge-primary" id="dayBadge">Today</span>
+              </div>
+
+              <div id="teacherScheduleWrap">
+                <div class="empty-state" style="padding: 28px 0;">
+                  <div class="empty-icon-wrap"><i data-lucide="calendar-check"></i></div>
+                  <div class="empty-title">No Classes Assigned Today</div>
+                  <div class="empty-subtitle">You have no scheduled timetable classes for today.</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
       </div>
     </main>
   </div>
 
   <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
-    protectPage("teacher");
-    document.getElementById("logout-btn").addEventListener("click", logout);
-    
-    let sessionTimerInterval;
+    protectPage(['teacher', 'admin']);
 
-    async function loadDashboard() {
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'dashboard',
+        pageTitle: 'Faculty Command Center',
+        breadcrumb: 'Faculty Dashboard'
+      });
+
+      const user = getCurrentUser();
+      if (user && user.full_name) {
+        document.getElementById('greetingHeader').textContent = `Welcome, Prof. ${user.full_name}`;
+      }
+
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const today = days[new Date().getDay()];
+      document.getElementById('dayBadge').textContent = today;
+
+      await loadFacultyDashboard();
+      await loadTimetable(today);
+    });
+
+    async function loadFacultyDashboard() {
       try {
-        const res = await authFetch(`${API_URL}/v1/dashboard/faculty`);
-        if (!res.ok) throw new Error("Failed to load dashboard data");
-        
+        const res = await authFetch('/api/v1/dashboard/faculty');
+        if (!res.ok) throw new Error('Failed to fetch faculty stats');
         const data = await res.json();
-        
-        document.getElementById("welcome-message").textContent = `Welcome, Prof. ${data.user.name.split(' ')[0]}`;
-        document.getElementById("stat-students").textContent = data.total_students;
-        document.getElementById("stat-sessions").textContent = data.total_sessions;
 
-        const sessionsContainer = document.getElementById("recent-sessions");
-        sessionsContainer.innerHTML = "";
-        
-        if (data.recent_sessions.length === 0) {
-            sessionsContainer.innerHTML = "<p class='text-muted' style='text-align: center; padding: 2rem 0;'>No recent sessions found.</p>";
+        document.getElementById('totalStudentsVal').textContent = data.total_students || 0;
+        document.getElementById('totalSessionsVal').textContent = data.total_sessions || 0;
+
+        const sessions = data.recent_sessions || [];
+        const activeCount = sessions.filter(s => s.status === 'active').length;
+        document.getElementById('activeSessionsVal').textContent = activeCount;
+
+        const container = document.getElementById('sessionsTableWrap');
+        if (sessions.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon-wrap"><i data-lucide="calendar-x"></i></div>
+              <div class="empty-title">No Attendance Sessions Yet</div>
+              <div class="empty-subtitle">Click "Start Live Attendance" above to initiate your first QR session.</div>
+            </div>
+          `;
         } else {
-            data.recent_sessions.forEach(s => {
-                const isActive = s.status === 'active';
-                const date = new Date(s.created_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
-                
-                let badgeHtml = isActive 
-                  ? `<span class="badge badge-success">Active</span>`
-                  : `<span class="badge" style="background: var(--text-muted); color: white;">Closed</span>`;
-
-                const html = `
-                    <div class="session-item ${isActive ? 'active' : ''}">
-                        <div>
-                            <div style="font-weight: 600; color: var(--text-main);">${s.subject} (${s.class_name})</div>
-                            <div class="session-meta">${date}</div>
-                        </div>
-                        <div style="text-align: right;">
-                            ${badgeHtml}
-                            <div style="font-size: 0.75rem; margin-top: 0.5rem; font-weight: 500;"><span style="color: var(--primary); font-size: 1rem;">${s.attendee_count}</span> Attended</div>
-                        </div>
-                    </div>
-                `;
-                sessionsContainer.insertAdjacentHTML('beforeend', html);
-            });
+          container.innerHTML = `
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Subject</th>
+                    <th>Class</th>
+                    <th>Attendees</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${sessions.map(s => {
+                    const isActive = s.status === 'active';
+                    return `
+                      <tr>
+                        <td style="font-weight: 600; color: var(--text);">${escapeHtml(s.subject)}</td>
+                        <td>${escapeHtml(s.class_name)}</td>
+                        <td>
+                          <span style="font-weight: 700; color: var(--primary);">${s.attendee_count || 0}</span> students
+                        </td>
+                        <td>
+                          <span class="badge ${isActive ? 'badge-success' : 'badge-secondary'}">
+                            ${isActive ? 'Active' : 'Closed'}
+                          </span>
+                        </td>
+                        <td>
+                          <a href="attendance.html?session=${encodeURIComponent(s.id || '')}" class="btn btn-secondary btn-sm">
+                            <i data-lucide="eye"></i>
+                            <span>Details</span>
+                          </a>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
         }
-
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("dashboard-content").style.display = "block";
-
+        lucide.createIcons();
       } catch (err) {
-        console.error(err);
-        document.getElementById("loading").innerHTML = `<div style="color: var(--danger); padding: 2rem;">Error loading dashboard data. Please try refreshing.</div>`;
+        console.warn('Faculty dashboard error:', err);
       }
     }
 
-    // Start Session & QR Code
-    document.getElementById("start-session-btn").addEventListener("click", async () => {
-        const subject = document.getElementById("session-subject").value;
-        const className = document.getElementById("session-class").value;
-        const duration = parseInt(document.getElementById("session-duration").value);
+    async function loadTimetable(todayDay) {
+      try {
+        const res = await authFetch('/api/v1/academic/timetable');
+        if (!res.ok) return;
+        const list = await res.json();
+        const todayClasses = list.filter(item => item.day.toLowerCase() === todayDay.toLowerCase());
+        const wrap = document.getElementById('teacherScheduleWrap');
 
-        try {
-            const res = await authFetch(`${API_URL}/v1/attendance_sessions/session`, {
-                method: "POST",
-                body: JSON.stringify({
-                    subject: subject,
-                    class_name: className,
-                    duration_minutes: duration
-                })
-            });
-
-            if (!res.ok) {
-                const err = await res.json();
-                throw new Error(err.detail || "Failed to create session");
-            }
-
-            const sessionData = await res.json();
-            
-            // Show QR
-            document.getElementById("qr-container").style.display = "block";
-            // Use the QR image endpoint
-            document.getElementById("qr-image").src = `${API_URL}/v1/attendance_sessions/session/${sessionData.session_token}/qr`;
-            document.getElementById("session-token").textContent = sessionData.session_token;
-
-            // Start Timer
-            clearInterval(sessionTimerInterval);
-            let timeRemaining = duration * 60;
-            const timerEl = document.getElementById("session-timer");
-            
-            sessionTimerInterval = setInterval(() => {
-                if (timeRemaining <= 0) {
-                    clearInterval(sessionTimerInterval);
-                    timerEl.textContent = "Session Expired";
-                    timerEl.style.color = "var(--danger)";
-                    loadDashboard(); // Refresh to show closed status
-                    return;
-                }
-                const m = Math.floor(timeRemaining / 60);
-                const s = timeRemaining % 60;
-                timerEl.textContent = `Expires in: ${m}:${s.toString().padStart(2, '0')}`;
-                timerEl.style.color = "var(--danger)";
-                timeRemaining--;
-            }, 1000);
-
-            // Refresh dashboard list to show the new active session
-            loadDashboard();
-
-        } catch(err) {
-            alert(err.message);
+        if (todayClasses.length === 0) {
+          wrap.innerHTML = `
+            <div class="empty-state" style="padding: 28px 0;">
+              <div class="empty-icon-wrap"><i data-lucide="calendar-check"></i></div>
+              <div class="empty-title">No Classes Assigned Today</div>
+              <div class="empty-subtitle">You have no scheduled timetable classes for today.</div>
+            </div>
+          `;
+        } else {
+          wrap.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              ${todayClasses.map(c => `
+                <div style="padding: 12px 14px; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-size: 13.5px; font-weight: 600; color: var(--text);">${escapeHtml(c.subject)}</div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                      ${escapeHtml(c.room || 'Room TBA')} • ${escapeHtml(c.class_name)}
+                    </div>
+                  </div>
+                  <a href="attendance.html?subject=${encodeURIComponent(c.subject)}&class_name=${encodeURIComponent(c.class_name)}" class="btn btn-primary btn-sm">
+                    <i data-lucide="play"></i>
+                    <span>Start</span>
+                  </a>
+                </div>
+              `).join('')}
+            </div>
+          `;
         }
-    });
-
-    loadDashboard();
+        lucide.createIcons();
+      } catch (err) {
+        console.warn('Timetable schedule error:', err);
+      }
+    }
   </script>
 </body>
 </html>

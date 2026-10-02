@@ -1,75 +1,246 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Timetable</title>
-  <link rel="stylesheet" href="styles/global.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Timetable | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    .container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
-    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #ddd; }
-    th { background: #512da8; color: white; }
+    .day-filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .day-tab {
+      padding: 8px 18px;
+      border-radius: var(--radius-pill);
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .day-tab:hover {
+      background-color: var(--surface-hover);
+      color: var(--text);
+    }
+
+    .day-tab.active {
+      background-color: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+
+    .timetable-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+    }
+
+    .timetable-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timetable-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary);
+    }
+
+    .timetable-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
-  <script src="js/auth.js"></script>
-  <script>protectPage();</script>
-  
-  <header style="padding: 1rem 2rem; background: #512da8; color: white; display: flex; justify-content: space-between;">
-    <h2>EduTrack Timetable</h2>
-    <a href="#" onclick="window.history.back()" style="color: white; text-decoration: none;">⬅ Back</a>
-  </header>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
 
-  <div class="container">
-    <h2>Weekly Schedule</h2>
-    
-    <table id="timetable">
-      <thead>
-        <tr>
-          <th>Day</th>
-          <th>Time</th>
-          <th>Subject</th>
-          <th>Class</th>
-          <th>Room</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td colspan="5">Loading...</td></tr>
-      </tbody>
-    </table>
+    <main class="main-content">
+      <div id="topbar-mount"></div>
+
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Weekly Schedule & Timetable</h1>
+            <p class="page-subtitle">View lecture schedules, classroom assignments, and timing allocations</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <a href="attendance.html" class="btn btn-primary">
+              <i data-lucide="radio"></i>
+              <span>Live Attendance</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Day Filter Tabs -->
+        <div class="day-filter-tabs" id="dayTabs">
+          <button class="day-tab active" onclick="filterByDay('all')">All Days</button>
+          <button class="day-tab" onclick="filterByDay('Monday')">Monday</button>
+          <button class="day-tab" onclick="filterByDay('Tuesday')">Tuesday</button>
+          <button class="day-tab" onclick="filterByDay('Wednesday')">Wednesday</button>
+          <button class="day-tab" onclick="filterByDay('Thursday')">Thursday</button>
+          <button class="day-tab" onclick="filterByDay('Friday')">Friday</button>
+          <button class="day-tab" onclick="filterByDay('Saturday')">Saturday</button>
+        </div>
+
+        <!-- Timetable Cards Container -->
+        <div id="timetableContainer" class="timetable-grid">
+          <div class="card" style="grid-column: 1 / -1;">
+            <div class="empty-state">
+              <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+              <div class="empty-title">Loading Timetable Schedule...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
   </div>
 
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
-    async function loadTimetable() {
-      try {
-        const res = await authFetch(`${API_URL}/v1/academic/timetable`);
-        const data = await res.json();
-        
-        const tbody = document.querySelector("#timetable tbody");
-        tbody.innerHTML = "";
-        
-        if(data.length === 0) {
-          tbody.innerHTML = "<tr><td colspan='5'>No schedule found.</td></tr>";
-          return;
-        }
+    protectPage();
 
-        data.forEach(t => {
-          tbody.innerHTML += `
-            <tr>
-              <td><strong>${t.day}</strong></td>
-              <td>${t.start_time} - ${t.end_time}</td>
-              <td>${t.subject}</td>
-              <td>${t.class_name}</td>
-              <td>${t.room || 'TBA'}</td>
-            </tr>
-          `;
-        });
+    let allTimetableData = [];
+    let selectedDay = 'all';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'timetable',
+        pageTitle: 'Timetable',
+        breadcrumb: 'Timetable'
+      });
+
+      await loadTimetableData();
+    });
+
+    async function loadTimetableData() {
+      try {
+        const res = await authFetch('/api/v1/academic/timetable');
+        if (!res.ok) throw new Error('Failed to load timetable');
+        allTimetableData = await res.json();
+        renderTimetable();
       } catch (err) {
-        console.error(err);
+        console.warn('Timetable load notice:', err.message);
+        renderEmptyState();
       }
     }
-    loadTimetable();
+
+    function filterByDay(day) {
+      selectedDay = day;
+      const tabs = document.querySelectorAll('.day-tab');
+      tabs.forEach(tab => {
+        if (tab.textContent.toLowerCase() === day.toLowerCase() || (day === 'all' && tab.textContent === 'All Days')) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+      renderTimetable();
+    }
+
+    function renderTimetable() {
+      const container = document.getElementById('timetableContainer');
+      const filtered = selectedDay === 'all' 
+        ? allTimetableData 
+        : allTimetableData.filter(item => item.day.toLowerCase() === selectedDay.toLowerCase());
+
+      if (!filtered || filtered.length === 0) {
+        renderEmptyState();
+        return;
+      }
+
+      const user = getCurrentUser();
+      const isTeacher = user && user.role === 'teacher';
+
+      container.innerHTML = filtered.map(item => `
+        <div class="timetable-card">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <span class="badge badge-primary">${escapeHtml(item.day)}</span>
+              <span style="font-size: 13px; font-weight: 600; color: var(--secondary);">
+                ${escapeHtml(item.start_time)} - ${escapeHtml(item.end_time)}
+              </span>
+            </div>
+
+            <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">
+              ${escapeHtml(item.subject)}
+            </h3>
+            
+            <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+              ${escapeHtml(item.class_name)}
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 12px; font-size: 12.5px; color: var(--text-muted);">
+              <span style="display: flex; align-items: center; gap: 4px;">
+                <i data-lucide="map-pin" style="width: 14px; height: 14px;"></i>
+                <span>${escapeHtml(item.room || 'Room TBA')}</span>
+              </span>
+            </div>
+          </div>
+
+          <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
+            ${isTeacher ? `
+              <a href="attendance.html?subject=${encodeURIComponent(item.subject)}&class_name=${encodeURIComponent(item.class_name)}" class="btn btn-primary btn-sm">
+                <i data-lucide="play"></i>
+                <span>Start Session</span>
+              </a>
+            ` : `
+              <a href="verify.html" class="btn btn-secondary btn-sm">
+                <i data-lucide="scan"></i>
+                <span>Verify Presence</span>
+              </a>
+            `}
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderEmptyState() {
+      const container = document.getElementById('timetableContainer');
+      container.innerHTML = `
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="empty-state">
+            <div class="empty-icon-wrap"><i data-lucide="calendar-x"></i></div>
+            <div class="empty-title">No Timetable Classes Found</div>
+            <div class="empty-subtitle">
+              ${selectedDay === 'all' 
+                ? 'No timetable schedule has been added to the academic repository yet.' 
+                : `No classes are scheduled for ${escapeHtml(selectedDay)}.`}
+            </div>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
   </script>
 </body>
 </html>

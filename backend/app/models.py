@@ -124,7 +124,22 @@ class AttendanceSession(Base):
     session_token = Column(String(255), unique=True, nullable=False, index=True)
     expires_at = Column(DateTime, nullable=False)
     status = Column(String(50), default="active", nullable=False)  # active, closed
+    
+    # Geofence & QR Fields
+    classroom_name = Column(String(100), default="Room 101", nullable=True)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    geofence_radius = Column(Float, default=30.0, nullable=True)
+    current_qr_token = Column(String(255), nullable=True)
+
+    # EduPulse Fields
+    verification_mode = Column(String(50), default="qr", nullable=False) # edupulse, qr, manual
+    pulse_nonce = Column(String(255), nullable=True)
+    challenge_seed = Column(String(255), nullable=True)
+    challenge_interval = Column(Integer, nullable=True)
+    
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    closed_at = Column(DateTime, nullable=True)
     # Relationships
     faculty = relationship("User", backref="attendance_sessions")
     __table_args__ = (
@@ -137,6 +152,21 @@ class AttendanceSessionRecord(Base):
     session_id = Column(Integer, ForeignKey("attendance_sessions.id", ondelete="CASCADE"), nullable=False)
     student_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     marked_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    
+    # Geofence validation fields
+    student_lat = Column(Float, nullable=True)
+    student_lon = Column(Float, nullable=True)
+    distance_meters = Column(Float, nullable=True)
+    gps_accuracy = Column(Float, nullable=True)
+
+    # EduPulse Fields
+    verification_method = Column(String(50), default="qr_gps", nullable=False)
+    verification_latency = Column(Float, nullable=True)
+    challenge_verified = Column(Boolean, default=False, nullable=False)
+    pulse_verified = Column(Boolean, default=False, nullable=False)
+    confidence_score = Column(Float, nullable=True)
+    status = Column(String(50), default="present", nullable=False) # present, late, manual
+    
     __table_args__ = (
         Index('uq_student_session', 'student_id', 'session_id', unique=True),
     )

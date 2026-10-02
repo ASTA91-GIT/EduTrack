@@ -1,60 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Notifications</title>
-  <link rel="stylesheet" href="styles/global.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    .container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .notif-card { border: 1px solid #ddd; padding: 1.5rem; margin-bottom: 1rem; border-radius: 8px; border-left: 5px solid #2196f3; }
-    .notif-card.unread { background: #f0f8ff; border-left: 5px solid #f44336; }
-    .notif-card h3 { margin-bottom: 0.5rem; color: #333; }
-    .timestamp { color: #666; font-size: 0.8rem; }
+    .notif-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .notif-item:hover {
+      border-color: var(--border-strong);
+    }
+
+    .notif-item.unread {
+      border-left: 4px solid var(--primary);
+      background: var(--surface-elevated);
+    }
   </style>
 </head>
 <body>
-  <script src="js/auth.js"></script>
-  <script>protectPage();</script>
-  
-  <header style="padding: 1rem 2rem; background: #512da8; color: white; display: flex; justify-content: space-between;">
-    <h2>EduTrack Notifications</h2>
-    <a href="#" onclick="window.history.back()" style="color: white; text-decoration: none;">⬅ Back</a>
-  </header>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
 
-  <div class="container">
-    <h2>My Notifications</h2>
-    <div id="notifsList">Loading...</div>
+    <main class="main-content">
+      <div id="topbar-mount"></div>
+
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Notifications & Alerts</h1>
+            <p class="page-subtitle">Academic announcements, session alerts, and attendance notifications</p>
+          </div>
+        </div>
+
+        <div id="notifsContainer" style="max-width: 860px;">
+          <div class="card">
+            <div class="empty-state">
+              <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+              <div class="empty-title">Loading Notifications...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
   </div>
 
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
-    async function loadNotifs() {
-      try {
-        const res = await authFetch(`${API_URL}/v1/users/notifications`);
-        const data = await res.json();
-        
-        const list = document.getElementById("notifsList");
-        list.innerHTML = "";
-        
-        if(data.length === 0) {
-          list.innerHTML = "<p>No notifications.</p>";
-          return;
-        }
+    protectPage();
 
-        data.forEach(n => {
-          list.innerHTML += `
-            <div class="notif-card ${!n.is_read ? 'unread' : ''}">
-              <h3>${n.title}</h3>
-              <p>${n.message}</p>
-              <p class="timestamp">${new Date(n.created_at).toLocaleString()}</p>
-            </div>
-          `;
-        });
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'notifications',
+        pageTitle: 'Notifications',
+        breadcrumb: 'Notifications'
+      });
+
+      await fetchNotifications();
+    });
+
+    async function fetchNotifications() {
+      try {
+        const res = await authFetch('/api/v1/users/notifications');
+        if (!res.ok) throw new Error('Failed to load notifications');
+        const list = await res.json();
+        renderNotifications(list);
       } catch (err) {
-        console.error(err);
+        console.warn('Notification load notice:', err.message);
+        renderEmpty();
       }
     }
-    loadNotifs();
+
+    function renderNotifications(items) {
+      const container = document.getElementById('notifsContainer');
+      if (!items || items.length === 0) {
+        renderEmpty();
+        return;
+      }
+
+      container.innerHTML = items.map(n => `
+        <div class="notif-item ${!n.is_read ? 'unread' : ''}">
+          <div class="stat-icon ${!n.is_read ? 'primary' : 'secondary'}" style="width: 40px; height: 40px;">
+            <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+          </div>
+          <div style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <h3 style="font-size: 14.5px; font-weight: 700; color: var(--text);">${escapeHtml(n.title)}</h3>
+              <span style="font-size: 11.5px; color: var(--text-muted);">${new Date(n.created_at || Date.now()).toLocaleDateString()}</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.4;">${escapeHtml(n.message)}</p>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderEmpty() {
+      const container = document.getElementById('notifsContainer');
+      container.innerHTML = `
+        <div class="card">
+          <div class="empty-state">
+            <div class="empty-icon-wrap"><i data-lucide="bell-off"></i></div>
+            <div class="empty-title">No New Notifications</div>
+            <div class="empty-subtitle">You are all caught up on academic alerts, announcements, and presence logs.</div>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
   </script>
 </body>
 </html>

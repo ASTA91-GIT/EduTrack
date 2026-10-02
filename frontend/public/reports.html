@@ -1,138 +1,315 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Reports & Analytics</title>
-  <link rel="stylesheet" href="styles/global.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Reports | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    .dashboard-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-    .header {
-        display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
-        background: rgba(255, 255, 255, 0.8); padding: 1.5rem; border-radius: 12px;
-        backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    .reports-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
     }
-    .header h1 { color: #512da8; }
-    .nav-actions button {
-        background: #512da8; color: white; border: none; padding: 0.5rem 1.5rem;
-        border-radius: 8px; cursor: pointer; font-weight: 600; margin-left: 0.5rem;
+
+    .report-item-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
     }
-    .charts-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;
-    }
-    .chart-container {
-        background: white; padding: 1.5rem; border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+
+    .report-item-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
     }
   </style>
 </head>
 <body>
-  <script src="js/auth.js"></script>
-  <script>protectPage();</script> <!-- Any logged in user -->
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
 
-  <div class="dashboard-container">
-    <header class="header">
-      <div>
-        <h1>Reports & Analytics</h1>
-        <p>Your Data Insights</p>
-      </div>
-      <div class="nav-actions">
-        <button id="back-btn">Back to Dashboard</button>
-        <button id="logout-btn">Logout</button>
-      </div>
-    </header>
+    <main class="main-content">
+      <div id="topbar-mount"></div>
 
-    <div id="loading" class="text-center mt-4 mb-4">
-      <div class="loading"></div>
-    </div>
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Institutional Reports & Audit Center</h1>
+            <p class="page-subtitle">Generate, inspect, and export verified attendance records and compliance logs</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary" onclick="exportSampleCSV()">
+              <i data-lucide="download"></i>
+              <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
 
-    <div id="reports-content" style="display: none;">
-      <div class="charts-grid" id="charts-container">
-        <!-- Charts injected here -->
+        <!-- 4 Reports Cards -->
+        <div class="reports-card-grid">
+          <div class="report-item-card">
+            <div>
+              <div class="stat-icon primary" style="margin-bottom: 14px;">
+                <i data-lucide="file-spreadsheet"></i>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Attendance Summary</h3>
+              <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">
+                Aggregate attendance metrics grouped by course, division, and faculty.
+              </p>
+            </div>
+            <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+              <span class="badge badge-primary">Institutional</span>
+              <button class="btn btn-secondary btn-sm" onclick="loadReportData('summary')">
+                <i data-lucide="eye"></i>
+                <span>View</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="report-item-card">
+            <div>
+              <div class="stat-icon secondary" style="margin-bottom: 14px;">
+                <i data-lucide="book-open"></i>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Subject-Wise Audit</h3>
+              <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">
+                Detailed classroom breakdown, total hours conducted, and compliance ratios.
+              </p>
+            </div>
+            <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+              <span class="badge badge-secondary">Semester 1</span>
+              <button class="btn btn-secondary btn-sm" onclick="loadReportData('subject')">
+                <i data-lucide="eye"></i>
+                <span>View</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="report-item-card">
+            <div>
+              <div class="stat-icon warning" style="margin-bottom: 14px;">
+                <i data-lucide="calendar"></i>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Monthly Attendance</h3>
+              <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">
+                Calendar-based presence trends, verified check-ins, and absenteeism tracking.
+              </p>
+            </div>
+            <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+              <span class="badge badge-warning">Monthly</span>
+              <button class="btn btn-secondary btn-sm" onclick="loadReportData('monthly')">
+                <i data-lucide="eye"></i>
+                <span>View</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="report-item-card">
+            <div>
+              <div class="stat-icon success" style="margin-bottom: 14px;">
+                <i data-lucide="user-check"></i>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Student Standing Report</h3>
+              <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">
+                Identifies students in danger of debarment with recovery targets.
+              </p>
+            </div>
+            <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+              <span class="badge badge-success">Defaulters</span>
+              <button class="btn btn-secondary btn-sm" onclick="loadReportData('standing')">
+                <i data-lucide="eye"></i>
+                <span>View</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Report Data Table View -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title" id="reportTableTitle">
+              <i data-lucide="table"></i>
+              <span>Report Data Preview</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary btn-sm" onclick="exportSampleCSV()">
+                <i data-lucide="file-text"></i>
+                <span>Export CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="reportTableWrap">
+            <div class="empty-state">
+              <div class="empty-icon-wrap"><i data-lucide="file-search"></i></div>
+              <div class="empty-title">Select a Report Category</div>
+              <div class="empty-subtitle">Click "View" on any report above to inspect records or export audit logs.</div>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </div>
+    </main>
   </div>
 
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
-    document.getElementById("logout-btn").addEventListener("click", logout);
-    document.getElementById("back-btn").addEventListener("click", () => {
-        const user = getCurrentUser();
-        if(user.role === 'admin') window.location.href = 'dashboard.html';
-        else if(user.role === 'teacher') window.location.href = 'teacher.html';
-        else window.location.href = 'student.html';
+    protectPage();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initAppShell({
+        activePage: 'reports',
+        pageTitle: 'Reports',
+        breadcrumb: 'Reports'
+      });
     });
 
-    async function loadReports() {
-        const user = getCurrentUser();
-        const container = document.getElementById("charts-container");
-        
-        try {
-            if (user.role === 'student') {
-                const res = await authFetch(`${API_URL}/v1/dashboard/student`);
-                const data = await res.json();
-                
-                // Subject Comparison Chart
-                container.innerHTML += `
-                    <div class="chart-container">
-                        <h3>Subject Attendance</h3>
-                        <canvas id="studentBarChart"></canvas>
-                    </div>
-                `;
-                
-                const ctx = document.getElementById('studentBarChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: data.subjects.map(s => s.subject),
-                        datasets: [{
-                            label: 'Attendance %',
-                            data: data.subjects.map(s => s.percentage),
-                            backgroundColor: '#512da8'
-                        }]
-                    },
-                    options: { scales: { y: { min: 0, max: 100 } } }
-                });
-                
-            } else {
-                // Admin or Teacher gets trend data
-                const trendRes = await authFetch(`${API_URL}/v1/dashboard/analytics/attendance-trend`);
-                const trendData = await trendRes.json();
-                
-                container.innerHTML += `
-                    <div class="chart-container">
-                        <h3>Institution Attendance Trend</h3>
-                        <canvas id="trendChart"></canvas>
-                    </div>
-                `;
-                
-                const ctx = document.getElementById('trendChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: trendData.dates,
-                        datasets: [{
-                            label: 'Students Present',
-                            data: trendData.counts,
-                            borderColor: '#512da8',
-                            tension: 0.1,
-                            fill: false
-                        }]
-                    },
-                    options: { scales: { y: { beginAtZero: true } } }
-                });
-            }
+    async function loadReportData(type) {
+      const wrap = document.getElementById('reportTableWrap');
+      const title = document.getElementById('reportTableTitle');
 
-            document.getElementById("loading").style.display = "none";
-            document.getElementById("reports-content").style.display = "block";
+      wrap.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+          <div class="empty-title">Compiling Academic Report...</div>
+        </div>
+      `;
+      lucide.createIcons();
 
-        } catch (err) {
-            console.error(err);
-            alert("Error loading reports.");
+      try {
+        if (type === 'summary') {
+          title.innerHTML = `<i data-lucide="file-spreadsheet"></i><span>Attendance Summary Report</span>`;
+          const res = await authFetch('/api/v1/dashboard/faculty');
+          const data = res.ok ? await res.json() : {};
+          const sessions = data.recent_sessions || [];
+
+          if (sessions.length === 0) {
+            renderEmptyReport('No Attendance Sessions Available', 'No sessions have been hosted to summarize yet.');
+            return;
+          }
+
+          wrap.innerHTML = `
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Session ID</th>
+                    <th>Subject</th>
+                    <th>Class</th>
+                    <th>Date</th>
+                    <th>Verified Attendees</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${sessions.map(s => `
+                    <tr>
+                      <td style="font-family: monospace; font-size: 12px; color: var(--text-muted);">${s.id}</td>
+                      <td style="font-weight: 600; color: var(--text);">${escapeHtml(s.subject)}</td>
+                      <td>${escapeHtml(s.class_name)}</td>
+                      <td>${new Date(s.created_at).toLocaleDateString()}</td>
+                      <td><span style="font-weight: 700; color: var(--primary);">${s.attendee_count}</span></td>
+                      <td><span class="badge ${s.status === 'active' ? 'badge-success' : 'badge-secondary'}">${s.status}</span></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        } else if (type === 'standing') {
+          title.innerHTML = `<i data-lucide="user-check"></i><span>Student Attendance Standing Audit</span>`;
+          const res = await authFetch('/api/v1/dashboard/student/recovery');
+          const data = res.ok ? await res.json() : {};
+          const atRisk = data.at_risk || [];
+
+          if (atRisk.length === 0) {
+            renderEmptyReport('No Debarred or At-Risk Students', 'All students currently meet or exceed the institutional 75% attendance quota.');
+            return;
+          }
+
+          wrap.innerHTML = `
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Subject</th>
+                    <th>Current Percentage</th>
+                    <th>Threshold</th>
+                    <th>Classes Needed to Recover</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${atRisk.map(s => `
+                    <tr>
+                      <td style="font-weight: 600; color: var(--text);">${escapeHtml(s.subject)}</td>
+                      <td style="color: var(--danger); font-weight: 700;">${s.percentage.toFixed(1)}%</td>
+                      <td>${data.threshold || 75}%</td>
+                      <td style="font-weight: 700; color: var(--primary);">+${s.needed || 0}</td>
+                      <td><span class="badge badge-danger">At Risk</span></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        } else {
+          title.innerHTML = `<i data-lucide="calendar"></i><span>Monthly Verified Attendance Audit</span>`;
+          renderEmptyReport('No Monthly Audit Records', 'No historical sessions logged for this audit window.');
         }
+
+        lucide.createIcons();
+      } catch (err) {
+        renderEmptyReport('Error Loading Report', err.message);
+      }
     }
 
-    loadReports();
+    function renderEmptyReport(title, subtitle) {
+      const wrap = document.getElementById('reportTableWrap');
+      wrap.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon-wrap"><i data-lucide="file-x"></i></div>
+          <div class="empty-title">${escapeHtml(title)}</div>
+          <div class="empty-subtitle">${escapeHtml(subtitle)}</div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function exportSampleCSV() {
+      const table = document.querySelector('#reportTableWrap table');
+      if (!table) {
+        alert('Please view a report first before exporting.');
+        return;
+      }
+      let csv = [];
+      const rows = table.querySelectorAll('tr');
+      for (const row of rows) {
+        const cols = row.querySelectorAll('th, td');
+        const rowData = [];
+        for (const col of cols) {
+          rowData.push('\"' + col.innerText.replace(/\"/g, '\"\"').trim() + '\"');
+        }
+        csv.push(rowData.join(','));
+      }
+      const csvContent = "data:text/csv;charset=utf-8," + csv.join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `edutrack_report_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   </script>
 </body>
 </html>

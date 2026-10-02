@@ -1,59 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Events</title>
-  <link rel="stylesheet" href="styles/global.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Events | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    .container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .event-card { border: 1px solid #ddd; padding: 1.5rem; margin-bottom: 1rem; border-radius: 8px; border-left: 5px solid #ff9800; }
-    .event-card h3 { margin-bottom: 0.5rem; color: #333; }
-    .event-date { color: #2196f3; font-weight: bold; }
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+    }
+
+    .event-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .event-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .event-date-chip {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--secondary);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
   </style>
 </head>
 <body>
-  <script src="js/auth.js"></script>
-  <script>protectPage();</script>
-  
-  <header style="padding: 1rem 2rem; background: #512da8; color: white; display: flex; justify-content: space-between;">
-    <h2>EduTrack Events</h2>
-    <a href="#" onclick="window.history.back()" style="color: white; text-decoration: none;">⬅ Back</a>
-  </header>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
 
-  <div class="container">
-    <h2>College Events</h2>
-    <div id="eventsList">Loading...</div>
+    <main class="main-content">
+      <div id="topbar-mount"></div>
+
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Campus & Department Events</h1>
+            <p class="page-subtitle">Academic symposiums, hackathons, workshops, and department seminars</p>
+          </div>
+        </div>
+
+        <div id="eventsContainer" class="events-grid">
+          <div class="card" style="grid-column: 1 / -1;">
+            <div class="empty-state">
+              <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+              <div class="empty-title">Loading Campus Events...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
   </div>
 
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
-    async function loadEvents() {
-      try {
-        const res = await authFetch(`${API_URL}/v1/academic/events`);
-        const data = await res.json();
-        
-        const list = document.getElementById("eventsList");
-        list.innerHTML = "";
-        
-        if(data.length === 0) {
-          list.innerHTML = "<p>No upcoming events.</p>";
-          return;
-        }
+    protectPage();
 
-        data.forEach(e => {
-          list.innerHTML += `
-            <div class="event-card">
-              <h3>${e.title}</h3>
-              <p>${e.description || 'No description provided.'}</p>
-              <p>When: <span class="event-date">${new Date(e.event_date).toLocaleString()}</span></p>
-            </div>
-          `;
-        });
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'events',
+        pageTitle: 'Events',
+        breadcrumb: 'Events'
+      });
+
+      await fetchEvents();
+    });
+
+    async function fetchEvents() {
+      try {
+        const res = await authFetch('/api/v1/academic/events');
+        if (!res.ok) throw new Error('Failed to load events');
+        const events = await res.json();
+        renderEvents(events);
       } catch (err) {
-        console.error(err);
+        console.warn('Events error:', err.message);
+        renderEmpty();
       }
     }
-    loadEvents();
+
+    function renderEvents(events) {
+      const container = document.getElementById('eventsContainer');
+      if (!events || events.length === 0) {
+        renderEmpty();
+        return;
+      }
+
+      container.innerHTML = events.map(e => {
+        const d = new Date(e.event_date);
+        return `
+          <div class="event-card">
+            <div>
+              <div class="event-date-chip">
+                <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                <span>${d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })} • ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+
+              <h3 style="font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 8px;">
+                ${escapeHtml(e.title)}
+              </h3>
+
+              <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+                ${escapeHtml(e.description || 'No event description provided.')}
+              </p>
+            </div>
+
+            <div style="padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+              <span class="badge badge-primary">Department Event</span>
+              <button class="btn btn-secondary btn-sm" onclick="alert('RSVP confirmed for ${escapeHtml(e.title)}')">
+                <i data-lucide="bookmark"></i>
+                <span>Register</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderEmpty() {
+      const container = document.getElementById('eventsContainer');
+      container.innerHTML = `
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="empty-state">
+            <div class="empty-icon-wrap"><i data-lucide="calendar-heart"></i></div>
+            <div class="empty-title">No Events Scheduled</div>
+            <div class="empty-subtitle">There are no upcoming campus hackathons or academic events at this time.</div>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
   </script>
 </body>
 </html>

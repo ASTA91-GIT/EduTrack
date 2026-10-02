@@ -1,160 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Admin Dashboard</title>
-  <link rel="stylesheet" href="styles/global.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    .dashboard-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-    .header {
-        display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
-        background: rgba(255, 255, 255, 0.8); padding: 1.5rem; border-radius: 12px;
-        backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-    .header h1 { color: #512da8; }
-    .nav-actions button {
-        background: #512da8; color: white; border: none; padding: 0.5rem 1.5rem;
-        border-radius: 8px; cursor: pointer; font-weight: 600; margin-left: 0.5rem;
-    }
-    .stats-grid {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem; margin-bottom: 2rem;
-    }
-    .stat-card {
-        background: white; padding: 1.5rem; border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;
-    }
-    .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; }
-    .stat-card .value { font-size: 2.5rem; font-weight: 700; color: #512da8; }
-    .charts-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
-    }
-    .chart-container {
-        background: white; padding: 1.5rem; border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Command Center | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-  <script src="js/auth.js"></script>
-  <script>protectPage("admin");</script>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
 
-  <div class="dashboard-container">
-    <header class="header">
-      <div>
-        <h1>Admin Dashboard</h1>
-        <p>Institution-wide Analytics</p>
-      </div>
-      <div class="nav-actions">
-        <button onclick="window.location.href='manage-students.html'">Students</button>
-        <button onclick="window.location.href='attendance.html'">Attendance</button>
-        <button onclick="window.location.href='timetable.html'">Timetable</button>
-        <button onclick="window.location.href='lectures.html'">Lectures</button>
-        <button onclick="window.location.href='events.html'">Events</button>
-        <button onclick="window.location.href='resources.html'">Resources</button>
-        <button onclick="window.location.href='reports.html'">Reports</button>
-        <button id="logout-btn">Logout</button>
-      </div>
-    </header>
+    <main class="main-content">
+      <div id="topbar-mount"></div>
 
-    <div id="loading" class="text-center mt-4 mb-4">
-      <div class="loading"></div>
-    </div>
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Institution Administrative Overview</h1>
+            <p class="page-subtitle">Campus-wide enrollment metrics, active sessions, and faculty oversight</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <a href="manage-students.html" class="btn btn-secondary">
+              <i data-lucide="users"></i>
+              <span>Students Directory</span>
+            </a>
+            <a href="attendance.html" class="btn btn-primary">
+              <i data-lucide="radio"></i>
+              <span>Live Attendance</span>
+            </a>
+          </div>
+        </div>
 
-    <div id="dashboard-content" style="display: none;">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h3>Total Students</h3>
-          <div class="value" id="stat-students">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Total Faculty</h3>
-          <div class="value" id="stat-faculty">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Total Sessions</h3>
-          <div class="value" id="stat-sessions">0</div>
-        </div>
-        <div class="stat-card">
-          <h3>Active Sessions</h3>
-          <div class="value" id="stat-active">0</div>
-        </div>
-      </div>
+        <!-- 4 Metric Cards -->
+        <div class="grid-cols-4">
+          <div class="card stat-card">
+            <div class="stat-icon primary">
+              <i data-lucide="graduation-cap"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Total Enrolled Students</span>
+              <span class="stat-value" id="adminTotalStudents">--</span>
+            </div>
+          </div>
 
-      <div class="charts-grid">
-        <div class="chart-container">
-          <h3 style="margin-bottom:1rem;color:#333;">Student Risk Distribution</h3>
-          <canvas id="riskChart"></canvas>
+          <div class="card stat-card">
+            <div class="stat-icon success">
+              <i data-lucide="shield-check"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Faculty Members</span>
+              <span class="stat-value" id="adminTotalFaculty">--</span>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon secondary">
+              <i data-lucide="activity"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Total Sessions Hosted</span>
+              <span class="stat-value" id="adminTotalSessions">--</span>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon warning">
+              <i data-lucide="radio"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Active Live Sessions</span>
+              <span class="stat-value" id="adminActiveSessions">--</span>
+            </div>
+          </div>
         </div>
-        <div class="chart-container">
-          <h3 style="margin-bottom:1rem;color:#333;">Recent Attendance Trend</h3>
-          <canvas id="trendChart"></canvas>
+
+        <!-- Quick Navigation Grid -->
+        <div class="grid-cols-3">
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="stat-icon primary" style="margin-bottom: 12px;">
+                <i data-lucide="users"></i>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Manage Students</h3>
+              <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+                Inspect registered students, verify enrollments, and check account statuses.
+              </p>
+            </div>
+            <div style="margin-top: 18px;">
+              <a href="manage-students.html" class="btn btn-secondary btn-sm" style="width: 100%;">
+                <span>Open Directory</span>
+                <i data-lucide="arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="stat-icon secondary" style="margin-bottom: 12px;">
+                <i data-lucide="radio"></i>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Live Attendance Center</h3>
+              <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+                Monitor ongoing GPS geofenced attendance sessions across classrooms in real-time.
+              </p>
+            </div>
+            <div style="margin-top: 18px;">
+              <a href="attendance.html" class="btn btn-secondary btn-sm" style="width: 100%;">
+                <span>Attendance Center</span>
+                <i data-lucide="arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="stat-icon warning" style="margin-bottom: 12px;">
+                <i data-lucide="file-bar-chart"></i>
+              </div>
+              <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Academic Reports</h3>
+              <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+                Generate compliance audits, student standing reports, and export CSV data.
+              </p>
+            </div>
+            <div style="margin-top: 18px;">
+              <a href="reports.html" class="btn btn-secondary btn-sm" style="width: 100%;">
+                <span>View Reports</span>
+                <i data-lucide="arrow-right"></i>
+              </a>
+            </div>
+          </div>
         </div>
+
       </div>
-    </div>
+    </main>
   </div>
 
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
-    document.getElementById("logout-btn").addEventListener("click", logout);
+    protectPage(['admin']);
 
-    async function loadDashboard() {
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'dashboard',
+        pageTitle: 'Admin Dashboard',
+        breadcrumb: 'Admin Overview'
+      });
+
+      await loadAdminStats();
+    });
+
+    async function loadAdminStats() {
       try {
-        const res = await authFetch(`${API_URL}/v1/dashboard/admin`);
-        if (!res.ok) throw new Error("Failed to load admin data");
+        const res = await authFetch('/api/v1/dashboard/admin');
+        if (!res.ok) throw new Error('Failed to load admin stats');
         const data = await res.json();
 
-        document.getElementById("stat-students").textContent = data.total_students;
-        document.getElementById("stat-faculty").textContent = data.total_faculty;
-        document.getElementById("stat-sessions").textContent = data.total_sessions;
-        document.getElementById("stat-active").textContent = data.active_sessions;
-
-        // Render Risk Chart
-        const riskCtx = document.getElementById('riskChart').getContext('2d');
-        const rd = data.risk_distribution || {};
-        new Chart(riskCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Safe', 'Recovering', 'At Risk', 'Critical'],
-                datasets: [{
-                    data: [rd.SAFE || 0, rd.RECOVERING || 0, rd.AT_RISK || 0, rd.CRITICAL || 0],
-                    backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336']
-                }]
-            }
-        });
-
-        // Load Trend Chart
-        const trendRes = await authFetch(`${API_URL}/v1/dashboard/analytics/attendance-trend`);
-        if (trendRes.ok) {
-            const trendData = await trendRes.json();
-            const trendCtx = document.getElementById('trendChart').getContext('2d');
-            new Chart(trendCtx, {
-                type: 'line',
-                data: {
-                    labels: trendData.dates,
-                    datasets: [{
-                        label: 'Students Present',
-                        data: trendData.counts,
-                        borderColor: '#512da8',
-                        tension: 0.1,
-                        fill: false
-                    }]
-                },
-                options: { scales: { y: { beginAtZero: true } } }
-            });
-        }
-
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("dashboard-content").style.display = "block";
-
+        document.getElementById('adminTotalStudents').textContent = data.total_students || 0;
+        document.getElementById('adminTotalFaculty').textContent = data.total_faculty || 0;
+        document.getElementById('adminTotalSessions').textContent = data.total_sessions || 0;
+        document.getElementById('adminActiveSessions').textContent = data.active_sessions || 0;
       } catch (err) {
-        console.error(err);
-        alert("Error loading admin dashboard");
+        console.warn('Admin stats error:', err.message);
       }
     }
-
-    loadDashboard();
   </script>
 </body>
 </html>

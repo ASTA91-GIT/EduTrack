@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
+
+    <main class="main-content">
+      <div id="topbar-mount"></div>
+
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Institutional Profile</h1>
+            <p class="page-subtitle">Academic identity, credentials, and institutional role</p>
+          </div>
+        </div>
+
+        <div class="grid-cols-12">
+          <!-- Profile Card (4 cols) -->
+          <div class="span-4">
+            <div class="card" style="text-align: center; padding: 32px 24px;">
+              <div class="user-avatar-circle" style="width: 72px; height: 72px; font-size: 26px; margin: 0 auto 16px;">
+                <span id="profileAvatarLetter">U</span>
+              </div>
+              <h2 style="font-size: 18px; font-weight: 700; color: var(--text);" id="profileFullName">User Name</h2>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;" id="profileEmail">user@edutrack.local</p>
+              
+              <div style="margin-top: 16px;">
+                <span class="badge badge-primary" id="profileRoleBadge">Student</span>
+              </div>
+
+              <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); text-align: left; font-size: 13px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--text-muted);">Status</span>
+                  <span style="color: var(--success); font-weight: 600;">Active Enrolled</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--text-muted);">Geofence Verification</span>
+                  <span style="color: var(--text); font-weight: 600;">Enabled</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Information Form (8 cols) -->
+          <div class="span-8">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="user"></i>
+                  <span>Profile Information</span>
+                </div>
+              </div>
+
+              <form onsubmit="event.preventDefault(); alert('Profile updated successfully!');">
+                <div class="grid-cols-2" style="margin-bottom: 0;">
+                  <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="inputName" class="form-control" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Institutional Email</label>
+                    <input type="email" id="inputEmail" class="form-control" disabled />
+                  </div>
+                </div>
+
+                <div class="grid-cols-2" style="margin-bottom: 0;">
+                  <div class="form-group">
+                    <label class="form-label">Academic Role</label>
+                    <input type="text" id="inputRole" class="form-control" disabled />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" placeholder="+1 (555) 000-0000" />
+                  </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+                  <button type="submit" class="btn btn-primary">
+                    <i data-lucide="save"></i>
+                    <span>Save Changes</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script>
+    protectPage();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initAppShell({
+        activePage: 'profile',
+        pageTitle: 'Profile',
+        breadcrumb: 'Profile'
+      });
+
+      const user = getCurrentUser() || {};
+      const name = user.full_name || 'Academic User';
+      const email = user.email || 'user@edutrack.local';
+      const role = user.role || 'student';
+
+      document.getElementById('profileAvatarLetter').textContent = name.charAt(0).toUpperCase();
+      document.getElementById('profileFullName').textContent = name;
+      document.getElementById('profileEmail').textContent = email;
+      document.getElementById('profileRoleBadge').textContent = role.toUpperCase();
+
+      document.getElementById('inputName').value = name;
+      document.getElementById('inputEmail').value = email;
+      document.getElementById('inputRole').value = role.toUpperCase();
+    });
+  </script>
+</body>
+</html>

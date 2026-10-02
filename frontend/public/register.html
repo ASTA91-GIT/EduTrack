@@ -1,175 +1,274 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Account | EduTrack</title>
+  <title>Register | EduTrack Academic Portal</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
+    .auth-page {
+      min-height: 100vh;
       display: flex;
-      background: var(--background);
-      overflow: hidden;
-    }
-    .login-split {
-      display: flex;
-      width: 100%;
-      height: 100%;
-    }
-    .login-left {
-      flex: 1;
-      background: #FFFFFF;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      padding: 4rem;
-      color: black;
+      align-items: center;
       justify-content: center;
-      overflow: hidden;
-      border-right: 2px solid var(--accent);
+      padding: 24px;
+      position: relative;
+      background: radial-gradient(circle at 10% 20%, rgba(124, 92, 255, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(34, 211, 238, 0.06) 0%, transparent 40%),
+                  var(--bg);
     }
-    .login-left-bg {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at bottom left, rgba(0, 255, 255, 0.2) 0%, transparent 50%);
-      z-index: 0;
-    }
-    .login-left-content {
+
+    .auth-card {
+      width: 100%;
+      max-width: 460px;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 36px;
+      box-shadow: var(--shadow-lg);
       position: relative;
       z-index: 10;
-      max-width: 480px;
     }
-    .login-right {
-      flex: 1;
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .auth-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      text-decoration: none;
+    }
+
+    .auth-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .auth-subtitle {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .role-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background-color: var(--surface-elevated);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .role-btn {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--surface);
-      padding: 2rem;
-      overflow-y: auto;
+      gap: 6px;
+      transition: all 0.2s ease;
     }
-    .login-card {
-      width: 100%;
-      max-width: 420px;
-      margin: auto 0;
+
+    .role-btn.active {
+      background-color: var(--surface);
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
     }
-    .login-logo {
-      display: flex;
+
+    .auth-alert {
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      margin-bottom: 18px;
+      display: none;
       align-items: center;
-      gap: 12px;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 2rem;
+      gap: 10px;
     }
-    .login-logo img {
-      height: 32px;
+
+    .auth-alert.error {
+      display: flex;
+      background: var(--danger-glow);
+      border: 1px solid var(--danger);
+      color: var(--danger);
     }
-    
-    /* Academic Visual */
-    .academic-visual {
-      margin-top: 4rem;
-      background: rgba(255, 255, 255, 0.9);
-      border: 2px solid var(--indigo);
-      border-radius: 1rem;
-      padding: 2rem;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 15px var(--cyan);
+
+    .auth-alert.success {
+      display: flex;
+      background: var(--success-glow);
+      border: 1px solid var(--success);
+      color: var(--success);
     }
-    .av-header {
-      font-size: 0.875rem;
-      color: black;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 1rem;
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-secondary);
     }
-    
-    @media (max-width: 768px) {
-      .login-left {
-        display: none;
-      }
+
+    .auth-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .theme-corner-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
     }
   </style>
 </head>
 <body>
-  <div class="login-split">
-    <!-- Left Side: Visual -->
-    <div class="login-left">
-      <div class="login-left-bg"></div>
-      <div class="login-left-content">
-        <h1 style="font-size: 3rem; margin-bottom: 1.5rem; line-height: 1.2; text-shadow: 0 0 5px var(--indigo);">Join EduTrack</h1>
-        <p style="font-size: 1.125rem; color: black; font-weight: 500;">Take control of your academic journey. Track your attendance, plan your recovery, and access everything in one place.</p>
-        
-        <div class="academic-visual">
-          <div class="av-header">Platform Features</div>
-          <div class="flex items-center gap-4 mb-3" style="color: var(--cyan); font-weight: 700; text-shadow: 0 0 2px var(--cyan);">
-            <i class="fa-solid fa-qrcode"></i>
-            <span>Instant QR Attendance</span>
-          </div>
-          <div class="flex items-center gap-4 mb-3" style="color: var(--cyan); font-weight: 700; text-shadow: 0 0 2px var(--cyan);">
-            <i class="fa-solid fa-chart-pie"></i>
-            <span>Attendance Analytics</span>
-          </div>
-          <div class="flex items-center gap-4" style="color: var(--cyan); font-weight: 700; text-shadow: 0 0 2px var(--cyan);">
-            <i class="fa-solid fa-robot"></i>
-            <span>Local AI Assistant</span>
-          </div>
-        </div>
-      </div>
+  <div class="auth-page">
+    <div class="theme-corner-toggle">
+      <button class="icon-action-btn" id="themeBtn" title="Toggle Theme" aria-label="Toggle Theme">
+        <i data-lucide="sun"></i>
+      </button>
     </div>
 
-    <!-- Right Side: Form -->
-    <div class="login-right">
-      <div class="login-card">
-        <a href="index.html" class="login-logo">
-          <img src="assets/edutrack-icon.svg" alt="EduTrack Logo" />
-          EduTrack
+    <div class="auth-card">
+      <div class="auth-header">
+        <a href="index.html" class="auth-brand">
+          <div class="brand-icon-wrap">
+            <i data-lucide="graduation-cap"></i>
+          </div>
+          <div class="brand-title">Edu<span>Track</span></div>
         </a>
-        
-        <h2 style="font-size: 1.875rem; margin-bottom: 0.5rem;">Create Account</h2>
-        <p style="color: var(--text-muted); margin-bottom: 2.5rem;">Register as a student to access the platform.</p>
+        <h1 class="auth-title">Create Account</h1>
+        <p class="auth-subtitle">Join the intelligent academic platform</p>
+      </div>
 
-        <form id="registerForm">
-          <input type="hidden" name="role" value="student" id="regRole" />
+      <div class="role-toggle">
+        <button type="button" class="role-btn active" id="roleStudent" onclick="selectRole('student')">
+          <i data-lucide="user"></i>
+          <span>Student</span>
+        </button>
+        <button type="button" class="role-btn" id="roleTeacher" onclick="selectRole('teacher')">
+          <i data-lucide="shield-check"></i>
+          <span>Faculty</span>
+        </button>
+      </div>
 
-          <div class="form-group">
-            <label class="form-label" for="regName">Full Name</label>
-            <input type="text" id="regName" class="form-input" placeholder="e.g. John Doe" required />
-          </div>
+      <div id="authAlert" class="auth-alert"></div>
 
-          <div class="form-group">
-            <label class="form-label" for="regEmail">Institutional Email</label>
-            <input type="email" id="regEmail" class="form-input" placeholder="student@college.edu" required />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="regPassword">Password</label>
-            <input type="password" id="regPassword" class="form-input" placeholder="Create a secure password" required />
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label" for="regConfirmPassword">Confirm Password</label>
-            <input type="password" id="regConfirmPassword" class="form-input" placeholder="Confirm your password" required />
-          </div>
-
-          <button type="submit" class="btn btn-primary w-full" style="padding: 0.875rem; font-size: 1rem; margin-top: 1rem;">
-            Sign Up
-          </button>
-        </form>
-
-        <div style="margin-top: 2rem; text-align: center; font-size: 0.875rem; color: var(--text-muted);">
-          Already have an account? <a href="login.html" style="font-weight: 600;">Sign in here</a>
+      <form id="registerForm">
+        <div class="form-group">
+          <label class="form-label" for="name">Full Legal Name</label>
+          <input type="text" id="name" class="form-control" placeholder="Jane Doe" required autocomplete="name" />
         </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Institutional Email</label>
+          <input type="email" id="email" class="form-control" placeholder="name@edutrack.local" required autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password (min 6 characters)</label>
+          <input type="password" id="password" class="form-control" placeholder="••••••••" required minlength="6" autocomplete="new-password" />
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+          <i data-lucide="user-plus"></i>
+          <span>Create Account</span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Sign in here</a>
       </div>
     </div>
   </div>
 
   <script src="js/auth.js"></script>
-  <script src="login/register.js"></script>
+  <script>
+    const savedTheme = localStorage.getItem('edutrack_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    const themeBtn = document.getElementById('themeBtn');
+    themeBtn.addEventListener('click', () => {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      const nxt = cur === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nxt);
+      localStorage.setItem('edutrack_theme', nxt);
+      themeBtn.innerHTML = `<i data-lucide="${nxt === 'light' ? 'moon' : 'sun'}"></i>`;
+      lucide.createIcons();
+    });
+
+    let currentRole = 'student';
+
+    function selectRole(role) {
+      currentRole = role;
+      document.getElementById('roleStudent').classList.toggle('active', role === 'student');
+      document.getElementById('roleTeacher').classList.toggle('active', role === 'teacher');
+    }
+
+    const registerForm = document.getElementById('registerForm');
+    const authAlert = document.getElementById('authAlert');
+    const submitBtn = document.getElementById('submitBtn');
+
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      authAlert.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>Creating account...</span>`;
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        const user = await register(name, email, password, currentRole);
+        authAlert.className = 'auth-alert success';
+        authAlert.innerHTML = `<i data-lucide="check-circle-2"></i><span>Account registered successfully! Redirecting...</span>`;
+        authAlert.style.display = 'flex';
+        lucide.createIcons();
+
+        setTimeout(() => {
+          if (user.role === 'teacher') {
+            window.location.href = 'teacher.html';
+          } else {
+            window.location.href = 'student.html';
+          }
+        }, 800);
+      } catch (err) {
+        authAlert.className = 'auth-alert error';
+        authAlert.innerHTML = `<i data-lucide="alert-circle"></i><span>${err.message || 'Registration failed'}</span>`;
+        authAlert.style.display = 'flex';
+        lucide.createIcons();
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i data-lucide="user-plus"></i><span>Create Account</span>`;
+        lucide.createIcons();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    });
+  </script>
 </body>
 </html>

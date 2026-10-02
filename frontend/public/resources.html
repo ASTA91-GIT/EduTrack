@@ -1,63 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Resources & Books</title>
-  <link rel="stylesheet" href="styles/global.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Resources | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    .container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .resource-card { border: 1px solid #ddd; padding: 1.5rem; margin-bottom: 1rem; border-radius: 8px; border-left: 5px solid #8bc34a; display: flex; justify-content: space-between; align-items: center; }
-    .resource-card h3 { margin-bottom: 0.5rem; color: #333; }
-    .btn-download { background: #512da8; color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: bold; }
-    .btn-download:hover { background: #673ab7; }
+    .resources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .resource-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .resource-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .resource-type-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+    }
   </style>
 </head>
 <body>
-  <script src="js/auth.js"></script>
-  <script>protectPage();</script>
-  
-  <header style="padding: 1rem 2rem; background: #512da8; color: white; display: flex; justify-content: space-between;">
-    <h2>EduTrack Resources</h2>
-    <a href="#" onclick="window.history.back()" style="color: white; text-decoration: none;">⬅ Back</a>
-  </header>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
 
-  <div class="container">
-    <h2>Academic Books & Files</h2>
-    <div id="resourcesList">Loading...</div>
+    <main class="main-content">
+      <div id="topbar-mount"></div>
+
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Digital Academic Library</h1>
+            <p class="page-subtitle">Textbooks, lecture notes, syllabus blueprints, and reference guides</p>
+          </div>
+        </div>
+
+        <div id="resourcesContainer" class="resources-grid">
+          <div class="card" style="grid-column: 1 / -1;">
+            <div class="empty-state">
+              <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+              <div class="empty-title">Loading Library Resources...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
   </div>
 
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
-    async function loadResources() {
-      try {
-        const res = await authFetch(`${API_URL}/v1/resources`);
-        const data = await res.json();
-        
-        const list = document.getElementById("resourcesList");
-        list.innerHTML = "";
-        
-        if(data.length === 0) {
-          list.innerHTML = "<p>No resources uploaded yet.</p>";
-          return;
-        }
+    protectPage();
 
-        data.forEach(r => {
-          list.innerHTML += `
-            <div class="resource-card">
-              <div>
-                <h3>${r.title}</h3>
-                <p>Subject: ${r.subject} | Author: ${r.author || 'Unknown'}</p>
-                <p style="font-size: 0.8rem; color: #666;">Uploaded: ${new Date(r.created_at).toLocaleDateString()}</p>
-              </div>
-              <a href="#" class="btn-download" onclick="alert('Secure download link would trigger here. Path traversal protected.')">Download</a>
-            </div>
-          `;
-        });
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'resources',
+        pageTitle: 'Resources',
+        breadcrumb: 'Resources'
+      });
+
+      await fetchResources();
+    });
+
+    async function fetchResources() {
+      try {
+        const res = await authFetch('/api/v1/resources');
+        if (!res.ok) throw new Error('Failed to load resources');
+        const list = await res.json();
+        renderResources(list);
       } catch (err) {
-        console.error(err);
+        console.warn('Resources fetch error:', err.message);
+        renderEmpty();
       }
     }
-    loadResources();
+
+    function renderResources(items) {
+      const container = document.getElementById('resourcesContainer');
+      if (!items || items.length === 0) {
+        renderEmpty();
+        return;
+      }
+
+      container.innerHTML = items.map(r => `
+        <div class="resource-card">
+          <div>
+            <div style="display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px;">
+              <div class="resource-type-icon">
+                <i data-lucide="file-text"></i>
+              </div>
+              <div>
+                <span class="badge badge-primary">${escapeHtml(r.subject)}</span>
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--text); margin-top: 6px;">
+                  ${escapeHtml(r.title)}
+                </h3>
+              </div>
+            </div>
+
+            <div style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px;">
+              <span>Author: <strong style="color: var(--text-secondary);">${escapeHtml(r.author || 'Institutional Faculty')}</strong></span>
+            </div>
+          </div>
+
+          <div style="padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 11.5px; color: var(--text-muted);">
+              Uploaded ${new Date(r.created_at || Date.now()).toLocaleDateString()}
+            </span>
+            <button class="btn btn-secondary btn-sm" onclick="alert('Downloading ${escapeHtml(r.title)}')">
+              <i data-lucide="download"></i>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderEmpty() {
+      const container = document.getElementById('resourcesContainer');
+      container.innerHTML = `
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="empty-state">
+            <div class="empty-icon-wrap"><i data-lucide="folder-x"></i></div>
+            <div class="empty-title">No Academic Resources Uploaded</div>
+            <div class="empty-subtitle">Course materials and textbook PDFs will appear here once published by faculty.</div>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
   </script>
 </body>
 </html>

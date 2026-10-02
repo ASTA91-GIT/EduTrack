@@ -1,571 +1,474 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Dashboard | EduTrack</title>
+  <title>Student Command Center | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    .grid-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-    
-    .stat-card {
-      padding: 1.5rem;
-      border-radius: var(--radius-lg);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .stat-card-title {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.5rem;
-    }
-    
-    .stat-card-value {
-      font-size: 2.25rem;
-      font-weight: 700;
-      color: var(--text-main);
-      line-height: 1.2;
-    }
-    
-    .stat-card-desc {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-      margin-top: 0.5rem;
-    }
-
-    .grid-subjects {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .subject-card {
-      padding: 1.5rem;
-      border-radius: var(--radius-lg);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .subject-card:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
-    }
-
-    .subject-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .subject-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .subject-metrics {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      margin-top: 1rem;
-      margin-bottom: 0.5rem;
-    }
-    
-    .recovery-banner {
-      margin-top: 1.25rem;
-      padding: 1rem;
-      border-radius: var(--radius-md);
-      font-size: 0.875rem;
-      line-height: 1.5;
-    }
-
-    /* What-If Simulator */
-    .whatif-container {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow-sm);
-    }
-    
-    .whatif-controls {
+    .health-gauge-card {
       display: flex;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 1.5rem;
-    }
-    
-    #whatif-result {
-      margin-top: 1.5rem;
-      padding: 1.25rem;
-      background: var(--surface-hover);
-      border-radius: var(--radius-md);
-      display: none;
-    }
-    
-    #whatif-result ul {
-      margin-top: 0.75rem;
-      padding-left: 1.5rem;
-    }
-    
-    #whatif-result li {
-      margin-bottom: 0.5rem;
-      font-size: 0.875rem;
+      justify-content: space-between;
+      gap: 24px;
     }
 
-    /* Chatbot Styles */
-    #chatbot-btn {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 3.5rem;
-      height: 3.5rem;
+    .health-metric-val {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .health-status-badge {
+      margin-top: 8px;
+      display: inline-flex;
+    }
+
+    .quick-scan-banner {
+      background: linear-gradient(135deg, rgba(124, 92, 255, 0.15) 0%, rgba(34, 211, 238, 0.1) 100%);
+      border: 1px solid rgba(124, 92, 255, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .quick-scan-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .scan-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
       background: var(--primary);
-      color: white;
-      border-radius: 50%;
+      color: #FFFFFF;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
-      cursor: pointer;
-      box-shadow: var(--shadow-lg);
-      transition: transform 0.2s, background 0.2s;
-      z-index: 1000;
-    }
-    
-    #chatbot-btn:hover {
-      transform: scale(1.05);
-      background: var(--primary-dark);
-    }
-
-    #chatbot-panel {
-      position: fixed;
-      bottom: 6rem;
-      right: 2rem;
-      width: 380px;
-      height: 550px;
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-xl);
-      display: none;
-      flex-direction: column;
-      z-index: 1000;
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-    
-    .chat-header {
-      padding: 1.25rem;
-      background: var(--primary);
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .chat-messages {
-      flex: 1;
-      padding: 1.25rem;
-      overflow-y: auto;
-      background: var(--surface-hover);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    
-    .message {
-      max-width: 85%;
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius-md);
-      font-size: 0.875rem;
-      line-height: 1.5;
-    }
-    
-    .msg-user {
-      align-self: flex-end;
-      background: var(--primary);
-      color: white;
-      border-bottom-right-radius: 0.25rem;
-    }
-    
-    .msg-ai {
-      align-self: flex-start;
-      background: var(--surface);
-      color: var(--text-main);
-      border: 1px solid var(--border);
-      border-bottom-left-radius: 0.25rem;
-    }
-    
-    .chat-input-area {
-      padding: 1rem;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 0.75rem;
-    }
-    
-    #chat-input {
-      flex: 1;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 9999px;
-      outline: none;
-      font-size: 0.875rem;
-    }
-    
-    #chat-input:focus {
-      border-color: var(--primary);
-    }
-    
-    #chat-send {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: white;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-    
-    #chat-typing {
-      display: none;
-      padding: 0.5rem 1.25rem;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      background: var(--surface-hover);
+      box-shadow: 0 4px 16px var(--primary-glow);
     }
   </style>
 </head>
 <body>
   <div class="app-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-logo">
-        <img src="assets/edutrack-icon.svg" alt="EduTrack">
-        <span style="font-weight: 700; font-size: 1.25rem; color: var(--text-main);">EduTrack</span>
-      </div>
-      
-      <nav class="sidebar-nav">
-        <a href="student.html" class="nav-item active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-        <a href="attendance.html" class="nav-item"><i class="fa-solid fa-qrcode"></i> Scan QR</a>
-        <a href="timetable.html" class="nav-item"><i class="fa-solid fa-calendar-alt"></i> Timetable</a>
-        <a href="lectures.html" class="nav-item"><i class="fa-solid fa-chalkboard-user"></i> Lectures</a>
-        <a href="events.html" class="nav-item"><i class="fa-solid fa-calendar-star"></i> Events</a>
-        <a href="resources.html" class="nav-item"><i class="fa-solid fa-book-open"></i> Resources</a>
-        <a href="reports.html" class="nav-item"><i class="fa-solid fa-file-contract"></i> Reports</a>
-      </nav>
-      
-      <div style="margin-top: auto; border-top: 1px solid var(--border); padding-top: 1.5rem;">
-        <button id="logout-btn" class="btn btn-secondary w-full" style="color: var(--danger); border-color: var(--danger-light);"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
-      </div>
-    </aside>
+    <div id="sidebar-mount"></div>
 
-    <!-- Main Content -->
     <main class="main-content">
-      <header class="topbar">
-        <div>
-          <h1 class="page-title" id="welcome-message">Student Dashboard</h1>
-          <p class="text-muted" style="margin-top: 0.25rem;">Overview of your academic progress and attendance recovery.</p>
-        </div>
-        <div class="user-profile">
-          <div class="avatar"><i class="fa-solid fa-user"></i></div>
-        </div>
-      </header>
+      <div id="topbar-mount"></div>
 
-      <div id="loading" class="text-center mt-4">
-        <div class="skeleton" style="height: 200px; margin-bottom: 2rem;"></div>
-        <div class="skeleton" style="height: 400px;"></div>
-      </div>
-
-      <div id="dashboard-content" style="display: none;">
-        <!-- Stats Grid -->
-        <div class="grid-stats">
-          <div class="stat-card">
-            <div class="stat-card-title">Overall Attendance</div>
-            <div class="stat-card-value" id="stat-overall" style="color: var(--primary);">0%</div>
-            <div class="stat-card-desc" id="stat-overall-desc">0 / 0 classes attended</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-title">Subjects At Risk</div>
-            <div class="stat-card-value" id="stat-risk" style="color: var(--danger);">0</div>
-            <div class="stat-card-desc">Falling below minimum threshold</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-title">Safe Subjects</div>
-            <div class="stat-card-value" id="stat-safe" style="color: var(--success);">0</div>
-            <div class="stat-card-desc">Meeting institutional requirements</div>
-          </div>
-        </div>
-
-        <!-- Subjects & Recovery -->
-        <h2 style="font-size: 1.25rem; margin-bottom: 1.25rem;">Course Breakdown & Recovery</h2>
-        <div class="grid-subjects" id="subjects-container">
-          <!-- Populated dynamically -->
-        </div>
-
-        <!-- What-If Simulator -->
-        <div class="whatif-container">
-          <div style="display: flex; gap: 1rem; align-items: flex-start;">
-            <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(6, 182, 212, 0.1); color: var(--highlight); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">
-              <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <div class="page-container">
+        <!-- Banner with Quick Scan action -->
+        <div class="quick-scan-banner">
+          <div class="quick-scan-info">
+            <div class="scan-icon-wrap">
+              <i data-lucide="qr-code"></i>
             </div>
             <div>
-              <h3 style="font-size: 1.25rem; margin-bottom: 0.25rem;">What-If Simulator</h3>
-              <p class="text-muted" style="font-size: 0.875rem;">Simulate future attendance to see exactly how it impacts your final percentage.</p>
+              <h2 style="font-size: 16px; font-weight: 700; color: var(--text);">Live Attendance Active?</h2>
+              <p style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">
+                Have a live QR on your classroom screen? Open scanner or enter code to verify via GPS.
+              </p>
             </div>
           </div>
-          
-          <div class="whatif-controls">
-            <span style="font-size: 0.875rem; font-weight: 500;">If I attend the next</span>
-            <input type="number" id="whatif-classes" class="form-input" value="1" min="1" max="50" style="width: 80px;" />
-            <span style="font-size: 0.875rem; font-weight: 500;">classes in</span>
-            <select id="whatif-subject" class="form-select" style="width: 200px;">
-              <option value="">All Subjects</option>
-            </select>
-            <button id="whatif-btn" class="btn btn-primary">Simulate Scenarios</button>
-          </div>
-          
-          <div id="whatif-result"></div>
+          <a href="verify.html" class="btn btn-primary">
+            <i data-lucide="scan"></i>
+            <span>Scan & Verify Presence</span>
+          </a>
         </div>
+
+        <div class="page-header">
+          <div>
+            <h1 class="page-title" id="greetingHeader">Academic Command Center</h1>
+            <p class="page-subtitle" id="greetingSub">Real-time attendance intelligence, academic health & recovery</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <a href="timetable.html" class="btn btn-secondary">
+              <i data-lucide="calendar"></i>
+              <span>View Timetable</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="grid-cols-4">
+          <div class="card stat-card">
+            <div class="stat-icon primary">
+              <i data-lucide="clipboard-check"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Overall Attendance</span>
+              <span class="stat-value" id="overallAttendanceVal">--</span>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon success">
+              <i data-lucide="check-circle-2"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Classes Attended</span>
+              <span class="stat-value" id="classesAttendedVal">--</span>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon warning">
+              <i data-lucide="shield-alert"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Required Threshold</span>
+              <span class="stat-value">75.0%</span>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon secondary">
+              <i data-lucide="flame"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Attendance Health</span>
+              <span class="stat-value" id="healthStatusVal" style="font-size: 18px;">Analyzing...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid-cols-12">
+          <!-- Left Column (8 cols): Subject Performance & Recovery Planner -->
+          <div class="span-8" style="display: flex; flex-direction: column; gap: 24px;">
+            <!-- Subject Performance Card -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="book-open"></i>
+                  <span>Subject Attendance Breakdown</span>
+                </div>
+                <span class="badge badge-primary">Current Semester</span>
+              </div>
+              <div id="subjectPerformanceList">
+                <div class="empty-state">
+                  <div class="empty-icon-wrap"><i data-lucide="book-x"></i></div>
+                  <div class="empty-title">Loading subject performance...</div>
+                  <div class="empty-subtitle">Fetching verified records from academic server</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Attendance Recovery Planner -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="trending-up"></i>
+                  <span>Attendance Recovery Planner</span>
+                </div>
+                <span class="badge badge-secondary">Real-Time Simulation</span>
+              </div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+                Calculates consecutive classes required to safely cross the mandatory 75% threshold.
+              </p>
+              <div id="recoveryContainer">
+                <div class="empty-state">
+                  <div class="empty-icon-wrap"><i data-lucide="shield-check"></i></div>
+                  <div class="empty-title">All Subjects in Safe Standing</div>
+                  <div class="empty-subtitle">No recovery actions needed at this time. Keep up the high presence!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column (4 cols): Today's Schedule & Attendance Trend Chart -->
+          <div class="span-4" style="display: flex; flex-direction: column; gap: 24px;">
+            <!-- Today's Schedule -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="calendar-clock"></i>
+                  <span>Today's Classes</span>
+                </div>
+                <span class="badge badge-primary" id="currentDayBadge">Today</span>
+              </div>
+              <div id="todayScheduleList">
+                <div class="empty-state">
+                  <div class="empty-icon-wrap"><i data-lucide="calendar-off"></i></div>
+                  <div class="empty-title">No Classes Scheduled</div>
+                  <div class="empty-subtitle">No lectures or lab sessions assigned for today.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Trend Chart Card -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="chart-spline"></i>
+                  <span>Attendance Trend</span>
+                </div>
+              </div>
+              <div id="chartContainer" style="position: relative; height: 200px;">
+                <canvas id="attendanceTrendChart"></canvas>
+              </div>
+              <div id="chartEmptyState" class="empty-state" style="display: none; padding: 24px 0;">
+                <div class="empty-icon-wrap"><i data-lucide="line-chart"></i></div>
+                <div class="empty-title">No Historical Trend Yet</div>
+                <div class="empty-subtitle">Trend graph will populate as multiple attendance sessions are recorded.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>
 
-  <!-- Local AI Chatbot -->
-  <div id="chatbot-btn"><i class="fa-solid fa-robot"></i></div>
-  <div id="chatbot-panel">
-    <div class="chat-header">
-      <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600;">
-        <i class="fa-solid fa-robot"></i> EduTrack AI
-      </div>
-      <button id="close-chat" style="background: none; border: none; color: white; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    
-    <div class="chat-messages" id="chat-messages">
-      <div class="message msg-ai">Hello! I'm your local EduTrack academic assistant. I can analyze your attendance and help you plan your recovery. What would you like to know?</div>
-    </div>
-    
-    <div id="chat-typing">EduTrack AI is analyzing your data...</div>
-    
-    <div class="chat-input-area">
-      <input type="text" id="chat-input" placeholder="Ask about your academic status..." autocomplete="off">
-      <button id="chat-send"><i class="fa-solid fa-paper-plane"></i></button>
-    </div>
-  </div>
-
   <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
-    protectPage("student");
+    protectPage(['student']);
 
-    document.getElementById("logout-btn").addEventListener("click", logout);
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'dashboard',
+        pageTitle: 'Student Command Center',
+        breadcrumb: 'Dashboard'
+      });
 
-    // Load Dashboard Data
-    async function loadDashboard() {
-      try {
-        const res = await authFetch(`${API_URL}/v1/dashboard/student`);
-        if (!res.ok) throw new Error("Failed to load dashboard data");
-        
-        const data = await res.json();
-        
-        document.getElementById("welcome-message").textContent = `Good morning, ${data.user.name.split(' ')[0]}`;
-
-        document.getElementById("stat-overall").textContent = `${data.overall_percentage}%`;
-        document.getElementById("stat-overall-desc").textContent = `${data.total_present} / ${data.total_classes} classes attended`;
-        document.getElementById("stat-risk").textContent = data.subjects_at_risk;
-        document.getElementById("stat-safe").textContent = data.subjects_safe;
-
-        const select = document.getElementById("whatif-subject");
-        data.subjects.forEach(s => {
-          const opt = document.createElement("option");
-          opt.value = s.subject;
-          opt.textContent = s.subject;
-          select.appendChild(opt);
-        });
-
-        const container = document.getElementById("subjects-container");
-        container.innerHTML = "";
-
-        data.subjects.forEach(sub => {
-          const card = document.createElement("div");
-          card.className = "subject-card";
-          
-          let badgeClass = "badge-success";
-          let progressClass = "progress-success";
-          
-          if (sub.risk === "CRITICAL") {
-            badgeClass = "badge-danger";
-            progressClass = "progress-danger";
-          } else if (sub.risk === "AT_RISK") {
-            badgeClass = "badge-warning";
-            progressClass = "progress-warning";
-          }
-
-          let recoveryHtml = "";
-          if (sub.classes_needed > 0) {
-            recoveryHtml = `
-              <div class="recovery-banner" style="background: var(--danger-light); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2);">
-                <i class="fa-solid fa-triangle-exclamation" style="margin-right: 0.5rem;"></i>
-                Need <strong>${sub.classes_needed} consecutive classes</strong> to reach target threshold (${sub.threshold}%).
-              </div>`;
-          } else {
-             recoveryHtml = `
-              <div class="recovery-banner" style="background: var(--success-light); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2);">
-                <i class="fa-solid fa-circle-check" style="margin-right: 0.5rem;"></i>
-                Safe margin. Can miss <strong>${sub.classes_missable} future classes</strong> and maintain ${sub.threshold}%.
-              </div>`;
-          }
-
-          card.innerHTML = `
-            <div class="subject-header">
-              <h3 class="subject-title">${sub.subject}</h3>
-              <span class="badge ${badgeClass}">${sub.risk.replace("_", " ")}</span>
-            </div>
-            
-            <div class="subject-metrics">
-              <span>Attendance Rate</span>
-              <strong style="color: var(--text-main); font-size: 1rem;">${sub.percentage}%</strong>
-            </div>
-            
-            <div class="progress-container">
-              <div class="progress-bar ${progressClass}" style="width: ${sub.percentage}%"></div>
-            </div>
-            
-            <div class="subject-metrics" style="margin-top: 0.75rem;">
-              <span>Classes Attended</span>
-              <strong style="color: var(--text-main);">${sub.present} / ${sub.total}</strong>
-            </div>
-            
-            ${recoveryHtml}
-          `;
-          container.appendChild(card);
-        });
-
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("dashboard-content").style.display = "block";
-
-      } catch (error) {
-        console.error(error);
-        document.getElementById("loading").innerHTML = `<div style="color: var(--danger); padding: 2rem;">Error loading dashboard data. Please try refreshing.</div>`;
+      const user = getCurrentUser();
+      if (user && user.full_name) {
+        document.getElementById('greetingHeader').textContent = `Welcome back, ${user.full_name}`;
       }
-    }
 
-    // What-If Simulator
-    document.getElementById("whatif-btn").addEventListener("click", async () => {
-      const classes = document.getElementById("whatif-classes").value;
-      const subject = document.getElementById("whatif-subject").value;
-      
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const today = days[new Date().getDay()];
+      document.getElementById('currentDayBadge').textContent = today;
+
+      await loadDashboardData();
+      await loadTimetable(today);
+      await loadRecoveryData();
+    });
+
+    async function loadDashboardData() {
       try {
-        const url = new URL(`${API_URL}/v1/dashboard/student/whatif`);
-        url.searchParams.append("attend_next", classes);
-        if (subject) url.searchParams.append("subject", subject);
-
-        const res = await authFetch(url);
-        if (!res.ok) throw new Error("Simulation failed");
-        
+        const res = await authFetch('/api/v1/dashboard/student');
+        if (!res.ok) throw new Error('Failed to load dashboard data');
         const data = await res.json();
-        const resDiv = document.getElementById("whatif-result");
-        resDiv.style.display = "block";
-        
-        let html = "<h4 style='margin-bottom: 0.5rem;'>Projected Results</h4><ul>";
-        data.results.forEach(r => {
-          let statusColor = r.would_meet_threshold ? "var(--success)" : "var(--danger)";
-          let statusText = r.would_meet_threshold ? "Target Met" : "Still Short";
-          html += `<li><strong>${r.subject}:</strong> ${r.current_percentage}% → <strong style="color: ${statusColor};">${r.projected_percentage}%</strong> <span style="color: var(--text-muted); font-size: 0.75rem;">(${statusText})</span></li>`;
-        });
-        html += "</ul>";
-        resDiv.innerHTML = html;
 
-      } catch (err) {
-        alert("Error running simulation");
-      }
-    });
+        // 1. Overall metric
+        const overall = data.overall_percentage !== undefined ? data.overall_percentage : 0;
+        const totalClasses = data.total_classes || 0;
+        const presentClasses = data.present_classes || 0;
 
-    // Chatbot Logic
-    const chatBtn = document.getElementById("chatbot-btn");
-    const chatPanel = document.getElementById("chatbot-panel");
-    const closeChat = document.getElementById("close-chat");
-    const chatInput = document.getElementById("chat-input");
-    const chatSend = document.getElementById("chat-send");
-    const chatMessages = document.getElementById("chat-messages");
-    const chatTyping = document.getElementById("chat-typing");
+        document.getElementById('overallAttendanceVal').textContent = `${overall.toFixed(1)}%`;
+        document.getElementById('classesAttendedVal').textContent = `${presentClasses} / ${totalClasses}`;
 
-    chatBtn.addEventListener("click", () => {
-      chatPanel.style.display = "flex";
-      chatBtn.style.display = "none";
-      chatInput.focus();
-    });
-
-    closeChat.addEventListener("click", () => {
-      chatPanel.style.display = "none";
-      chatBtn.style.display = "flex";
-    });
-
-    function appendMessage(text, sender) {
-      const div = document.createElement("div");
-      div.className = `message ${sender === 'user' ? 'msg-user' : 'msg-ai'}`;
-      div.textContent = text;
-      chatMessages.appendChild(div);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    async function sendChatMessage() {
-      const msg = chatInput.value.trim();
-      if (!msg) return;
-
-      appendMessage(msg, "user");
-      chatInput.value = "";
-      chatTyping.style.display = "block";
-
-      try {
-        const res = await authFetch(`${API_URL}/v1/ai/chat`, {
-          method: "POST",
-          body: JSON.stringify({ message: msg })
-        });
-        
-        const data = await res.json();
-        chatTyping.style.display = "none";
-        
-        if (data.success) {
-          appendMessage(data.message, "ai");
+        const healthEl = document.getElementById('healthStatusVal');
+        if (overall >= 75) {
+          healthEl.innerHTML = `<span style="color: var(--success);"><i data-lucide="check-circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Good Standing</span>`;
+        } else if (overall >= 60) {
+          healthEl.innerHTML = `<span style="color: var(--warning);"><i data-lucide="alert-triangle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Low Presence</span>`;
         } else {
-          appendMessage("Error: " + data.message, "ai");
+          healthEl.innerHTML = `<span style="color: var(--danger);"><i data-lucide="shield-alert" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Critical Risk</span>`;
         }
+
+        // 2. Subject Breakdown
+        const subjects = data.subjects || [];
+        const subContainer = document.getElementById('subjectPerformanceList');
+
+        if (subjects.length === 0) {
+          subContainer.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon-wrap"><i data-lucide="folder-check"></i></div>
+              <div class="empty-title">No Attendance Records Yet</div>
+              <div class="empty-subtitle">Your subject attendance stats will appear automatically once sessions are recorded.</div>
+            </div>
+          `;
+        } else {
+          subContainer.innerHTML = `
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Subject</th>
+                    <th>Attended / Total</th>
+                    <th>Percentage</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${subjects.map(s => {
+                    const pct = s.percentage || 0;
+                    const badgeClass = pct >= 75 ? 'badge-success' : (pct >= 60 ? 'badge-warning' : 'badge-danger');
+                    const statusText = pct >= 75 ? 'Safe' : 'At Risk';
+                    return `
+                      <tr>
+                        <td style="font-weight: 600; color: var(--text);">${escapeHtml(s.subject)}</td>
+                        <td>${s.present || 0} / ${s.total || 0}</td>
+                        <td style="font-weight: 700;">${pct.toFixed(1)}%</td>
+                        <td><span class="badge ${badgeClass}">${statusText}</span></td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+
+        // Render trend chart if data exists
+        renderTrendChart(data.history || []);
+        lucide.createIcons();
       } catch (err) {
-        chatTyping.style.display = "none";
-        appendMessage("Sorry, I'm having trouble connecting right now.", "ai");
+        console.warn('Dashboard fetch notice:', err.message);
+        document.getElementById('overallAttendanceVal').textContent = '0.0%';
+        document.getElementById('classesAttendedVal').textContent = '0 / 0';
+        document.getElementById('healthStatusVal').textContent = 'No Data';
       }
     }
 
-    chatSend.addEventListener("click", sendChatMessage);
-    chatInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendChatMessage();
-    });
+    async function loadRecoveryData() {
+      try {
+        const res = await authFetch('/api/v1/dashboard/student/recovery');
+        if (!res.ok) return;
+        const data = await res.json();
+        const atRisk = data.at_risk || [];
+        const container = document.getElementById('recoveryContainer');
 
-    loadDashboard();
+        if (atRisk.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state" style="padding: 24px 0;">
+              <div class="empty-icon-wrap" style="color: var(--success);"><i data-lucide="shield-check"></i></div>
+              <div class="empty-title">All Subjects Meeting Attendance Criteria</div>
+              <div class="empty-subtitle">Attendance is at or above the mandatory ${data.threshold || 75}% threshold.</div>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              ${atRisk.map(item => `
+                <div style="background: var(--surface-elevated); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-weight: 600; color: var(--text);">${escapeHtml(item.subject)}</div>
+                    <div style="font-size: 12.5px; color: var(--danger); margin-top: 2px;">
+                      Currently ${item.percentage.toFixed(1)}% (Target: ${item.threshold}%)
+                    </div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 14px; font-weight: 700; color: var(--primary);">
+                      +${item.needed || 0} Classes
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Required to recover</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+        lucide.createIcons();
+      } catch (err) {
+        console.warn('Recovery plan error:', err);
+      }
+    }
+
+    async function loadTimetable(todayDay) {
+      try {
+        const res = await authFetch('/api/v1/academic/timetable');
+        if (!res.ok) return;
+        const list = await res.json();
+        const todayClasses = list.filter(item => item.day.toLowerCase() === todayDay.toLowerCase());
+        const scheduleContainer = document.getElementById('todayScheduleList');
+
+        if (todayClasses.length === 0) {
+          scheduleContainer.innerHTML = `
+            <div class="empty-state" style="padding: 28px 0;">
+              <div class="empty-icon-wrap"><i data-lucide="calendar-check"></i></div>
+              <div class="empty-title">No Classes Today</div>
+              <div class="empty-subtitle">You have no scheduled lectures for ${escapeHtml(todayDay)}.</div>
+            </div>
+          `;
+        } else {
+          scheduleContainer.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              ${todayClasses.map(c => `
+                <div style="padding: 12px; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-size: 13.5px; font-weight: 600; color: var(--text);">${escapeHtml(c.subject)}</div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                      ${escapeHtml(c.room || 'Room TBA')} • ${escapeHtml(c.class_name)}
+                    </div>
+                  </div>
+                  <span class="badge badge-primary">${escapeHtml(c.start_time)} - ${escapeHtml(c.end_time)}</span>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+        lucide.createIcons();
+      } catch (err) {
+        console.warn('Timetable error:', err);
+      }
+    }
+
+    function renderTrendChart(history) {
+      const chartCanvas = document.getElementById('attendanceTrendChart');
+      const chartEmpty = document.getElementById('chartEmptyState');
+
+      if (!history || history.length < 2) {
+        chartCanvas.style.display = 'none';
+        chartEmpty.style.display = 'flex';
+        return;
+      }
+
+      chartCanvas.style.display = 'block';
+      chartEmpty.style.display = 'none';
+
+      const labels = history.map(h => h.date || h.label);
+      const values = history.map(h => h.percentage || h.count);
+
+      new Chart(chartCanvas, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Attendance %',
+            data: values,
+            borderColor: '#7C5CFF',
+            backgroundColor: 'rgba(124, 92, 255, 0.1)',
+            fill: true,
+            tension: 0.35,
+            borderWidth: 2,
+            pointBackgroundColor: '#22D3EE',
+            pointRadius: 4,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: '#64748B', font: { size: 11 } }
+            },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.06)' },
+              ticks: { color: '#64748B', font: { size: 11 } },
+              min: 0,
+              max: 100
+            }
+          }
+        }
+      });
+    }
   </script>
 </body>
 </html>

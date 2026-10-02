@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Settings | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
+
+    <main class="main-content">
+      <div id="topbar-mount"></div>
+
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Settings & Preferences</h1>
+            <p class="page-subtitle">Configure application interface, theme preferences, and notifications</p>
+          </div>
+        </div>
+
+        <div style="max-width: 800px; display: flex; flex-direction: column; gap: 24px;">
+          <!-- Appearance & Theme Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="palette"></i>
+                <span>Appearance & Theme</span>
+              </div>
+            </div>
+
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+              Choose your interface color scheme. EduTrack persists this setting across your devices.
+            </p>
+
+            <div style="display: flex; gap: 16px;">
+              <button class="btn btn-secondary" id="themeDarkBtn" onclick="setAppTheme('dark')" style="flex: 1; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <i data-lucide="moon" style="width: 24px; height: 24px;"></i>
+                <span style="font-weight: 600;">Global Dark Mode</span>
+                <span style="font-size: 11px; color: var(--text-muted);">#070A12 Deep Canvas</span>
+              </button>
+
+              <button class="btn btn-secondary" id="themeLightBtn" onclick="setAppTheme('light')" style="flex: 1; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <i data-lucide="sun" style="width: 24px; height: 24px;"></i>
+                <span style="font-weight: 600;">Global Light Mode</span>
+                <span style="font-size: 11px; color: var(--text-muted);">#F6F7FB Clean Surface</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Geofence & Location Preferences -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="map-pin"></i>
+                <span>Attendance Geofence Settings</span>
+              </div>
+              <span class="badge badge-primary">Institutional Policy</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px; font-size: 13.5px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
+                <div>
+                  <div style="font-weight: 600; color: var(--text);">Default Geofence Radius</div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Permitted distance from classroom anchor</div>
+                </div>
+                <span style="font-weight: 700; color: var(--secondary);">30.0 Meters</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
+                <div>
+                  <div style="font-weight: 600; color: var(--text);">Dynamic QR Rotation Interval</div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Security token refresh duration</div>
+                </div>
+                <span style="font-weight: 700; color: var(--primary);">15 Seconds</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-weight: 600; color: var(--text);">Location Accuracy Threshold</div>
+                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Maximum GPS uncertainty accepted</div>
+                </div>
+                <span style="font-weight: 700; color: var(--warning);">±60 Meters</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security & Session -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i data-lucide="shield"></i>
+                <span>Session & Security</span>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-weight: 600; color: var(--text);">Institutional Logout</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">End your authenticated session on this browser</div>
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="logout()">
+                <i data-lucide="log-out"></i>
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script>
+    protectPage();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initAppShell({
+        activePage: 'settings',
+        pageTitle: 'Settings',
+        breadcrumb: 'Settings'
+      });
+
+      updateThemeButtons();
+    });
+
+    function setAppTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('edutrack_theme', theme);
+      updateThemeButtons();
+      
+      const themeBtn = document.getElementById('themeToggleBtn');
+      if (themeBtn) {
+        themeBtn.innerHTML = `<i data-lucide="${theme === 'light' ? 'moon' : 'sun'}"></i>`;
+        lucide.createIcons();
+      }
+    }
+
+    function updateThemeButtons() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      document.getElementById('themeDarkBtn').style.borderColor = cur === 'dark' ? 'var(--primary)' : 'var(--border)';
+      document.getElementById('themeLightBtn').style.borderColor = cur === 'light' ? 'var(--primary)' : 'var(--border)';
+    }
+  </script>
+</body>
+</html>

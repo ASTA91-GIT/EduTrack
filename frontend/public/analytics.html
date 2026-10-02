@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Institutional Analytics | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .chart-container-card {
+      position: relative;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-wrapper {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: 240px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
+
+    <main class="main-content">
+      <div id="topbar-mount"></div>
+
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Attendance & Academic Intelligence</h1>
+            <p class="page-subtitle">Longitudinal presence metrics, subject distribution, and risk modeling</p>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards (real values) -->
+        <div class="grid-cols-4">
+          <div class="card stat-card">
+            <div class="stat-icon primary">
+              <i data-lucide="activity"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Total Verified Scans</span>
+              <span class="stat-value" id="totalScansVal">--</span>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon success">
+              <i data-lucide="users"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Active Cohort Students</span>
+              <span class="stat-value" id="activeCohortVal">--</span>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon secondary">
+              <i data-lucide="radio"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Attendance Sessions</span>
+              <span class="stat-value" id="sessionsConductedVal">--</span>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon warning">
+              <i data-lucide="shield-check"></i>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">Geofence Compliance</span>
+              <span class="stat-value" id="complianceRateVal">100%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Chart Grid -->
+        <div class="grid-cols-12" id="chartsRow">
+          <!-- 8 Cols: Longitudinal Attendance Trend -->
+          <div class="span-8">
+            <div class="card chart-container-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="trending-up"></i>
+                  <span>Attendance Trend Over Time</span>
+                </div>
+                <span class="badge badge-primary">Session Records</span>
+              </div>
+
+              <div id="trendChartWrap" class="chart-wrapper">
+                <canvas id="trendChart"></canvas>
+              </div>
+
+              <div id="trendEmptyState" class="empty-state" style="display: none; padding: 48px 0;">
+                <div class="empty-icon-wrap"><i data-lucide="chart-spline"></i></div>
+                <div class="empty-title">No Attendance Analytics Available Yet</div>
+                <div class="empty-subtitle">Trend graphs will render once student attendance records are captured.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 Cols: Verification Methods & Proximity -->
+          <div class="span-4">
+            <div class="card chart-container-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="pie-chart"></i>
+                  <span>Verification Methods</span>
+                </div>
+              </div>
+
+              <div id="methodsChartWrap" class="chart-wrapper">
+                <canvas id="methodsChart"></canvas>
+              </div>
+
+              <div id="methodsEmptyState" class="empty-state" style="display: none; padding: 48px 0;">
+                <div class="empty-icon-wrap"><i data-lucide="pie-chart"></i></div>
+                <div class="empty-title">No Verification Data</div>
+                <div class="empty-subtitle">Method breakdown will show here after verification scans.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6 Cols: Subject-Wise Attendance Breakdown -->
+          <div class="span-6">
+            <div class="card chart-container-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="bar-chart-3"></i>
+                  <span>Subject-Wise Attendance</span>
+                </div>
+              </div>
+
+              <div id="subjectChartWrap" class="chart-wrapper">
+                <canvas id="subjectChart"></canvas>
+              </div>
+
+              <div id="subjectEmptyState" class="empty-state" style="display: none; padding: 48px 0;">
+                <div class="empty-icon-wrap"><i data-lucide="book-open"></i></div>
+                <div class="empty-title">No Subject Attendance Data</div>
+                <div class="empty-subtitle">Subject comparative performance will appear when session logs are recorded.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6 Cols: Risk & Standing Distribution -->
+          <div class="span-6">
+            <div class="card chart-container-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i data-lucide="alert-octagon"></i>
+                  <span>Student Standing & Risk Distribution</span>
+                </div>
+              </div>
+
+              <div id="riskChartWrap" class="chart-wrapper">
+                <canvas id="riskChart"></canvas>
+              </div>
+
+              <div id="riskEmptyState" class="empty-state" style="display: none; padding: 48px 0;">
+                <div class="empty-icon-wrap"><i data-lucide="shield-alert"></i></div>
+                <div class="empty-title">No Defaulters Recorded</div>
+                <div class="empty-subtitle">Cohort risk modeling will evaluate students once attendance percentages calculate.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script>
+    protectPage();
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'analytics',
+        pageTitle: 'Institutional Analytics',
+        breadcrumb: 'Analytics'
+      });
+
+      await loadAnalyticsData();
+    });
+
+    async function loadAnalyticsData() {
+      try {
+        // 1. Fetch trend
+        const trendRes = await authFetch('/api/v1/dashboard/analytics/attendance-trend');
+        const trendData = trendRes.ok ? await trendRes.json() : { dates: [], counts: [] };
+
+        // 2. Fetch faculty dashboard or student overall for stats
+        const user = getCurrentUser();
+        const isTeacher = user && (user.role === 'teacher' || user.role === 'admin');
+
+        let totalSessions = 0;
+        let totalStudents = 0;
+        let subjectsData = [];
+
+        if (isTeacher) {
+          const facRes = await authFetch('/api/v1/dashboard/faculty');
+          if (facRes.ok) {
+            const facData = await facRes.json();
+            totalSessions = facData.total_sessions || 0;
+            totalStudents = facData.total_students || 0;
+          }
+        } else {
+          const stuRes = await authFetch('/api/v1/dashboard/student');
+          if (stuRes.ok) {
+            const stuData = await stuRes.json();
+            subjectsData = stuData.subjects || [];
+          }
+        }
+
+        const totalScans = (trendData.counts || []).reduce((a, b) => a + b, 0);
+        document.getElementById('totalScansVal').textContent = totalScans;
+        document.getElementById('activeCohortVal').textContent = totalStudents || '--';
+        document.getElementById('sessionsConductedVal').textContent = totalSessions || '--';
+
+        // Render Trend Chart
+        renderTrend(trendData.dates, trendData.counts);
+
+        // Render Methods
+        if (totalScans > 0) {
+          renderMethods([totalScans, 0]);
+        } else {
+          showEmpty('methods');
+        }
+
+        // Render Subject Chart
+        if (subjectsData.length > 0) {
+          renderSubjects(subjectsData);
+        } else {
+          showEmpty('subject');
+        }
+
+        // Render Risk Distribution
+        showEmpty('risk');
+
+      } catch (err) {
+        console.warn('Analytics loading notice:', err);
+        showEmpty('trend');
+        showEmpty('methods');
+        showEmpty('subject');
+        showEmpty('risk');
+      }
+    }
+
+    function renderTrend(dates, counts) {
+      if (!dates || dates.length === 0 || !counts || counts.length === 0) {
+        showEmpty('trend');
+        return;
+      }
+
+      document.getElementById('trendEmptyState').style.display = 'none';
+      document.getElementById('trendChartWrap').style.display = 'block';
+
+      new Chart(document.getElementById('trendChart'), {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: 'Attendance Count',
+            data: counts,
+            borderColor: '#7C5CFF',
+            backgroundColor: 'rgba(124, 92, 255, 0.1)',
+            fill: true,
+            tension: 0.3,
+            borderWidth: 2,
+            pointBackgroundColor: '#22D3EE',
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#64748B' } },
+            y: { grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#64748B' }, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    function renderMethods(data) {
+      document.getElementById('methodsEmptyState').style.display = 'none';
+      document.getElementById('methodsChartWrap').style.display = 'block';
+
+      new Chart(document.getElementById('methodsChart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['QR + GPS Geofenced', 'Manual Override'],
+          datasets: [{
+            data: data,
+            backgroundColor: ['#7C5CFF', '#64748B'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '70%',
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#94A3B8', boxWidth: 12 } }
+          }
+        }
+      });
+    }
+
+    function renderSubjects(subjects) {
+      document.getElementById('subjectEmptyState').style.display = 'none';
+      document.getElementById('subjectChartWrap').style.display = 'block';
+
+      new Chart(document.getElementById('subjectChart'), {
+        type: 'bar',
+        data: {
+          labels: subjects.map(s => s.subject),
+          datasets: [{
+            label: 'Attendance %',
+            data: subjects.map(s => s.percentage || 0),
+            backgroundColor: '#7C5CFF',
+            borderRadius: 6,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#64748B' } },
+            y: { grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#64748B' }, min: 0, max: 100 }
+          }
+        }
+      });
+    }
+
+    function showEmpty(type) {
+      const wrap = document.getElementById(`${type}ChartWrap`);
+      const empty = document.getElementById(`${type}EmptyState`);
+      if (wrap) wrap.style.display = 'none';
+      if (empty) empty.style.display = 'flex';
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

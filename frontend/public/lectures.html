@@ -1,60 +1,217 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Lectures</title>
-  <link rel="stylesheet" href="styles/global.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Lectures | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    .container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .lecture-card { border: 1px solid #ddd; padding: 1.5rem; margin-bottom: 1rem; border-radius: 8px; border-left: 5px solid #00bcd4; }
-    .lecture-card h3 { margin-bottom: 0.5rem; color: #333; }
-    .lecture-date { color: #512da8; font-weight: bold; }
+    .lecture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+    }
+
+    .lecture-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .lecture-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .lecture-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
   </style>
 </head>
 <body>
-  <script src="js/auth.js"></script>
-  <script>protectPage();</script>
-  
-  <header style="padding: 1rem 2rem; background: #512da8; color: white; display: flex; justify-content: space-between;">
-    <h2>EduTrack Lectures</h2>
-    <a href="#" onclick="window.history.back()" style="color: white; text-decoration: none;">⬅ Back</a>
-  </header>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
 
-  <div class="container">
-    <h2>Upcoming Lectures</h2>
-    <div id="lecturesList">Loading...</div>
+    <main class="main-content">
+      <div id="topbar-mount"></div>
+
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Course Lectures & Sessions</h1>
+            <p class="page-subtitle">Track upcoming syllabus topics, scheduled presentations, and lecture history</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <a href="resources.html" class="btn btn-secondary">
+              <i data-lucide="folder-open"></i>
+              <span>Lecture Materials</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Filter / Category Tabs -->
+        <div class="day-filter-tabs" style="display: flex; gap: 8px; margin-bottom: 24px;">
+          <button class="day-tab active" onclick="filterLectures('all')">All Lectures</button>
+          <button class="day-tab" onclick="filterLectures('upcoming')">Upcoming</button>
+          <button class="day-tab" onclick="filterLectures('completed')">Completed</button>
+        </div>
+
+        <div id="lecturesContainer" class="lecture-grid">
+          <div class="card" style="grid-column: 1 / -1;">
+            <div class="empty-state">
+              <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+              <div class="empty-title">Loading Lectures...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
   </div>
 
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
-    async function loadLectures() {
-      try {
-        const res = await authFetch(`${API_URL}/v1/academic/lectures`);
-        const data = await res.json();
-        
-        const list = document.getElementById("lecturesList");
-        list.innerHTML = "";
-        
-        if(data.length === 0) {
-          list.innerHTML = "<p>No upcoming lectures found.</p>";
-          return;
-        }
+    protectPage();
 
-        data.forEach(l => {
-          list.innerHTML += `
-            <div class="lecture-card">
-              <h3>${l.title} - ${l.subject}</h3>
-              <p>Class: ${l.class_name}</p>
-              <p>Description: ${l.description || 'N/A'}</p>
-              <p>Date: <span class="lecture-date">${new Date(l.lecture_date).toLocaleString()}</span></p>
-            </div>
-          `;
-        });
+    let allLectures = [];
+    let currentFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'lectures',
+        pageTitle: 'Lectures',
+        breadcrumb: 'Lectures'
+      });
+
+      await fetchLectures();
+    });
+
+    async function fetchLectures() {
+      try {
+        const res = await authFetch('/api/v1/academic/lectures');
+        if (!res.ok) throw new Error('Failed to fetch lectures');
+        allLectures = await res.json();
+        renderLectures();
       } catch (err) {
-        console.error(err);
+        console.warn('Lectures error:', err.message);
+        renderEmpty();
       }
     }
-    loadLectures();
+
+    function filterLectures(type) {
+      currentFilter = type;
+      const tabs = document.querySelectorAll('.day-tab');
+      tabs.forEach(tab => {
+        if (tab.textContent.toLowerCase() === type || (type === 'all' && tab.textContent === 'All Lectures')) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+      renderLectures();
+    }
+
+    function renderLectures() {
+      const container = document.getElementById('lecturesContainer');
+      const now = new Date();
+
+      let filtered = allLectures;
+      if (currentFilter === 'upcoming') {
+        filtered = allLectures.filter(l => new Date(l.lecture_date) >= now);
+      } else if (currentFilter === 'completed') {
+        filtered = allLectures.filter(l => new Date(l.lecture_date) < now);
+      }
+
+      if (!filtered || filtered.length === 0) {
+        renderEmpty();
+        return;
+      }
+
+      const user = getCurrentUser();
+      const isTeacher = user && user.role === 'teacher';
+
+      container.innerHTML = filtered.map(l => {
+        const dateObj = new Date(l.lecture_date);
+        const isUpcoming = dateObj >= now;
+        return `
+          <div class="lecture-card">
+            <div>
+              <div class="lecture-card-header">
+                <span class="badge ${isUpcoming ? 'badge-primary' : 'badge-secondary'}">
+                  ${isUpcoming ? 'Upcoming' : 'Completed'}
+                </span>
+                <span style="font-size: 12.5px; color: var(--text-muted);">
+                  ${escapeHtml(l.class_name)}
+                </span>
+              </div>
+
+              <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">
+                ${escapeHtml(l.title)}
+              </h3>
+              <div style="font-size: 13.5px; font-weight: 600; color: var(--secondary); margin-bottom: 10px;">
+                ${escapeHtml(l.subject)}
+              </div>
+
+              <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.4;">
+                ${escapeHtml(l.description || 'No lecture syllabus details provided.')}
+              </p>
+            </div>
+
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-muted); margin-bottom: 14px;">
+                <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                <span>${dateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} at ${dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+
+              <div style="padding-top: 12px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
+                ${isTeacher ? `
+                  <a href="attendance.html?subject=${encodeURIComponent(l.subject)}&class_name=${encodeURIComponent(l.class_name)}" class="btn btn-primary btn-sm">
+                    <i data-lucide="radio"></i>
+                    <span>Take Attendance</span>
+                  </a>
+                ` : `
+                  <a href="verify.html" class="btn btn-secondary btn-sm">
+                    <i data-lucide="scan"></i>
+                    <span>Mark Presence</span>
+                  </a>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderEmpty() {
+      const container = document.getElementById('lecturesContainer');
+      container.innerHTML = `
+        <div class="card" style="grid-column: 1 / -1;">
+          <div class="empty-state">
+            <div class="empty-icon-wrap"><i data-lucide="presentation"></i></div>
+            <div class="empty-title">No Lectures Scheduled</div>
+            <div class="empty-subtitle">
+              ${currentFilter === 'all' 
+                ? 'No syllabus lectures have been added yet.' 
+                : `No ${currentFilter} lectures found in this category.`}
+            </div>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
   </script>
 </body>
 </html>

@@ -1,78 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Tests & Grades</title>
-  <link rel="stylesheet" href="styles/global.css" />
-  <style>
-    .container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
-    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #ddd; }
-    th { background: #512da8; color: white; }
-    .header-actions { display: flex; justify-content: space-between; align-items: center; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tests & Evaluations | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-  <script src="js/auth.js"></script>
-  <script>protectPage();</script>
-  
-  <header style="padding: 1rem 2rem; background: #512da8; color: white; display: flex; justify-content: space-between;">
-    <h2>EduTrack Tests</h2>
-    <a href="#" onclick="window.history.back()" style="color: white; text-decoration: none;">⬅ Back</a>
-  </header>
+  <div class="app-container">
+    <div id="sidebar-mount"></div>
 
-  <div class="container">
-    <div class="header-actions">
-      <h2>My Tests & Grades</h2>
-    </div>
-    
-    <table id="testsTable">
-      <thead>
-        <tr>
-          <th>Subject</th>
-          <th>Title</th>
-          <th>Date</th>
-          <th>Score</th>
-          <th>Max Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td colspan="5">Loading...</td></tr>
-      </tbody>
-    </table>
+    <main class="main-content">
+      <div id="topbar-mount"></div>
+
+      <div class="page-container">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Tests, Quizzes & Evaluations</h1>
+            <p class="page-subtitle">Track upcoming term assessments, midterms, and verified test grades</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="file-check-2"></i>
+              <span>Academic Tests & Performance</span>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table" id="testsTable">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Assessment Title</th>
+                  <th>Date</th>
+                  <th>Score</th>
+                  <th>Maximum</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="testsTbody">
+                <tr>
+                  <td colspan="6">
+                    <div class="empty-state">
+                      <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+                      <div class="empty-title">Loading Tests...</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
   </div>
 
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
   <script>
-    async function loadTests() {
+    protectPage();
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initAppShell({
+        activePage: 'lectures',
+        pageTitle: 'Tests & Grades',
+        breadcrumb: 'Tests'
+      });
+
+      await fetchTests();
+    });
+
+    async function fetchTests() {
       try {
-        const res = await authFetch(`${API_URL}/v1/academic/tests`);
-        const data = await res.json();
-        
-        const tbody = document.querySelector("#testsTable tbody");
-        tbody.innerHTML = "";
-        
-        if(data.length === 0) {
-          tbody.innerHTML = "<tr><td colspan='5'>No tests found.</td></tr>";
+        const res = await authFetch('/api/v1/academic/tests');
+        if (!res.ok) throw new Error('Failed to load tests');
+        const list = await res.json();
+        const tbody = document.getElementById('testsTbody');
+
+        if (list.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6">
+                <div class="empty-state">
+                  <div class="empty-icon-wrap"><i data-lucide="clipboard-x"></i></div>
+                  <div class="empty-title">No Tests Scheduled</div>
+                  <div class="empty-subtitle">You have no upcoming or graded assessments in the database.</div>
+                </div>
+              </td>
+            </tr>
+          `;
+          lucide.createIcons();
           return;
         }
 
-        data.forEach(t => {
-          tbody.innerHTML += `
+        tbody.innerHTML = list.map(t => {
+          const hasScore = t.score !== null && t.score !== undefined;
+          return `
             <tr>
-              <td>${t.subject}</td>
-              <td>${t.title}</td>
+              <td style="font-weight: 600; color: var(--text);">${escapeHtml(t.subject)}</td>
+              <td>${escapeHtml(t.title)}</td>
               <td>${new Date(t.test_date).toLocaleDateString()}</td>
-              <td><strong>${t.score !== null ? t.score : 'N/A'}</strong></td>
+              <td style="font-weight: 700; color: ${hasScore ? 'var(--primary)' : 'var(--text-muted)'};">
+                ${hasScore ? t.score : '--'}
+              </td>
               <td>${t.max_score}</td>
+              <td>
+                <span class="badge ${hasScore ? 'badge-success' : 'badge-warning'}">
+                  ${hasScore ? 'Graded' : 'Upcoming'}
+                </span>
+              </td>
             </tr>
           `;
-        });
+        }).join('');
+
+        lucide.createIcons();
       } catch (err) {
-        console.error(err);
+        console.warn('Tests loading notice:', err.message);
       }
     }
-    loadTests();
   </script>
 </body>
 </html>

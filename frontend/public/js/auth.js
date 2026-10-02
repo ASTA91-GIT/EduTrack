@@ -1,6 +1,7 @@
-// public/js/auth.js
-
-const API_URL = "http://localhost:8000/api"; // Adjust if deployed
+// Dynamic Backend Base URL
+const BACKEND_HOST = window.location.hostname || "localhost";
+const BACKEND_BASE = window.location.port === "8000" ? "" : `${window.location.protocol}//${BACKEND_HOST}:8000`;
+const API_URL = `${BACKEND_BASE}/api`;
 
 // Get current logged-in user dynamically
 function getCurrentUser() {
@@ -116,9 +117,13 @@ function getAuthHeaders() {
 
 // Authenticated fetch wrapper with 401 handling
 async function authFetch(input, init = {}) {
+  let targetUrl = input;
+  if (typeof targetUrl === 'string' && targetUrl.startsWith('/api')) {
+    targetUrl = `${BACKEND_BASE}${targetUrl}`;
+  }
   const headers = Object.assign({}, init.headers || {}, getAuthHeaders());
   const opts = Object.assign({}, init, { headers });
-  const response = await fetch(input, opts);
+  const response = await fetch(targetUrl, opts);
   if (response.status === 401) {
     try { logout(); } catch {}
   }

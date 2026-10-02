@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
+  <!-- Circular Tracking Motif -->
+  <circle cx="20" cy="20" r="18" fill="none" stroke="#2563EB" stroke-width="3" stroke-dasharray="80 20" stroke-linecap="round"/>
+  
+  <!-- Graduation Cap -->
+  <path d="M20 10 L6 16 L20 22 L34 16 Z" fill="#1E40AF"/>
+  <path d="M10 18 L10 26 C10 29 15 31 20 31 C25 31 30 29 30 26 L30 18" fill="none" stroke="#1E40AF" stroke-width="2"/>
+  <line x1="32" y1="17" x2="32" y2="28" stroke="#3B82F6" stroke-width="2"/>
+  <circle cx="32" cy="28" r="1.5" fill="#3B82F6"/>
+
+  <!-- Analytics Element -->
+  <path d="M12 24 L16 20 L20 22 L26 14" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

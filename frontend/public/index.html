@@ -3,191 +3,555 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack | Smart Attendance & Analytics</title>
+  <title>EduTrack | Intelligent Academic Management Platform</title>
   <link rel="stylesheet" href="styles/global.css" />
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <style>
-    /* Landing Page Specific Styles */
+    /* Premium Landing Page Specific Styles */
+    :root {
+      --navy: #FFFFFF;
+      --navy-light: #F0F0F0;
+      --indigo: #FF00FF;
+      --cyan: #00FFFF;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #1e0b3c 0%, #0d041c 100%);
-      color: white;
+      background: var(--navy);
+      color: var(--text-main);
       overflow-x: hidden;
     }
-    
-    header {
+
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--indigo);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 1rem 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.5rem 5%;
-      background: rgba(30, 11, 60, 0.8);
-      backdrop-filter: blur(10px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
     }
-    
-    .logo {
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       font-size: 1.5rem;
-      font-weight: 700;
+      font-weight: 800;
+      color: black;
+      text-transform: uppercase;
+      text-shadow: 0 0 5px var(--indigo);
+    }
+
+    .brand-logo img {
+      height: 32px;
+    }
+
+    .nav-links {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 2rem;
     }
-    
+
     .nav-links a {
-      color: white;
-      text-decoration: none;
-      margin-left: 20px;
-      font-weight: 500;
-      transition: color 0.3s;
+      color: black;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-shadow: none;
     }
-    
+
     .nav-links a:hover {
-      color: #ff9800;
-    }
-    
-    .btn-primary {
-      background: #512da8;
-      color: white;
-      padding: 10px 24px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background 0.3s, transform 0.2s;
-      border: none;
-      cursor: pointer;
-    }
-    
-    .btn-primary:hover {
-      background: #673ab7;
-      transform: translateY(-2px);
+      color: var(--indigo);
+      text-shadow: 0 0 5px var(--indigo);
     }
 
-    .btn-secondary {
-      background: transparent;
-      color: #ff9800;
-      padding: 10px 24px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      border: 2px solid #ff9800;
-      transition: all 0.3s;
-    }
-
-    .btn-secondary:hover {
-      background: #ff9800;
-      color: white;
-    }
-
-    /* Hero Section */
+    /* Hero */
     .hero {
+      position: relative;
+      min-height: 90vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      text-align: center;
-      padding: 100px 5%;
-      min-height: 70vh;
+      padding: 0 5%;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255, 0, 255, 0.1) 0%, transparent 40%),
+                  radial-gradient(circle at bottom left, rgba(0, 255, 255, 0.1) 0%, transparent 40%);
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      max-width: 600px;
+    }
+
+    .badge-premium {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: rgba(0, 255, 255, 0.2);
+      border: 2px solid var(--cyan);
+      color: black;
+      box-shadow: 0 0 10px var(--cyan);
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 1.5rem;
     }
 
     .hero h1 {
       font-size: 4rem;
-      margin-bottom: 20px;
-      background: -webkit-linear-gradient(45deg, #ff9800, #ffc107);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      color: black;
+      text-shadow: 0 0 5px var(--indigo);
     }
 
     .hero p {
-      font-size: 1.2rem;
-      max-width: 600px;
-      margin-bottom: 40px;
-      color: #aaa;
-      line-height: 1.6;
+      font-size: 1.25rem;
+      color: black;
+      margin-bottom: 2.5rem;
+      font-weight: 500;
     }
 
-    .hero-buttons {
+    .trust-indicators {
       display: flex;
-      gap: 20px;
+      gap: 1.5rem;
+      margin-top: 3rem;
+      color: black;
+      font-size: 0.875rem;
+      font-weight: 700;
     }
 
-    /* Features Section */
-    .features {
+    .trust-indicators span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* 3D Visual Area */
+    .hero-visual {
+      flex: 1;
+      position: relative;
+      z-index: 10;
+      height: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .floating-panel {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      border: 2px solid var(--indigo);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      color: black;
+      box-shadow: 0 0 20px var(--cyan);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .panel-1 { top: 10%; right: 20%; animation-delay: 0s; width: 220px; }
+    .panel-2 { top: 45%; right: 50%; animation-delay: -2s; width: 240px; }
+    .panel-3 { bottom: 15%; right: 10%; animation-delay: -4s; width: 260px; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    /* Sections */
+    section {
+      padding: 6rem 5%;
+      position: relative;
+      z-index: 10;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 4rem auto;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: black;
+      text-shadow: 0 0 5px var(--indigo);
+    }
+
+    .section-header p {
+      font-size: 1.125rem;
+      color: black;
+      font-weight: 500;
+    }
+
+    .grid-3 {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 30px;
-      padding: 80px 5%;
-      background: #0d041c;
+      gap: 2rem;
     }
 
     .feature-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
-      padding: 30px;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: transform 0.3s, background 0.3s;
+      background: rgba(255, 255, 255, 1);
+      border: 2px solid var(--cyan);
+      border-radius: 1rem;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px var(--cyan);
+      color: black;
     }
 
     .feature-card:hover {
-      transform: translateY(-10px);
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 1);
+      border-color: var(--indigo);
+      box-shadow: 0 0 20px var(--indigo);
+      transform: translateY(-5px);
     }
 
     .feature-icon {
-      font-size: 3rem;
-      color: #512da8;
-      margin-bottom: 20px;
-    }
-
-    .feature-card h3 {
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 0, 255, 0.1);
+      color: var(--indigo);
+      text-shadow: 0 0 5px var(--indigo);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 1.5rem;
-      margin-bottom: 15px;
+      margin-bottom: 1.5rem;
     }
 
-    .feature-card p {
-      color: #aaa;
-      line-height: 1.6;
+    /* Split Section */
+    .split-section {
+      display: flex;
+      align-items: center;
+      gap: 4rem;
+    }
+    
+    .split-content, .split-visual {
+      flex: 1;
+    }
+
+    .mockup-container {
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid var(--indigo);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 0 20px var(--indigo);
+      color: black;
     }
 
     /* Footer */
     footer {
+      border-top: 2px solid var(--indigo);
+      padding: 4rem 5% 2rem;
+      background: #FFFFFF;
+    }
+    
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    
+    .footer-bottom {
+      border-top: 2px solid var(--cyan);
+      padding-top: 2rem;
       text-align: center;
-      padding: 40px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: #666;
+      color: black;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    
+    .footer-links h4 {
+      color: black;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      text-shadow: 0 0 2px var(--cyan);
+    }
+    
+    .footer-links ul {
+      list-style: none;
+    }
+    
+    .footer-links li {
+      margin-bottom: 0.75rem;
+    }
+    
+    .footer-links a {
+      color: black;
+      font-weight: 500;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+    
+    .footer-links a:hover {
+      color: var(--indigo);
+      text-shadow: 0 0 5px var(--indigo);
     }
 
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">
-      <i class="fa-solid fa-graduation-cap" style="color: #ff9800;"></i> EduTrack
+  <!-- Navigation -->
+  <nav class="glass-nav">
+    <div class="brand-logo">
+      <img src="assets/edutrack-icon.svg" alt="EduTrack Logo" />
+      EduTrack
     </div>
     <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="login.html">Login</a>
-      <a href="register.html" class="btn-primary" style="margin-left: 20px;">Get Started</a>
+      <a href="#features">Platform</a>
+      <a href="#analytics">Analytics</a>
+      <a href="login.html">Sign In</a>
+      <a href="register.html" class="btn btn-primary">Get Started</a>
     </div>
-  </header>
+  </nav>
 
-  <section class="hero" id="hero-section">
-    <div id="threejs-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></div>
-    <h1>The Future of Academic Tracking</h1>
-    <p>Empower your institution with AI-driven attendance recovery, real-time QR scanning, and powerful interactive dashboards.</p>
-    <div class="hero-buttons">
-      <a href="register.html" class="btn-primary">Create Account</a>
-      <a href="login.html" class="btn-secondary">Sign In</a>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div id="threejs-canvas" style="position: absolute; inset: 0; z-index: 1; pointer-events: none;"></div>
+    
+    <div class="hero-content">
+      <div class="badge-premium">INTELLIGENT COLLEGE MANAGEMENT</div>
+      <h1>Smarter Academic Management.<br>Built for Modern Colleges.</h1>
+      <p>Track attendance, manage academic schedules, recover attendance gaps, and keep students connected to everything that matters.</p>
+      
+      <div class="flex gap-4">
+        <a href="register.html" class="btn btn-primary" style="padding: 0.875rem 2rem; font-size: 1rem;">Get Started</a>
+        <a href="login.html" class="btn btn-secondary" style="padding: 0.875rem 2rem; font-size: 1rem;">Sign In</a>
+      </div>
+
+      <div class="trust-indicators">
+        <span><i class="fa-solid fa-qrcode text-cyan-400"></i> QR Attendance</span>
+        <span><i class="fa-solid fa-chart-line text-cyan-400"></i> Academic Analytics</span>
+        <span><i class="fa-solid fa-robot text-cyan-400"></i> Local AI</span>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <!-- Floating Dashboard Panels -->
+      <div class="floating-panel panel-1">
+        <div style="font-size: 0.75rem; color: black; margin-bottom: 0.5rem; text-transform: uppercase; font-weight: 700;">Attendance Overview</div>
+        <div style="font-size: 2.5rem; font-weight: 700; color: var(--success); text-shadow: 0 0 5px var(--success); margin-bottom: 0.5rem;">82%</div>
+        <div class="progress-container" style="height: 6px; background: rgba(0,0,0,0.1); border: 1px solid #ccc;">
+          <div class="progress-bar progress-success" style="width: 82%;"></div>
+        </div>
+      </div>
+
+      <div class="floating-panel panel-2">
+        <div style="font-size: 0.75rem; color: black; margin-bottom: 1rem; text-transform: uppercase; font-weight: 700;">Today's Classes</div>
+        <div class="flex-col gap-2">
+          <div style="padding: 0.5rem; background: rgba(0,255,255,0.1); border: 1px solid var(--cyan); border-radius: 6px; font-size: 0.875rem; font-weight: 600;">
+            <strong>09:00</strong> Data Structures
+          </div>
+          <div style="padding: 0.5rem; background: rgba(0,255,255,0.1); border: 1px solid var(--cyan); border-radius: 6px; font-size: 0.875rem; font-weight: 600;">
+            <strong>10:30</strong> Database Systems
+          </div>
+        </div>
+      </div>
+
+      <div class="floating-panel panel-3">
+        <div style="font-size: 0.75rem; color: black; margin-bottom: 1rem; text-transform: uppercase; font-weight: 700;">Recovery Planner</div>
+        <div style="font-size: 0.875rem; margin-bottom: 0.5rem; font-weight: 700;">Machine Learning</div>
+        <div class="flex justify-between items-center" style="font-size: 0.75rem; color: black; font-weight: 600;">
+          <span>Current: 62%</span>
+          <span>Target: 75%</span>
+        </div>
+        <div style="margin-top: 1rem; padding: 0.5rem; background: rgba(0, 255, 255, 0.2); color: black; border: 1px solid var(--cyan); border-radius: 6px; font-size: 0.875rem; text-align: center; font-weight: 700;">
+          Attend next 8 classes
+        </div>
+      </div>
     </div>
   </section>
 
+  <!-- Features Section -->
+  <section id="features" style="background: rgba(255, 255, 255, 1);">
+    <div class="section-header">
+      <h2>Everything Your College Needs</h2>
+      <p>A complete ecosystem designed to modernize academic workflows for students, faculty, and administrators.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-qrcode"></i></div>
+        <h3 style="color: black;">Smart Attendance</h3>
+        <p style="color: black; margin-top: 0.5rem; font-weight: 500;">Secure, real-time QR attendance scanning. Eliminates roll calls and prevents proxy attendance.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-chart-pie"></i></div>
+        <h3 style="color: black;">Academic Analytics</h3>
+        <p style="color: black; margin-top: 0.5rem; font-weight: 500;">Understand attendance trends, subject performance, and academic risk at a glance.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-route"></i></div>
+        <h3 style="color: black;">Recovery Planner</h3>
+        <p style="color: black; margin-top: 0.5rem; font-weight: 500;">Deterministic planning engine shows exactly how many classes are required to recover attendance.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-calendar-alt"></i></div>
+        <h3 style="color: black;">Intelligent Timetable</h3>
+        <p style="color: black; margin-top: 0.5rem; font-weight: 500;">Dynamic weekly schedules with room allocations, faculty details, and live class indicators.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-book-open"></i></div>
+        <h3 style="color: black;">Academic Resources</h3>
+        <p style="color: black; margin-top: 0.5rem; font-weight: 500;">Centralized repository for syllabi, lecture notes, textbooks, and institutional documents.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-robot"></i></div>
+        <h3 style="color: black;">Local AI Assistant</h3>
+        <p style="color: black; margin-top: 0.5rem; font-weight: 500;">Secure, on-device Ollama chatbot that answers contextual questions about your academic data.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Analytics Split Section -->
+  <section id="analytics" style="background: #F8F8F8;">
+    <div class="split-section">
+      <div class="split-content">
+        <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem; color: black; text-shadow: 0 0 5px var(--indigo);">Attendance shouldn't be a guessing game.</h2>
+        <p style="font-size: 1.125rem; color: black; font-weight: 500; margin-bottom: 2rem;">EduTrack turns raw attendance records into actionable academic insight. Monitor subject-wise performance, identify at-risk modules, and stay ahead of institutional requirements.</p>
+        <a href="register.html" class="btn btn-outline" style="color: var(--indigo); border-color: var(--indigo);">Explore Analytics</a>
+      </div>
+      <div class="split-visual">
+        <div class="mockup-container">
+          <h4 style="color: black; margin-bottom: 1.5rem; font-weight: 800; text-transform: uppercase;">Attendance Overview</h4>
+          
+          <div style="margin-bottom: 1.5rem;">
+            <div class="flex justify-between" style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;">
+              <span>Data Structures</span>
+              <span style="color: var(--success);">82%</span>
+            </div>
+            <div class="progress-container"><div class="progress-bar progress-success" style="width: 82%;"></div></div>
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <div class="flex justify-between" style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;">
+              <span>Database Systems</span>
+              <span style="color: var(--warning);">74%</span>
+            </div>
+            <div class="progress-container"><div class="progress-bar progress-warning" style="width: 74%;"></div></div>
+          </div>
+
+          <div style="margin-bottom: 1.5rem;">
+            <div class="flex justify-between" style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;">
+              <span>Machine Learning</span>
+              <span style="color: var(--danger);">68%</span>
+            </div>
+            <div class="progress-container"><div class="progress-bar progress-danger" style="width: 68%;"></div></div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between" style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem;">
+              <span>Operating Systems</span>
+              <span style="color: var(--success);">91%</span>
+            </div>
+            <div class="progress-container"><div class="progress-bar progress-success" style="width: 91%;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Local AI Section -->
+  <section style="background: rgba(255, 255, 255, 1);">
+    <div class="split-section" style="flex-direction: row-reverse;">
+      <div class="split-content">
+        <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem; color: black; text-shadow: 0 0 5px var(--indigo);">Your academic data, explained.</h2>
+        <p style="font-size: 1.125rem; color: black; font-weight: 500; margin-bottom: 2rem;">Powered by a local Ollama instance, the EduTrack AI assistant answers questions securely using only your authenticated context. Zero cloud dependency. Maximum privacy.</p>
+      </div>
+      <div class="split-visual">
+        <div class="mockup-container" style="background: rgba(255, 255, 255, 1);">
+          <div style="background: rgba(0,255,255,0.1); border: 1px solid var(--cyan); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; margin-left: 2rem; border-bottom-right-radius: 0;">
+            <p style="font-size: 0.875rem; color: black; font-weight: 700;">How many Machine Learning classes do I need to attend to reach 75%?</p>
+          </div>
+          <div style="background: rgba(255, 0, 255, 0.1); border: 2px solid var(--indigo); padding: 1rem; border-radius: 0.5rem; margin-right: 2rem; border-bottom-left-radius: 0;">
+            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; color: var(--indigo); font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">
+              <i class="fa-solid fa-robot"></i> EDUTRACK AI
+            </div>
+            <p style="font-size: 0.875rem; color: black; font-weight: 600; line-height: 1.5;">Your current attendance is 62% across 50 classes. You need to attend the next 8 classes consecutively to reach approximately 75%.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section style="text-align: center; padding: 8rem 5%; background: #F5F5F5;">
+    <img src="assets/edutrack-icon.svg" alt="EduTrack Logo" style="height: 64px; margin-bottom: 2rem;" />
+    <h2 style="font-size: 3rem; color: black; margin-bottom: 1.5rem; text-shadow: 0 0 10px var(--cyan);">Bring your college experience<br>into one intelligent platform.</h2>
+    <div class="flex gap-4" style="justify-content: center; margin-top: 3rem;">
+      <a href="register.html" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.125rem;">Get Started Now</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="brand-logo" style="margin-bottom: 1rem; color: black; text-shadow: none;">
+          <img src="assets/edutrack-icon.svg" alt="EduTrack Logo" />
+          EduTrack
+        </div>
+        <p style="color: black; font-weight: 500; font-size: 0.875rem; max-width: 250px;">Intelligent digital academic command center for modern colleges.</p>
+      </div>
+      
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#">Attendance</a></li>
+          <li><a href="#">Timetable</a></li>
+          <li><a href="#">Analytics</a></li>
+          <li><a href="#">Recovery Planner</a></li>
+          <li><a href="#">Resources</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Academic</h4>
+        <ul>
+          <li><a href="#">Students</a></li>
+          <li><a href="#">Faculty</a></li>
+          <li><a href="#">Classes</a></li>
+          <li><a href="#">Events</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4>Account</h4>
+        <ul>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      &copy; 2026 EduTrack Academic Management Platform. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Three.js Visuals -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // Three.js 3D Background Animation
     try {
       const container = document.getElementById('threejs-canvas');
       const scene = new THREE.Scene();
@@ -195,59 +559,50 @@
       const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
       
       renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(renderer.domElement);
 
-      // Create particles
-      const particlesGeometry = new THREE.BufferGeometry();
-      const particlesCount = 500;
-      const posArray = new Float32Array(particlesCount * 3);
+      // Connected Nodes representation
+      const nodesGeometry = new THREE.BufferGeometry();
+      const nodesCount = 100;
+      const posArray = new Float32Array(nodesCount * 3);
       
-      for(let i = 0; i < particlesCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 10;
+      for(let i = 0; i < nodesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 15;
       }
       
-      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      nodesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
       
-      const material = new THREE.PointsMaterial({
-        size: 0.02,
-        color: 0x2196f3,
+      const nodesMaterial = new THREE.PointsMaterial({
+        size: 0.05,
+        color: 0xFF00FF,
         transparent: true,
         opacity: 0.8
       });
       
-      const particlesMesh = new THREE.Points(particlesGeometry, material);
-      scene.add(particlesMesh);
+      const nodesMesh = new THREE.Points(nodesGeometry, nodesMaterial);
+      scene.add(nodesMesh);
       
-      // Central floating object (EduTrack Node)
-      const coreGeometry = new THREE.IcosahedronGeometry(1, 0);
-      const coreMaterial = new THREE.MeshBasicMaterial({ color: 0x512da8, wireframe: true });
+      // Central Academic Core
+      const coreGeometry = new THREE.IcosahedronGeometry(2, 1);
+      const coreMaterial = new THREE.MeshBasicMaterial({ 
+        color: 0x00FFFF, 
+        wireframe: true,
+        transparent: true,
+        opacity: 0.8
+      });
       const coreMesh = new THREE.Mesh(coreGeometry, coreMaterial);
       scene.add(coreMesh);
       
-      camera.position.z = 4;
-
-      // Mouse interaction
-      let mouseX = 0;
-      let mouseY = 0;
-      
-      document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX / window.innerWidth - 0.5;
-        mouseY = e.clientY / window.innerHeight - 0.5;
-      });
+      camera.position.z = 8;
+      camera.position.x = -4;
 
       function animate() {
         requestAnimationFrame(animate);
         
-        particlesMesh.rotation.y += 0.001;
-        particlesMesh.rotation.x += 0.0005;
-        
-        coreMesh.rotation.x += 0.005;
-        coreMesh.rotation.y += 0.005;
-        
-        // Parallax effect
-        camera.position.x += (mouseX * 2 - camera.position.x) * 0.05;
-        camera.position.y += (-mouseY * 2 - camera.position.y) * 0.05;
-        camera.lookAt(scene.position);
+        nodesMesh.rotation.y += 0.0005;
+        coreMesh.rotation.x += 0.002;
+        coreMesh.rotation.y += 0.002;
         
         renderer.render(scene, camera);
       }
@@ -259,33 +614,8 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
       });
     } catch (e) {
-      console.warn("WebGL not supported or Three.js failed to load. Falling back to CSS background.");
+      console.warn("WebGL not supported. Falling back to CSS background.");
     }
   </script>
-
-  <section class="features" id="features">
-    <div class="feature-card">
-      <i class="fa-solid fa-qrcode feature-icon"></i>
-      <h3>Live QR Attendance</h3>
-      <p>Teachers can instantly generate expiring QR codes for lectures. Students scan to log attendance seamlessly, eliminating roll calls.</p>
-    </div>
-    
-    <div class="feature-card">
-      <i class="fa-solid fa-robot feature-icon" style="color: #ff9800;"></i>
-      <h3>Local AI Assistant</h3>
-      <p>A built-in secure Ollama chatbot analyzes your attendance and academic risk in real-time, completely locally without exposing private data.</p>
-    </div>
-
-    <div class="feature-card">
-      <i class="fa-solid fa-chart-pie feature-icon" style="color: #2196f3;"></i>
-      <h3>Recovery Planner</h3>
-      <p>Automatically calculate exactly how many classes you must attend (or can afford to miss) to stay above your institution's threshold.</p>
-    </div>
-  </section>
-
-  <footer>
-    <p>&copy; 2026 EduTrack. Built for the Hackathon.</p>
-  </footer>
-
 </body>
 </html>

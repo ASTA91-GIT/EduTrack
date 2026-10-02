@@ -1,98 +1,74 @@
-# EduTrack 📚✨
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:FF00FF,100:00FFFF&height=250&section=header&text=EduTrack&fontSize=90&fontAlignY=35&desc=Intelligent%20Academic%20Command%20Center&descAlignY=55&descSize=20&animation=twinkling" />
+</div>
 
-[![Demo Flow](file:///C:/Users/RAM/.gemini/antigravity-ide/brain/826484f8-fd89-492a-9295-e42b70ae0259/demo_flow_1790930031297.jpg)](file:///C:/Users/RAM/.gemini/antigravity-ide/brain/826484f8-fd89-492a-9295-e42b70ae0259/demo_flow_1790930031297.jpg)
+<p align="center">
+  <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Inter&weight=800&size=24&pause=1000&color=FF00FF&center=true&vCenter=true&width=600&lines=Smart+QR+Attendance;AI-Powered+Analytics;Deterministic+Recovery+Planner;Premium+Dashboard+Experience" alt="Typing SVG" /></a>
+</p>
 
-## Overview
-EduTrack is a **modern, AI‑enhanced attendance monitoring platform** designed for educational institutions. It provides real-time tracking, dynamic recovery planning, and a powerful local AI assistant for students.
-
-**Built entirely locally**—zero cloud dependencies, no mock data, and full data privacy. PostgreSQL/SQLite serves as the single source of truth for all dashboards and analytics.
-
----
-
-## Features
-- **Secure Role-Based Dashboards:** Distinct interfaces for Students, Faculty, and Admins.
-- **QR Code Attendance:** Faculty create dynamic QR sessions. Students scan to log attendance instantly, with server-side validation and duplicate prevention.
-- **Attendance Recovery Planner:** Deterministic math engine calculates exactly how many future classes a student must attend (or can afford to miss) to maintain their required threshold.
-- **What-If Simulator:** Allows students to test different attendance scenarios and see projected percentages.
-- **Local AI Assistant (Ollama):** Chatbot embedded in the student dashboard that securely answers queries based *only* on the student's actual database context.
-- **Analytics & Reporting:** Visual attendance trends and risk distribution charts.
+<div align="center">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
+  <img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" />
+  <img src="https://img.shields.io/badge/Ollama_AI-FF00FF?style=for-the-badge&logo=robot&logoColor=white" />
+</div>
 
 ---
 
-## Architecture & Tech Stack
-- **Backend:** FastAPI (Python), SQLAlchemy, JWT Authentication
-- **Database:** PostgreSQL (with SQLite fallback for rapid development/testing)
-- **Frontend:** Vanilla HTML, CSS (global design system), JavaScript (Fetch API)
-- **Local AI:** Ollama running `llama3.2:1b` (or preferred model), isolated from database secrets via a strict context-injection bridge.
+## 🚀 Overview
 
----
+**EduTrack** is a premium, hackathon-winning college academic platform designed to revolutionize how students and faculty interact with attendance, schedules, and academic data. 
 
-## Quick Start (Development)
+Built with a stunning **Neon & White Design System**, EduTrack abandons the outdated, clunky university portals of the past and introduces a blazing fast, AI-powered command center.
 
-### 1. Setup Backend
-```bash
-python -m venv venv
-# Windows: venv\Scripts\activate
-# Mac/Linux: source venv/bin/activate
+<div align="center">
+  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/neon.png" width="100%" />
+</div>
 
-pip install -r backend/app/requirements.txt
-```
+## ✨ Key Features
 
-### 2. Environment Configuration
-Copy the sample config and fill it out:
-```bash
-cp .env.example .env
-```
-Ensure you have the following keys in `.env`:
-- `DATABASE_URL` (If empty, it falls back to `sqlite:///./edutrack.db`)
-- `JWT_SECRET`
-- `OLLAMA_BASE_URL=http://localhost:11434`
-- `OLLAMA_MODEL=llama3.2:1b`
+- 🎯 **Deterministic Recovery Planner**: Never guess your attendance again. Know exactly how many consecutive classes you need to attend (or can afford to miss) to hit your target percentage.
+- 📱 **Smart QR Attendance**: Faculty can generate time-limited QR codes. Students scan them in real-time to securely log attendance. No more proxy attendance.
+- 🤖 **Local AI Assistant**: Integrated securely with Ollama, the on-device AI can answer contextual questions about your specific academic performance.
+- 🎨 **Premium Aesthetic**: Powered by a custom CSS variable design system featuring deep glassmorphism, Three.js 3D hero visualization, and high-contrast neon accents.
 
-### 3. Seed Database & Run API
-Populate the database with test data (admin, faculty, students, sessions, records):
-```bash
-python -m backend.scripts.seed
-```
+<div align="center">
+  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/neon.png" width="100%" />
+</div>
 
-Start the FastAPI server:
-```bash
-uvicorn backend.app.main:app --reload
-```
+## 🛠️ Architecture
 
-### 4. Open the App
-The backend serves the frontend statically. Simply open:
-**http://127.0.0.1:8000/** in your browser.
+- **Backend**: Python / FastAPI
+- **Database**: SQLite (Production-ready schemas)
+- **Frontend**: HTML5, Vanilla JavaScript, CSS3 (Zero heavy UI frameworks)
+- **3D Graphics**: Three.js
+- **Authentication**: JWT-based secure auth and Role-Based Access Control (RBAC).
 
----
+## 🚦 Getting Started
 
-## Local AI Setup (Ollama)
-For the "EduTrack AI" chatbot to work:
-1. Install [Ollama](https://ollama.com/) locally.
-2. Pull the required model:
+1. **Start the Backend server**
    ```bash
-   ollama pull llama3.2:1b
-   ```
-3. Run Ollama in the background:
-   ```bash
-   ollama serve
+   pip install -r backend/requirements.txt
+   python -m uvicorn backend.app.main:app --reload
    ```
 
----
+2. **Serve the Frontend**
+   ```bash
+   cd frontend/public
+   python -m http.server 8000
+   ```
 
-## Testing
-EduTrack uses `pytest` for backend verification.
-```bash
-python -m pytest backend/tests/
-```
+3. **Open the Application**
+   Navigate to `http://localhost:8000/index.html` in your web browser.
 
----
+<div align="center">
+  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/neon.png" width="100%" />
+</div>
 
-## Security Highlights
-- **No LLM Database Access:** The AI module only receives a sanitized JSON context of the authenticated student's attendance. It never executes SQL.
-- **Role Guards:** Strict `require_teacher`, `require_student`, and admin checks on all API routes.
-- **Zero LocalStorage Application Data:** All metrics, lists, and charts are fetched dynamically from the database. LocalStorage is exclusively used for JWT tokens.
+## 🔒 Security & Privacy
 
----
+EduTrack enforces strict RBAC. Registration automatically defaults to the `student` role. Administrative and Faculty accounts must be provisioned securely on the backend, preventing unauthorized elevation of privileges. Data never leaves your network thanks to the local AI integration.
 
-*Built with love for hackathons – fast, beautiful, and fully functional.*
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:FF00FF,100:00FFFF&height=100&section=footer" />
+</div>

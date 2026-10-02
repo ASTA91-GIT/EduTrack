@@ -1,46 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack | Register</title>
-
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="Referrer-Policy" content="no-referrer">
-  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
-  
-  <!-- Icons -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles/global.css" />
-  <link rel="stylesheet" href="login/mainlogin.css" />
-
-  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      background: var(--background);
+      overflow: hidden;
+    }
+    .login-split {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+    .login-left {
+      flex: 1;
+      background: #FFFFFF;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 4rem;
+      color: black;
+      justify-content: center;
+      overflow: hidden;
+      border-right: 2px solid var(--accent);
+    }
+    .login-left-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at bottom left, rgba(0, 255, 255, 0.2) 0%, transparent 50%);
+      z-index: 0;
+    }
+    .login-left-content {
+      position: relative;
+      z-index: 10;
+      max-width: 480px;
+    }
+    .login-right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      margin: auto 0;
+    }
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 2rem;
+    }
+    .login-logo img {
+      height: 32px;
+    }
+    
+    /* Academic Visual */
+    .academic-visual {
+      margin-top: 4rem;
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid var(--indigo);
+      border-radius: 1rem;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 15px var(--cyan);
+    }
+    .av-header {
+      font-size: 0.875rem;
+      color: black;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .login-left {
+        display: none;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="background-container"></div>
-  
-  <div class="login-container">
-    <form id="registerForm">
-      <img src="images/logo.png" alt="EduTrack Logo" class="logo" />
-
-      <h1>Create Account</h1>
-
-      <div class="role-selection" style="display:none;">
-        <input type="hidden" name="role" value="student" id="regRole" />
+  <div class="login-split">
+    <!-- Left Side: Visual -->
+    <div class="login-left">
+      <div class="login-left-bg"></div>
+      <div class="login-left-content">
+        <h1 style="font-size: 3rem; margin-bottom: 1.5rem; line-height: 1.2; text-shadow: 0 0 5px var(--indigo);">Join EduTrack</h1>
+        <p style="font-size: 1.125rem; color: black; font-weight: 500;">Take control of your academic journey. Track your attendance, plan your recovery, and access everything in one place.</p>
+        
+        <div class="academic-visual">
+          <div class="av-header">Platform Features</div>
+          <div class="flex items-center gap-4 mb-3" style="color: var(--cyan); font-weight: 700; text-shadow: 0 0 2px var(--cyan);">
+            <i class="fa-solid fa-qrcode"></i>
+            <span>Instant QR Attendance</span>
+          </div>
+          <div class="flex items-center gap-4 mb-3" style="color: var(--cyan); font-weight: 700; text-shadow: 0 0 2px var(--cyan);">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Attendance Analytics</span>
+          </div>
+          <div class="flex items-center gap-4" style="color: var(--cyan); font-weight: 700; text-shadow: 0 0 2px var(--cyan);">
+            <i class="fa-solid fa-robot"></i>
+            <span>Local AI Assistant</span>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <input type="text" id="regName" placeholder="Full Name" required />
-      <input type="email" id="regEmail" placeholder="Institutional Email" required />
-      <input type="password" id="regPassword" placeholder="Password" required />
+    <!-- Right Side: Form -->
+    <div class="login-right">
+      <div class="login-card">
+        <a href="index.html" class="login-logo">
+          <img src="assets/edutrack-icon.svg" alt="EduTrack Logo" />
+          EduTrack
+        </a>
+        
+        <h2 style="font-size: 1.875rem; margin-bottom: 0.5rem;">Create Account</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2.5rem;">Register as a student to access the platform.</p>
 
-      <button type="submit">Sign Up</button>
+        <form id="registerForm">
+          <input type="hidden" name="role" value="student" id="regRole" />
 
-      <div style="margin-top: 15px; text-align: center; color: white;">
-        Already have an account? <a href="login.html" style="color: #ff9800; text-decoration: none;">Login</a>
+          <div class="form-group">
+            <label class="form-label" for="regName">Full Name</label>
+            <input type="text" id="regName" class="form-input" placeholder="e.g. John Doe" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="regEmail">Institutional Email</label>
+            <input type="email" id="regEmail" class="form-input" placeholder="student@college.edu" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="regPassword">Password</label>
+            <input type="password" id="regPassword" class="form-input" placeholder="Create a secure password" required />
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="regConfirmPassword">Confirm Password</label>
+            <input type="password" id="regConfirmPassword" class="form-input" placeholder="Confirm your password" required />
+          </div>
+
+          <button type="submit" class="btn btn-primary w-full" style="padding: 0.875rem; font-size: 1rem; margin-top: 1rem;">
+            Sign Up
+          </button>
+        </form>
+
+        <div style="margin-top: 2rem; text-align: center; font-size: 0.875rem; color: var(--text-muted);">
+          Already have an account? <a href="login.html" style="font-weight: 600;">Sign in here</a>
+        </div>
       </div>
-    </form>
+    </div>
   </div>
 
   <script src="js/auth.js"></script>

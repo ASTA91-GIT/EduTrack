@@ -1,55 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack | Login</title>
-
-  <!-- Security -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="Referrer-Policy" content="no-referrer">
-  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:8000 http://localhost:8000; font-src 'self' https://cdnjs.cloudflare.com; frame-ancestors 'none'; base-uri 'self'">
-
-  <!-- Icons -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles/global.css" />
-  <link rel="stylesheet" href="login/mainlogin.css" />
-
-  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      background: var(--background);
+      overflow: hidden;
+    }
+    .login-split {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+    .login-left {
+      flex: 1;
+      background: #FFFFFF;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 4rem;
+      color: black;
+      justify-content: center;
+      overflow: hidden;
+      border-right: 2px solid var(--accent);
+    }
+    .login-left-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
+      z-index: 0;
+    }
+    .login-left-content {
+      position: relative;
+      z-index: 10;
+      max-width: 480px;
+    }
+    .login-right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      padding: 2rem;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+    }
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 2rem;
+    }
+    .login-logo img {
+      height: 32px;
+    }
+    
+    /* Academic Visual */
+    .academic-visual {
+      margin-top: 4rem;
+      background: rgba(255, 255, 255, 0.9);
+      border: 2px solid var(--indigo);
+      border-radius: 1rem;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 15px var(--cyan);
+    }
+    .av-header {
+      font-size: 0.875rem;
+      color: black;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .login-left {
+        display: none;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="background-container"></div>
-  
-  <div class="login-container">
-    <form id="loginForm">
-      <img src="images/logo.png" alt="EduTrack Logo" class="logo" />
-
-      <h1>Login to EduTrack</h1>
-
-      <!-- Role selection removed. Role is determined by the backend. -->
-
-      <input type="email" id="loginEmail" placeholder="Institutional Email" required />
-      <input type="password" id="loginPassword" placeholder="Password" required />
-
-      <button type="submit">Login</button>
-
-      <div style="margin-top: 15px; text-align: center; color: white;">
-        Don't have an account? <a href="register.html" style="color: #ff9800; text-decoration: none;">Create Account</a>
+  <div class="login-split">
+    <!-- Left Side: Visual -->
+    <div class="login-left">
+      <div class="login-left-bg"></div>
+      <div class="login-left-content">
+        <h1 style="font-size: 3rem; margin-bottom: 1.5rem; line-height: 1.2; text-shadow: 0 0 5px var(--indigo);">Welcome back to EduTrack</h1>
+        <p style="font-size: 1.125rem; color: black; font-weight: 500;">Your intelligent academic command center. Access your attendance, schedule, and resources.</p>
+        
+        <div class="academic-visual">
+          <div class="av-header">System Status</div>
+          <div class="flex items-center gap-4 mb-4" style="color: var(--success); font-weight: 700; text-shadow: 0 0 2px var(--success);">
+            <i class="fa-solid fa-check-circle"></i>
+            <span>All systems operational</span>
+          </div>
+          <div class="flex items-center gap-4" style="color: var(--cyan); font-weight: 700; text-shadow: 0 0 2px var(--cyan);">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Secure connection established</span>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <!-- Quick Navigation Links for testing -->
-      <div class="page-links">
-        <p>Quick Navigation:</p>
-        <a href="manage-students.html">Student</a> |
-        <a href="teacher.html">Teacher</a> |
-        <a href="attendance.html">Attendance</a> |
-        <a href="dashboard.html">Dashboard</a> |
-        <a href="reports.html">Reports</a>
+    <!-- Right Side: Form -->
+    <div class="login-right">
+      <div class="login-card">
+        <a href="index.html" class="login-logo">
+          <img src="assets/edutrack-icon.svg" alt="EduTrack Logo" />
+          EduTrack
+        </a>
+        
+        <h2 style="font-size: 1.875rem; margin-bottom: 0.5rem;">Sign In</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2.5rem;">Enter your institutional email to continue.</p>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">Email Address</label>
+            <input type="email" id="loginEmail" class="form-input" placeholder="student@college.edu" required />
+          </div>
+
+          <div class="form-group">
+            <div class="flex justify-between items-center mb-2">
+              <label class="form-label" for="loginPassword" style="margin-bottom: 0;">Password</label>
+              <a href="#" style="font-size: 0.875rem; font-weight: 500;">Forgot password?</a>
+            </div>
+            <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required />
+          </div>
+
+          <div class="form-group flex items-center gap-2 mt-4">
+            <input type="checkbox" id="rememberMe" style="width: 16px; height: 16px;" />
+            <label for="rememberMe" style="font-size: 0.875rem; color: var(--text-main);">Remember me for 30 days</label>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-full" style="padding: 0.875rem; font-size: 1rem; margin-top: 1rem;">
+            Sign In
+          </button>
+        </form>
+
+        <div style="margin-top: 2rem; text-align: center; font-size: 0.875rem; color: var(--text-muted);">
+          Don't have an account? <a href="register.html" style="font-weight: 600;">Create student account</a>
+        </div>
       </div>
-    </form>
+    </div>
   </div>
 
   <script src="js/auth.js"></script>

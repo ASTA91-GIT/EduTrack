@@ -1,340 +1,386 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Student Dashboard</title>
-  <link rel="stylesheet" href="styles/global.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | EduTrack</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <style>
-    .dashboard-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
+    .grid-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
     }
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        background: rgba(255, 255, 255, 0.8);
-        padding: 1.5rem;
-        border-radius: 12px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-    .header h1 { color: #512da8; }
-    .nav-actions button {
-        background: #512da8;
-        color: white;
-        border: none;
-        padding: 0.5rem 1.5rem;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: background 0.3s;
-    }
-    .nav-actions button:hover { background: #3f2382; }
     
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
     .stat-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        text-align: center;
-        transition: transform 0.2s;
+      padding: 1.5rem;
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
     }
-    .stat-card:hover { transform: translateY(-5px); }
-    .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
-    .stat-card .value { font-size: 2.5rem; font-weight: 700; color: #512da8; }
-    .stat-card .desc { color: #888; font-size: 0.85rem; margin-top: 0.5rem; }
+    
+    .stat-card-title {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-card-value {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+    
+    .stat-card-desc {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
 
-    .subjects-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+    .grid-subjects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
     }
+
     .subject-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      padding: 1.5rem;
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
+    
+    .subject-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
     .subject-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
     }
-    .subject-header h3 { color: #333; margin: 0; }
-    .badge {
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
+
+    .subject-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-main);
     }
-    .badge.safe { background: #e8f5e9; color: #2e7d32; }
-    .badge.recovering { background: #e3f2fd; color: #1565c0; }
-    .badge.at_risk { background: #fff3e0; color: #ef6c00; }
-    .badge.critical { background: #ffebee; color: #c62828; }
-    
-    .progress-container { margin: 1rem 0; }
-    .progress-bar {
-        height: 10px;
-        background: #eee;
-        border-radius: 5px;
-        overflow: hidden;
-    }
-    .progress-fill {
-        height: 100%;
-        background: #512da8;
-        border-radius: 5px;
-        transition: width 0.5s ease;
-    }
-    .progress-fill.danger { background: #f44336; }
-    .progress-fill.warning { background: #ff9800; }
-    .progress-fill.success { background: #4caf50; }
-    
-    .subject-details {
-        display: flex;
-        justify-content: space-between;
-        color: #666;
-        font-size: 0.9rem;
+
+    .subject-metrics {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
     }
     
-    .recovery-info {
-        margin-top: 1rem;
-        padding: 1rem;
-        background: #f8f9fa;
-        border-radius: 8px;
-        border-left: 4px solid #512da8;
-        font-size: 0.9rem;
-        color: #444;
+    .recovery-banner {
+      margin-top: 1.25rem;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    /* What-If Simulator */
+    .whatif-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-sm);
     }
     
-    .whatif-section {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        margin-bottom: 2rem;
-    }
     .whatif-controls {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-        margin-top: 1rem;
-    }
-    .whatif-controls input {
-        width: 100px;
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-    }
-    .whatif-controls select {
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        flex-grow: 1;
-    }
-    .whatif-controls button {
-        background: #512da8;
-        color: white;
-        border: none;
-        padding: 0.5rem 1.5rem;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-    .whatif-result {
-        margin-top: 1.5rem;
-        padding: 1rem;
-        background: #f0f4ff;
-        border-radius: 8px;
-        display: none;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.5rem;
     }
     
+    #whatif-result {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      background: var(--surface-hover);
+      border-radius: var(--radius-md);
+      display: none;
+    }
+    
+    #whatif-result ul {
+      margin-top: 0.75rem;
+      padding-left: 1.5rem;
+    }
+    
+    #whatif-result li {
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+
     /* Chatbot Styles */
     #chatbot-btn {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, #512da8, #7c4dff);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 24px;
-        cursor: pointer;
-        box-shadow: 0 4px 15px rgba(81, 45, 168, 0.4);
-        z-index: 1000;
-        transition: transform 0.3s, box-shadow 0.3s;
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 3.5rem;
+      height: 3.5rem;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.2s, background 0.2s;
+      z-index: 1000;
     }
-    #chatbot-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(81, 45, 168, 0.6); }
     
+    #chatbot-btn:hover {
+      transform: scale(1.05);
+      background: var(--primary-dark);
+    }
+
     #chatbot-panel {
-        position: fixed;
-        bottom: 100px;
-        right: 30px;
-        width: 350px;
-        height: 500px;
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        display: none;
-        flex-direction: column;
-        z-index: 1000;
-        overflow: hidden;
+      position: fixed;
+      bottom: 6rem;
+      right: 2rem;
+      width: 380px;
+      height: 550px;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+      border: 1px solid var(--border);
+      overflow: hidden;
     }
+    
     .chat-header {
-        background: #512da8;
-        color: white;
-        padding: 1rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      padding: 1.25rem;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .chat-header h3 { margin: 0; font-size: 1.1rem; }
-    .close-chat { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+    
     .chat-messages {
-        flex-grow: 1;
-        padding: 1rem;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        background: #f8f9fa;
+      flex: 1;
+      padding: 1.25rem;
+      overflow-y: auto;
+      background: var(--surface-hover);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
-    .message { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
-    .msg-user { background: #512da8; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-    .msg-ai { background: white; color: #333; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; }
-    .chat-input {
-        padding: 1rem;
-        background: white;
-        border-top: 1px solid #eee;
-        display: flex;
-        gap: 0.5rem;
+    
+    .message {
+      max-width: 85%;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      line-height: 1.5;
     }
-    .chat-input input {
-        flex-grow: 1;
-        padding: 0.75rem;
-        border: 1px solid #ddd;
-        border-radius: 20px;
-        outline: none;
+    
+    .msg-user {
+      align-self: flex-end;
+      background: var(--primary);
+      color: white;
+      border-bottom-right-radius: 0.25rem;
     }
-    .chat-input button {
-        background: #512da8;
-        color: white;
-        border: none;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    
+    .msg-ai {
+      align-self: flex-start;
+      background: var(--surface);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 0.25rem;
     }
-    .typing-indicator { display: none; align-self: flex-start; color: #888; font-size: 0.85rem; margin-left: 1rem; }
+    
+    .chat-input-area {
+      padding: 1rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.75rem;
+    }
+    
+    #chat-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      outline: none;
+      font-size: 0.875rem;
+    }
+    
+    #chat-input:focus {
+      border-color: var(--primary);
+    }
+    
+    #chat-send {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    #chat-typing {
+      display: none;
+      padding: 0.5rem 1.25rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--surface-hover);
+    }
   </style>
 </head>
 <body>
-  <script src="js/auth.js"></script>
-  <script>protectPage("student");</script>
-
-  <div class="dashboard-container">
-    <header class="header">
-      <div>
-        <h1 id="welcome-message">Student Dashboard</h1>
-        <p>Your Attendance Overview & Recovery Planner</p>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="assets/edutrack-icon.svg" alt="EduTrack">
+        <span style="font-weight: 700; font-size: 1.25rem; color: var(--text-main);">EduTrack</span>
       </div>
-      <div class="nav-actions">
-        <button onclick="window.location.href='timetable.html'">Timetable</button>
-        <button onclick="window.location.href='lectures.html'">Lectures</button>
-        <button onclick="window.location.href='events.html'">Events</button>
-        <button onclick="window.location.href='resources.html'">Resources</button>
-        <button onclick="window.location.href='reports.html'">Reports</button>
-        <button id="logout-btn">Logout</button>
+      
+      <nav class="sidebar-nav">
+        <a href="student.html" class="nav-item active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="attendance.html" class="nav-item"><i class="fa-solid fa-qrcode"></i> Scan QR</a>
+        <a href="timetable.html" class="nav-item"><i class="fa-solid fa-calendar-alt"></i> Timetable</a>
+        <a href="lectures.html" class="nav-item"><i class="fa-solid fa-chalkboard-user"></i> Lectures</a>
+        <a href="events.html" class="nav-item"><i class="fa-solid fa-calendar-star"></i> Events</a>
+        <a href="resources.html" class="nav-item"><i class="fa-solid fa-book-open"></i> Resources</a>
+        <a href="reports.html" class="nav-item"><i class="fa-solid fa-file-contract"></i> Reports</a>
+      </nav>
+      
+      <div style="margin-top: auto; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+        <button id="logout-btn" class="btn btn-secondary w-full" style="color: var(--danger); border-color: var(--danger-light);"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
       </div>
-    </header>
+    </aside>
 
-    <div id="loading" class="text-center mt-4 mb-4">
-      <div class="loading"></div>
-      <p>Loading your data...</p>
-    </div>
-
-    <div id="dashboard-content" style="display: none;">
-      <!-- Overall Stats -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h3>Overall Attendance</h3>
-          <div class="value" id="stat-overall">0%</div>
-          <div class="desc" id="stat-overall-desc">0 / 0 classes</div>
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1 class="page-title" id="welcome-message">Student Dashboard</h1>
+          <p class="text-muted" style="margin-top: 0.25rem;">Overview of your academic progress and attendance recovery.</p>
         </div>
-        <div class="stat-card">
-          <h3>Subjects at Risk</h3>
-          <div class="value" id="stat-risk" style="color: #e53935;">0</div>
-          <div class="desc">Below 75% threshold</div>
+        <div class="user-profile">
+          <div class="avatar"><i class="fa-solid fa-user"></i></div>
         </div>
-        <div class="stat-card">
-          <h3>Safe Subjects</h3>
-          <div class="value" id="stat-safe" style="color: #4caf50;">0</div>
-          <div class="desc">Above 75% threshold</div>
-        </div>
+      </header>
+
+      <div id="loading" class="text-center mt-4">
+        <div class="skeleton" style="height: 200px; margin-bottom: 2rem;"></div>
+        <div class="skeleton" style="height: 400px;"></div>
       </div>
 
-      <!-- What-if Simulator -->
-      <div class="whatif-section">
-        <h2>What-If Simulator</h2>
-        <p style="color: #666; margin-top: 0.5rem;">See how attending future classes affects your percentage.</p>
-        <div class="whatif-controls">
-          <label>If I attend the next</label>
-          <input type="number" id="whatif-classes" value="1" min="1" max="50">
-          <label>classes in</label>
-          <select id="whatif-subject">
-            <option value="">All Subjects</option>
-          </select>
-          <button id="whatif-btn">Simulate</button>
+      <div id="dashboard-content" style="display: none;">
+        <!-- Stats Grid -->
+        <div class="grid-stats">
+          <div class="stat-card">
+            <div class="stat-card-title">Overall Attendance</div>
+            <div class="stat-card-value" id="stat-overall" style="color: var(--primary);">0%</div>
+            <div class="stat-card-desc" id="stat-overall-desc">0 / 0 classes attended</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-title">Subjects At Risk</div>
+            <div class="stat-card-value" id="stat-risk" style="color: var(--danger);">0</div>
+            <div class="stat-card-desc">Falling below minimum threshold</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-title">Safe Subjects</div>
+            <div class="stat-card-value" id="stat-safe" style="color: var(--success);">0</div>
+            <div class="stat-card-desc">Meeting institutional requirements</div>
+          </div>
         </div>
-        <div id="whatif-result" class="whatif-result"></div>
-      </div>
 
-      <!-- Subject Breakdown (Recovery Planner) -->
-      <h2>Subject Breakdown & Recovery Planner</h2>
-      <div class="subjects-grid" id="subjects-container">
-        <!-- Injected via JS -->
+        <!-- Subjects & Recovery -->
+        <h2 style="font-size: 1.25rem; margin-bottom: 1.25rem;">Course Breakdown & Recovery</h2>
+        <div class="grid-subjects" id="subjects-container">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- What-If Simulator -->
+        <div class="whatif-container">
+          <div style="display: flex; gap: 1rem; align-items: flex-start;">
+            <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(6, 182, 212, 0.1); color: var(--highlight); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <div>
+              <h3 style="font-size: 1.25rem; margin-bottom: 0.25rem;">What-If Simulator</h3>
+              <p class="text-muted" style="font-size: 0.875rem;">Simulate future attendance to see exactly how it impacts your final percentage.</p>
+            </div>
+          </div>
+          
+          <div class="whatif-controls">
+            <span style="font-size: 0.875rem; font-weight: 500;">If I attend the next</span>
+            <input type="number" id="whatif-classes" class="form-input" value="1" min="1" max="50" style="width: 80px;" />
+            <span style="font-size: 0.875rem; font-weight: 500;">classes in</span>
+            <select id="whatif-subject" class="form-select" style="width: 200px;">
+              <option value="">All Subjects</option>
+            </select>
+            <button id="whatif-btn" class="btn btn-primary">Simulate Scenarios</button>
+          </div>
+          
+          <div id="whatif-result"></div>
+        </div>
       </div>
-    </div>
+    </main>
   </div>
 
-  <!-- Chatbot UI -->
-  <div id="chatbot-btn">🤖</div>
+  <!-- Local AI Chatbot -->
+  <div id="chatbot-btn"><i class="fa-solid fa-robot"></i></div>
   <div id="chatbot-panel">
     <div class="chat-header">
-      <h3>EduTrack AI</h3>
-      <button class="close-chat" id="close-chat">✕</button>
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+        <i class="fa-solid fa-robot"></i> EduTrack AI
+      </div>
+      <button id="close-chat" style="background: none; border: none; color: white; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
     </div>
+    
     <div class="chat-messages" id="chat-messages">
-      <div class="message msg-ai">Hi! I'm EduTrack AI. I can help you understand your attendance and how to recover from low percentages. Ask me anything!</div>
+      <div class="message msg-ai">Hello! I'm your local EduTrack academic assistant. I can analyze your attendance and help you plan your recovery. What would you like to know?</div>
     </div>
-    <div class="typing-indicator" id="chat-typing">EduTrack AI is thinking...</div>
-    <div class="chat-input">
-      <input type="text" id="chat-input" placeholder="Ask about your attendance..." autocomplete="off">
-      <button id="chat-send">➤</button>
+    
+    <div id="chat-typing">EduTrack AI is analyzing your data...</div>
+    
+    <div class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="Ask about your academic status..." autocomplete="off">
+      <button id="chat-send"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
   </div>
 
+  <script src="js/auth.js"></script>
   <script>
+    protectPage("student");
+
     document.getElementById("logout-btn").addEventListener("click", logout);
 
     // Load Dashboard Data
@@ -345,16 +391,13 @@
         
         const data = await res.json();
         
-        // Update welcome
-        document.getElementById("welcome-message").textContent = `Welcome, ${data.user.name}!`;
+        document.getElementById("welcome-message").textContent = `Good morning, ${data.user.name.split(' ')[0]}`;
 
-        // Update overall stats
         document.getElementById("stat-overall").textContent = `${data.overall_percentage}%`;
-        document.getElementById("stat-overall-desc").textContent = `${data.total_present} / ${data.total_classes} classes`;
+        document.getElementById("stat-overall-desc").textContent = `${data.total_present} / ${data.total_classes} classes attended`;
         document.getElementById("stat-risk").textContent = data.subjects_at_risk;
         document.getElementById("stat-safe").textContent = data.subjects_safe;
 
-        // Populate what-if dropdown
         const select = document.getElementById("whatif-subject");
         data.subjects.forEach(s => {
           const opt = document.createElement("option");
@@ -363,7 +406,6 @@
           select.appendChild(opt);
         });
 
-        // Populate subject cards
         const container = document.getElementById("subjects-container");
         container.innerHTML = "";
 
@@ -371,41 +413,52 @@
           const card = document.createElement("div");
           card.className = "subject-card";
           
-          let colorClass = "success";
-          if (sub.risk === "CRITICAL") colorClass = "danger";
-          else if (sub.risk === "AT_RISK") colorClass = "warning";
+          let badgeClass = "badge-success";
+          let progressClass = "progress-success";
+          
+          if (sub.risk === "CRITICAL") {
+            badgeClass = "badge-danger";
+            progressClass = "progress-danger";
+          } else if (sub.risk === "AT_RISK") {
+            badgeClass = "badge-warning";
+            progressClass = "progress-warning";
+          }
 
           let recoveryHtml = "";
           if (sub.classes_needed > 0) {
             recoveryHtml = `
-              <div class="recovery-info" style="border-color: #f44336; background: #ffebee;">
-                <strong>Action Required:</strong> You need to attend the next <strong>${sub.classes_needed}</strong> classes consecutively to reach ${sub.threshold}%.
+              <div class="recovery-banner" style="background: var(--danger-light); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2);">
+                <i class="fa-solid fa-triangle-exclamation" style="margin-right: 0.5rem;"></i>
+                Need <strong>${sub.classes_needed} consecutive classes</strong> to reach target threshold (${sub.threshold}%).
               </div>`;
           } else {
              recoveryHtml = `
-              <div class="recovery-info" style="border-color: #4caf50; background: #e8f5e9;">
-                <strong>On Track:</strong> You can safely miss <strong>${sub.classes_missable}</strong> future classes and stay above ${sub.threshold}%.
+              <div class="recovery-banner" style="background: var(--success-light); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2);">
+                <i class="fa-solid fa-circle-check" style="margin-right: 0.5rem;"></i>
+                Safe margin. Can miss <strong>${sub.classes_missable} future classes</strong> and maintain ${sub.threshold}%.
               </div>`;
           }
 
           card.innerHTML = `
             <div class="subject-header">
-              <h3>${sub.subject}</h3>
-              <span class="badge ${sub.risk.toLowerCase()}">${sub.risk.replace("_", " ")}</span>
+              <h3 class="subject-title">${sub.subject}</h3>
+              <span class="badge ${badgeClass}">${sub.risk.replace("_", " ")}</span>
             </div>
-            <div class="subject-details">
-              <span>Attendance</span>
-              <strong>${sub.percentage}%</strong>
+            
+            <div class="subject-metrics">
+              <span>Attendance Rate</span>
+              <strong style="color: var(--text-main); font-size: 1rem;">${sub.percentage}%</strong>
             </div>
+            
             <div class="progress-container">
-              <div class="progress-bar">
-                <div class="progress-fill ${colorClass}" style="width: ${sub.percentage}%"></div>
-              </div>
+              <div class="progress-bar ${progressClass}" style="width: ${sub.percentage}%"></div>
             </div>
-            <div class="subject-details">
-              <span>Present: ${sub.present}</span>
-              <span>Total: ${sub.total}</span>
+            
+            <div class="subject-metrics" style="margin-top: 0.75rem;">
+              <span>Classes Attended</span>
+              <strong style="color: var(--text-main);">${sub.present} / ${sub.total}</strong>
             </div>
+            
             ${recoveryHtml}
           `;
           container.appendChild(card);
@@ -416,7 +469,7 @@
 
       } catch (error) {
         console.error(error);
-        alert("Error loading dashboard data.");
+        document.getElementById("loading").innerHTML = `<div style="color: var(--danger); padding: 2rem;">Error loading dashboard data. Please try refreshing.</div>`;
       }
     }
 
@@ -437,10 +490,11 @@
         const resDiv = document.getElementById("whatif-result");
         resDiv.style.display = "block";
         
-        let html = "<h4>Projected Results:</h4><ul>";
+        let html = "<h4 style='margin-bottom: 0.5rem;'>Projected Results</h4><ul>";
         data.results.forEach(r => {
-          html += `<li><strong>${r.subject}:</strong> ${r.current_percentage}% → <strong>${r.projected_percentage}%</strong> 
-            ${r.would_meet_threshold ? '(Target Met ✅)' : '(Still Short ❌)'}</li>`;
+          let statusColor = r.would_meet_threshold ? "var(--success)" : "var(--danger)";
+          let statusText = r.would_meet_threshold ? "Target Met" : "Still Short";
+          html += `<li><strong>${r.subject}:</strong> ${r.current_percentage}% → <strong style="color: ${statusColor};">${r.projected_percentage}%</strong> <span style="color: var(--text-muted); font-size: 0.75rem;">(${statusText})</span></li>`;
         });
         html += "</ul>";
         resDiv.innerHTML = html;
@@ -511,7 +565,6 @@
       if (e.key === "Enter") sendChatMessage();
     });
 
-    // Initial load
     loadDashboard();
   </script>
 </body>

@@ -44,22 +44,33 @@ Built with a stunning **Neon & White Design System**, EduTrack abandons the outd
 - **3D Graphics**: Three.js
 - **Authentication**: JWT-based secure auth and Role-Based Access Control (RBAC).
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/neon.png" width="100%" />
+</div>
+
 ## 🚦 Getting Started
 
-1. **Start the Backend server**
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/EduTrack.git
+   cd EduTrack
+   ```
+
+2. **Start the Backend server**
    ```bash
    pip install -r backend/requirements.txt
-   python -m uvicorn backend.app.main:app --reload
+   python -m uvicorn backend.app.main:app --reload --port 8000
    ```
 
-2. **Serve the Frontend**
+3. **Serve the Frontend**
+   If you aren't serving the frontend through FastAPI, run a simple HTTP server:
    ```bash
    cd frontend/public
-   python -m http.server 8000
+   python -m http.server 8080
    ```
 
-3. **Open the Application**
-   Navigate to `http://localhost:8000/index.html` in your web browser.
+4. **Open the Application**
+   Navigate to `http://localhost:8000` (FastAPI) or `http://localhost:8080` in your web browser.
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/neon.png" width="100%" />
@@ -68,6 +79,19 @@ Built with a stunning **Neon & White Design System**, EduTrack abandons the outd
 ## 🔒 Security & Privacy
 
 EduTrack enforces strict RBAC. Registration automatically defaults to the `student` role. Administrative and Faculty accounts must be provisioned securely on the backend, preventing unauthorized elevation of privileges. Data never leaves your network thanks to the local AI integration.
+
+## 🤝 Contribution
+
+We welcome contributions! Please follow the steps below:
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/your-feature`).
+5. Open a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 <div align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:FF00FF,100:00FFFF&height=100&section=footer" />

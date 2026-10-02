@@ -6,7 +6,7 @@
   <title>Faculty Command Center | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -20,7 +20,7 @@
         <div class="card" style="background: linear-gradient(135deg, rgba(124, 92, 255, 0.12) 0%, rgba(34, 211, 238, 0.08) 100%); border: 1px solid rgba(124, 92, 255, 0.25); display: flex; justify-content: space-between; align-items: center; padding: 24px; margin-bottom: 24px; border-radius: var(--radius-lg);">
           <div style="display: flex; align-items: center; gap: 18px;">
             <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--primary); display: flex; align-items: center; justify-content: center; color: #FFFFFF; box-shadow: 0 4px 16px var(--primary-glow);">
-              <i data-lucide="radio" style="width: 28px; height: 28px;"></i>
+              <i class="fa-solid fa-tower-broadcast" style="width: 28px; height: 28px;"></i>
             </div>
             <div>
               <h2 style="font-size: 18px; font-weight: 700; color: var(--text);">Ready for Class Presence?</h2>
@@ -30,7 +30,7 @@
             </div>
           </div>
           <a href="attendance.html" class="btn btn-primary btn-lg" style="gap: 10px;">
-            <i data-lucide="play-circle"></i>
+            <i class="fa-solid fa-circle-play"></i>
             <span>Start Live Attendance</span>
           </a>
         </div>
@@ -42,7 +42,7 @@
           </div>
           <div style="display: flex; gap: 10px;">
             <a href="attendance.html" class="btn btn-secondary">
-              <i data-lucide="clipboard-list"></i>
+              <i class="fa-solid fa-clipboard-list"></i>
               <span>Attendance Center</span>
             </a>
           </div>
@@ -52,7 +52,7 @@
         <div class="grid-cols-4">
           <div class="card stat-card">
             <div class="stat-icon primary">
-              <i data-lucide="users"></i>
+              <i class="fa-solid fa-users"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Total Students Enrolled</span>
@@ -62,7 +62,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon success">
-              <i data-lucide="activity"></i>
+              <i class="fa-solid fa-chart-line"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Total Sessions Hosted</span>
@@ -72,7 +72,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon secondary">
-              <i data-lucide="radio"></i>
+              <i class="fa-solid fa-tower-broadcast"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Active Live Sessions</span>
@@ -82,7 +82,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon warning">
-              <i data-lucide="shield-check"></i>
+              <i class="fa-solid fa-shield-halved"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Verification Mode</span>
@@ -98,18 +98,18 @@
             <div class="card">
               <div class="card-header">
                 <div class="card-title">
-                  <i data-lucide="history"></i>
+                  <i class="fa-solid fa-clock-rotate-left"></i>
                   <span>Recent Attendance Sessions</span>
                 </div>
                 <a href="attendance.html" class="btn btn-ghost btn-sm">
                   <span>View Attendance Center</span>
-                  <i data-lucide="chevron-right"></i>
+                  <i class="fa-solid fa-chevron-right"></i>
                 </a>
               </div>
 
               <div id="sessionsTableWrap">
                 <div class="empty-state">
-                  <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+                  <div class="empty-icon-wrap"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
                   <div class="empty-title">Loading Sessions...</div>
                 </div>
               </div>
@@ -121,7 +121,7 @@
             <div class="card">
               <div class="card-header">
                 <div class="card-title">
-                  <i data-lucide="calendar-days"></i>
+                  <i class="fa-solid fa-calendar-days"></i>
                   <span>My Scheduled Classes</span>
                 </div>
                 <span class="badge badge-primary" id="dayBadge">Today</span>
@@ -129,7 +129,7 @@
 
               <div id="teacherScheduleWrap">
                 <div class="empty-state" style="padding: 28px 0;">
-                  <div class="empty-icon-wrap"><i data-lucide="calendar-check"></i></div>
+                  <div class="empty-icon-wrap"><i class="fa-solid fa-calendar-check"></i></div>
                   <div class="empty-title">No Classes Assigned Today</div>
                   <div class="empty-subtitle">You have no scheduled timetable classes for today.</div>
                 </div>
@@ -184,7 +184,7 @@
         if (sessions.length === 0) {
           container.innerHTML = `
             <div class="empty-state">
-              <div class="empty-icon-wrap"><i data-lucide="calendar-x"></i></div>
+              <div class="empty-icon-wrap"><i class="fa-solid fa-calendar-xmark"></i></div>
               <div class="empty-title">No Attendance Sessions Yet</div>
               <div class="empty-subtitle">Click "Start Live Attendance" above to initiate your first QR session.</div>
             </div>
@@ -219,7 +219,7 @@
                         </td>
                         <td>
                           <a href="attendance.html?session=${encodeURIComponent(s.id || '')}" class="btn btn-secondary btn-sm">
-                            <i data-lucide="eye"></i>
+                            <i class="fa-solid fa-eye"></i>
                             <span>Details</span>
                           </a>
                         </td>
@@ -231,7 +231,7 @@
             </div>
           `;
         }
-        lucide.createIcons();
+        
       } catch (err) {
         console.warn('Faculty dashboard error:', err);
       }
@@ -248,7 +248,7 @@
         if (todayClasses.length === 0) {
           wrap.innerHTML = `
             <div class="empty-state" style="padding: 28px 0;">
-              <div class="empty-icon-wrap"><i data-lucide="calendar-check"></i></div>
+              <div class="empty-icon-wrap"><i class="fa-solid fa-calendar-check"></i></div>
               <div class="empty-title">No Classes Assigned Today</div>
               <div class="empty-subtitle">You have no scheduled timetable classes for today.</div>
             </div>
@@ -265,7 +265,7 @@
                     </div>
                   </div>
                   <a href="attendance.html?subject=${encodeURIComponent(c.subject)}&class_name=${encodeURIComponent(c.class_name)}" class="btn btn-primary btn-sm">
-                    <i data-lucide="play"></i>
+                    <i class="fa-solid fa-play"></i>
                     <span>Start</span>
                   </a>
                 </div>
@@ -273,7 +273,7 @@
             </div>
           `;
         }
-        lucide.createIcons();
+        
       } catch (err) {
         console.warn('Timetable schedule error:', err);
       }

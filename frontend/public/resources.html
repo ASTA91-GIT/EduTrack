@@ -6,7 +6,6 @@
   <title>Academic Resources | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     .resources-grid {
       display: grid;
@@ -42,6 +41,7 @@
       color: var(--primary);
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -61,7 +61,7 @@
         <div id="resourcesContainer" class="resources-grid">
           <div class="card" style="grid-column: 1 / -1;">
             <div class="empty-state">
-              <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+              <div class="empty-icon-wrap"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
               <div class="empty-title">Loading Library Resources...</div>
             </div>
           </div>
@@ -110,7 +110,7 @@
           <div>
             <div style="display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px;">
               <div class="resource-type-icon">
-                <i data-lucide="file-text"></i>
+                <i class="fa-solid fa-file-lines"></i>
               </div>
               <div>
                 <span class="badge badge-primary">${escapeHtml(r.subject)}</span>
@@ -130,14 +130,14 @@
               Uploaded ${new Date(r.created_at || Date.now()).toLocaleDateString()}
             </span>
             <button class="btn btn-secondary btn-sm" onclick="alert('Downloading ${escapeHtml(r.title)}')">
-              <i data-lucide="download"></i>
+              <i class="fa-solid fa-download"></i>
               <span>Download</span>
             </button>
           </div>
         </div>
       `).join('');
 
-      lucide.createIcons();
+      
     }
 
     function renderEmpty() {
@@ -145,13 +145,13 @@
       container.innerHTML = `
         <div class="card" style="grid-column: 1 / -1;">
           <div class="empty-state">
-            <div class="empty-icon-wrap"><i data-lucide="folder-x"></i></div>
+            <div class="empty-icon-wrap"><i class="fa-solid fa-folder-minus"></i></div>
             <div class="empty-title">No Academic Resources Uploaded</div>
             <div class="empty-subtitle">Course materials and textbook PDFs will appear here once published by faculty.</div>
           </div>
         </div>
       `;
-      lucide.createIcons();
+      
     }
   </script>
 </body>

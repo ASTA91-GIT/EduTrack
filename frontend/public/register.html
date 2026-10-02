@@ -6,7 +6,6 @@
   <title>Register | EduTrack Academic Portal</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     .auth-page {
       min-height: 100vh;
@@ -140,12 +139,13 @@
       right: 20px;
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="auth-page">
     <div class="theme-corner-toggle">
       <button class="icon-action-btn" id="themeBtn" title="Toggle Theme" aria-label="Toggle Theme">
-        <i data-lucide="sun"></i>
+        <i class="fa-solid fa-sun"></i>
       </button>
     </div>
 
@@ -153,7 +153,7 @@
       <div class="auth-header">
         <a href="index.html" class="auth-brand">
           <div class="brand-icon-wrap">
-            <i data-lucide="graduation-cap"></i>
+            <i class="fa-solid fa-graduation-cap"></i>
           </div>
           <div class="brand-title">Edu<span>Track</span></div>
         </a>
@@ -163,11 +163,11 @@
 
       <div class="role-toggle">
         <button type="button" class="role-btn active" id="roleStudent" onclick="selectRole('student')">
-          <i data-lucide="user"></i>
+          <i class="fa-solid fa-circle-user"></i>
           <span>Student</span>
         </button>
         <button type="button" class="role-btn" id="roleTeacher" onclick="selectRole('teacher')">
-          <i data-lucide="shield-check"></i>
+          <i class="fa-solid fa-shield-halved"></i>
           <span>Faculty</span>
         </button>
       </div>
@@ -191,7 +191,7 @@
         </div>
 
         <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
-          <i data-lucide="user-plus"></i>
+          <i class="fa-solid fa-user-plus"></i>
           <span>Create Account</span>
         </button>
       </form>
@@ -213,8 +213,8 @@
       const nxt = cur === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', nxt);
       localStorage.setItem('edutrack_theme', nxt);
-      themeBtn.innerHTML = `<i data-lucide="${nxt === 'light' ? 'moon' : 'sun'}"></i>`;
-      lucide.createIcons();
+      themeBtn.innerHTML = `<i class="fa-solid fa-${nxt === 'light' ? 'moon' : 'sun'}"></i>`;
+      
     });
 
     let currentRole = 'student';
@@ -242,9 +242,9 @@
       try {
         const user = await register(name, email, password, currentRole);
         authAlert.className = 'auth-alert success';
-        authAlert.innerHTML = `<i data-lucide="check-circle-2"></i><span>Account registered successfully! Redirecting...</span>`;
+        authAlert.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>Account registered successfully! Redirecting...</span>`;
         authAlert.style.display = 'flex';
-        lucide.createIcons();
+        
 
         setTimeout(() => {
           if (user.role === 'teacher') {
@@ -255,18 +255,11 @@
         }, 800);
       } catch (err) {
         authAlert.className = 'auth-alert error';
-        authAlert.innerHTML = `<i data-lucide="alert-circle"></i><span>${err.message || 'Registration failed'}</span>`;
+        authAlert.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i><span>${err.message || 'Registration failed'}</span>`;
         authAlert.style.display = 'flex';
-        lucide.createIcons();
+        
         submitBtn.disabled = false;
-        submitBtn.innerHTML = `<i data-lucide="user-plus"></i><span>Create Account</span>`;
-        lucide.createIcons();
-      }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      if (window.lucide) {
-        lucide.createIcons();
+        submitBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i><span>Create Account</span>`;
       }
     });
   </script>

@@ -6,7 +6,6 @@
   <title>Academic Lectures | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     .lecture-grid {
       display: grid;
@@ -37,6 +36,7 @@
       margin-bottom: 12px;
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -53,7 +53,7 @@
           </div>
           <div style="display: flex; gap: 10px;">
             <a href="resources.html" class="btn btn-secondary">
-              <i data-lucide="folder-open"></i>
+              <i class="fa-solid fa-folder-open"></i>
               <span>Lecture Materials</span>
             </a>
           </div>
@@ -69,7 +69,7 @@
         <div id="lecturesContainer" class="lecture-grid">
           <div class="card" style="grid-column: 1 / -1;">
             <div class="empty-state">
-              <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+              <div class="empty-icon-wrap"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
               <div class="empty-title">Loading Lectures...</div>
             </div>
           </div>
@@ -170,19 +170,19 @@
 
             <div>
               <div style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-muted); margin-bottom: 14px;">
-                <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                <i class="fa-solid fa-calendar" style="width: 14px; height: 14px;"></i>
                 <span>${dateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} at ${dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
               </div>
 
               <div style="padding-top: 12px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
                 ${isTeacher ? `
                   <a href="attendance.html?subject=${encodeURIComponent(l.subject)}&class_name=${encodeURIComponent(l.class_name)}" class="btn btn-primary btn-sm">
-                    <i data-lucide="radio"></i>
+                    <i class="fa-solid fa-tower-broadcast"></i>
                     <span>Take Attendance</span>
                   </a>
                 ` : `
                   <a href="verify.html" class="btn btn-secondary btn-sm">
-                    <i data-lucide="scan"></i>
+                    <i class="fa-solid fa-qrcode"></i>
                     <span>Mark Presence</span>
                   </a>
                 `}
@@ -192,7 +192,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      
     }
 
     function renderEmpty() {
@@ -200,7 +200,7 @@
       container.innerHTML = `
         <div class="card" style="grid-column: 1 / -1;">
           <div class="empty-state">
-            <div class="empty-icon-wrap"><i data-lucide="presentation"></i></div>
+            <div class="empty-icon-wrap"><i class="fa-solid fa-chalkboard-user"></i></div>
             <div class="empty-title">No Lectures Scheduled</div>
             <div class="empty-subtitle">
               ${currentFilter === 'all' 
@@ -210,7 +210,7 @@
           </div>
         </div>
       `;
-      lucide.createIcons();
+      
     }
   </script>
 </body>

@@ -6,7 +6,6 @@
   <title>Academic Reports | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     .reports-card-grid {
       display: grid;
@@ -31,6 +30,7 @@
       transform: translateY(-2px);
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -47,7 +47,7 @@
           </div>
           <div style="display: flex; gap: 10px;">
             <button class="btn btn-secondary" onclick="exportSampleCSV()">
-              <i data-lucide="download"></i>
+              <i class="fa-solid fa-download"></i>
               <span>Export CSV</span>
             </button>
           </div>
@@ -58,7 +58,7 @@
           <div class="report-item-card">
             <div>
               <div class="stat-icon primary" style="margin-bottom: 14px;">
-                <i data-lucide="file-spreadsheet"></i>
+                <i class="fa-solid fa-file-excel"></i>
               </div>
               <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Attendance Summary</h3>
               <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">
@@ -68,7 +68,7 @@
             <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
               <span class="badge badge-primary">Institutional</span>
               <button class="btn btn-secondary btn-sm" onclick="loadReportData('summary')">
-                <i data-lucide="eye"></i>
+                <i class="fa-solid fa-eye"></i>
                 <span>View</span>
               </button>
             </div>
@@ -77,7 +77,7 @@
           <div class="report-item-card">
             <div>
               <div class="stat-icon secondary" style="margin-bottom: 14px;">
-                <i data-lucide="book-open"></i>
+                <i class="fa-solid fa-book-open"></i>
               </div>
               <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Subject-Wise Audit</h3>
               <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">
@@ -87,7 +87,7 @@
             <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
               <span class="badge badge-secondary">Semester 1</span>
               <button class="btn btn-secondary btn-sm" onclick="loadReportData('subject')">
-                <i data-lucide="eye"></i>
+                <i class="fa-solid fa-eye"></i>
                 <span>View</span>
               </button>
             </div>
@@ -96,7 +96,7 @@
           <div class="report-item-card">
             <div>
               <div class="stat-icon warning" style="margin-bottom: 14px;">
-                <i data-lucide="calendar"></i>
+                <i class="fa-solid fa-calendar"></i>
               </div>
               <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Monthly Attendance</h3>
               <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">
@@ -106,7 +106,7 @@
             <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
               <span class="badge badge-warning">Monthly</span>
               <button class="btn btn-secondary btn-sm" onclick="loadReportData('monthly')">
-                <i data-lucide="eye"></i>
+                <i class="fa-solid fa-eye"></i>
                 <span>View</span>
               </button>
             </div>
@@ -115,7 +115,7 @@
           <div class="report-item-card">
             <div>
               <div class="stat-icon success" style="margin-bottom: 14px;">
-                <i data-lucide="user-check"></i>
+                <i class="fa-solid fa-user-check"></i>
               </div>
               <h3 style="font-size: 16px; font-weight: 700; color: var(--text);">Student Standing Report</h3>
               <p style="font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">
@@ -125,7 +125,7 @@
             <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
               <span class="badge badge-success">Defaulters</span>
               <button class="btn btn-secondary btn-sm" onclick="loadReportData('standing')">
-                <i data-lucide="eye"></i>
+                <i class="fa-solid fa-eye"></i>
                 <span>View</span>
               </button>
             </div>
@@ -136,12 +136,12 @@
         <div class="card">
           <div class="card-header">
             <div class="card-title" id="reportTableTitle">
-              <i data-lucide="table"></i>
+              <i class="fa-solid fa-table"></i>
               <span>Report Data Preview</span>
             </div>
             <div style="display: flex; gap: 8px;">
               <button class="btn btn-secondary btn-sm" onclick="exportSampleCSV()">
-                <i data-lucide="file-text"></i>
+                <i class="fa-solid fa-file-lines"></i>
                 <span>Export CSV</span>
               </button>
             </div>
@@ -149,7 +149,7 @@
 
           <div id="reportTableWrap">
             <div class="empty-state">
-              <div class="empty-icon-wrap"><i data-lucide="file-search"></i></div>
+              <div class="empty-icon-wrap"><i class="fa-solid fa-file-search"></i></div>
               <div class="empty-title">Select a Report Category</div>
               <div class="empty-subtitle">Click "View" on any report above to inspect records or export audit logs.</div>
             </div>
@@ -179,15 +179,15 @@
 
       wrap.innerHTML = `
         <div class="empty-state">
-          <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+          <div class="empty-icon-wrap"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
           <div class="empty-title">Compiling Academic Report...</div>
         </div>
       `;
-      lucide.createIcons();
+      
 
       try {
         if (type === 'summary') {
-          title.innerHTML = `<i data-lucide="file-spreadsheet"></i><span>Attendance Summary Report</span>`;
+          title.innerHTML = `<i class="fa-solid fa-file-excel"></i><span>Attendance Summary Report</span>`;
           const res = await authFetch('/api/v1/dashboard/faculty');
           const data = res.ok ? await res.json() : {};
           const sessions = data.recent_sessions || [];
@@ -226,7 +226,7 @@
             </div>
           `;
         } else if (type === 'standing') {
-          title.innerHTML = `<i data-lucide="user-check"></i><span>Student Attendance Standing Audit</span>`;
+          title.innerHTML = `<i class="fa-solid fa-user-check"></i><span>Student Attendance Standing Audit</span>`;
           const res = await authFetch('/api/v1/dashboard/student/recovery');
           const data = res.ok ? await res.json() : {};
           const atRisk = data.at_risk || [];
@@ -263,11 +263,11 @@
             </div>
           `;
         } else {
-          title.innerHTML = `<i data-lucide="calendar"></i><span>Monthly Verified Attendance Audit</span>`;
+          title.innerHTML = `<i class="fa-solid fa-calendar"></i><span>Monthly Verified Attendance Audit</span>`;
           renderEmptyReport('No Monthly Audit Records', 'No historical sessions logged for this audit window.');
         }
 
-        lucide.createIcons();
+        
       } catch (err) {
         renderEmptyReport('Error Loading Report', err.message);
       }
@@ -277,12 +277,12 @@
       const wrap = document.getElementById('reportTableWrap');
       wrap.innerHTML = `
         <div class="empty-state">
-          <div class="empty-icon-wrap"><i data-lucide="file-x"></i></div>
+          <div class="empty-icon-wrap"><i class="fa-solid fa-file-x"></i></div>
           <div class="empty-title">${escapeHtml(title)}</div>
           <div class="empty-subtitle">${escapeHtml(subtitle)}</div>
         </div>
       `;
-      lucide.createIcons();
+      
     }
 
     function exportSampleCSV() {

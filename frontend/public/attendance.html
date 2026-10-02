@@ -6,7 +6,6 @@
   <title>Live Attendance Center | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     .qr-card-container {
       display: flex;
@@ -114,6 +113,7 @@
       100% { background-color: transparent; }
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -137,7 +137,7 @@
         <div id="setupSessionView" class="card" style="max-width: 680px; margin: 0 auto;">
           <div class="card-header">
             <div class="card-title">
-              <i data-lucide="radio"></i>
+              <i class="fa-solid fa-tower-broadcast"></i>
               <span>Initialize Live Attendance Session</span>
             </div>
             <span class="badge badge-primary">GPS Geofenced</span>
@@ -162,7 +162,7 @@
                   <option value="Room 203 - Tech Hall">Room 203 - Tech Hall (30m Radius)</option>
                   <option value="Hall A - Main Auditorium">Hall A - Main Auditorium (35m Radius)</option>
                   <option value="Room 405 - Seminar Room">Room 405 - Seminar Room (30m Radius)</option>
-                  <option value="CURRENT_LOCATION">📍 Use My Current Location as Room Anchor</option>
+                  <option value="CURRENT_LOCATION">Use My Current Location as Room Anchor</option>
                 </select>
               </div>
             </div>
@@ -185,7 +185,7 @@
             </div>
 
             <button type="submit" id="initBtn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 12px;">
-              <i data-lucide="play-circle"></i>
+              <i class="fa-solid fa-circle-play"></i>
               <span>Launch Live Session</span>
             </button>
           </form>
@@ -197,7 +197,7 @@
           <div class="grid-cols-4">
             <div class="card stat-card">
               <div class="stat-icon success">
-                <i data-lucide="user-check"></i>
+                <i class="fa-solid fa-user-check"></i>
               </div>
               <div class="stat-content">
                 <span class="stat-label">Present Students</span>
@@ -207,7 +207,7 @@
 
             <div class="card stat-card">
               <div class="stat-icon warning">
-                <i data-lucide="user-x"></i>
+                <i class="fa-solid fa-user-xmark"></i>
               </div>
               <div class="stat-content">
                 <span class="stat-label">Absent / Pending</span>
@@ -217,7 +217,7 @@
 
             <div class="card stat-card">
               <div class="stat-icon primary">
-                <i data-lucide="map-pin"></i>
+                <i class="fa-solid fa-location-dot"></i>
               </div>
               <div class="stat-content">
                 <span class="stat-label">Geofence Radius</span>
@@ -227,7 +227,7 @@
 
             <div class="card stat-card">
               <div class="stat-icon secondary">
-                <i data-lucide="timer"></i>
+                <i class="fa-solid fa-stopwatch"></i>
               </div>
               <div class="stat-content">
                 <span class="stat-label">Time Remaining</span>
@@ -241,13 +241,16 @@
             <!-- Left (4 cols): Dynamic Rotating QR -->
             <div class="span-4">
               <div class="card qr-card-container">
-                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; gap: 8px;">
                   <span class="live-pulse">
                     <span class="live-dot"></span>
-                    <span>LIVE SESSION</span>
+                    <span>LIVE</span>
+                  </span>
+                  <span class="badge badge-primary" style="font-size: 11px; font-weight: 700;">
+                    <i class="fa-solid fa-qrcode"></i> QR ACTIVE
                   </span>
                   <button type="button" class="btn btn-secondary btn-sm" onclick="openFullscreenQR()">
-                    <i data-lucide="maximize-2"></i>
+                    <i class="fa-solid fa-expand"></i>
                     <span>Projector</span>
                   </button>
                 </div>
@@ -260,8 +263,9 @@
                   <div class="token-timer-fill" id="tokenTimerFill"></div>
                 </div>
 
-                <div style="margin-top: 12px; font-size: 12.5px; color: var(--text-secondary);">
-                  Rotating dynamic token • <span id="tokenSecondsLeft" style="color: var(--primary); font-weight: 700;">15s</span>
+                <div style="margin-top: 12px; font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                  <span><i class="fa-solid fa-rotate"></i> Dynamic Rotation</span>
+                  <span id="tokenSecondsLeft" class="badge badge-warning" style="font-weight: 700;">15s</span>
                 </div>
 
                 <div style="margin-top: 16px; background: var(--surface-elevated); padding: 12px; border-radius: var(--radius-md); width: 100%; text-align: left; border: 1px solid var(--border);">
@@ -277,11 +281,11 @@
               <div class="card" style="height: 100%; display: flex; flex-direction: column;">
                 <div class="card-header">
                   <div class="card-title">
-                    <i data-lucide="activity"></i>
+                    <i class="fa-solid fa-chart-line"></i>
                     <span>Real-Time Student Verification Feed</span>
                   </div>
                   <span class="badge badge-success" id="connectionStatusBadge">
-                    <i data-lucide="wifi"></i>
+                    <i class="fa-solid fa-wifi"></i>
                     <span>Connected</span>
                   </span>
                 </div>
@@ -301,7 +305,7 @@
                       <tr>
                         <td colspan="5">
                           <div class="empty-state" style="padding: 36px 0;">
-                            <div class="empty-icon-wrap"><i data-lucide="clock"></i></div>
+                            <div class="empty-icon-wrap"><i class="fa-solid fa-clock"></i></div>
                             <div class="empty-title">Waiting for Student Scans</div>
                             <div class="empty-subtitle">Live verifications will appear here instantly as students scan and verify.</div>
                           </div>
@@ -322,13 +326,13 @@
   <!-- Fullscreen Projector Modal -->
   <div class="fullscreen-modal" id="fullscreenModal" onclick="closeFullscreenQR()">
     <div style="text-align: center; margin-bottom: 20px;">
-      <h2 style="font-size: 26px; font-weight: 800; color: #FFFFFF;" id="fsModalTitle">Database Systems</h2>
+      <h2 style="font-size: 26px; font-weight: 800; color: #FFFFFF;" id="fsModalTitle">Live Attendance Session</h2>
       <p style="font-size: 16px; color: #94A3B8; margin-top: 4px;">Scan with mobile browser • 30-meter GPS Geofence Enforced</p>
     </div>
     <img id="fsQrImg" class="fullscreen-qr-img" src="" alt="Fullscreen QR" onclick="event.stopPropagation()" />
     <div style="margin-top: 24px;">
       <button class="btn btn-secondary" onclick="closeFullscreenQR()">
-        <i data-lucide="x"></i>
+        <i class="fa-solid fa-xmark"></i>
         <span>Close Fullscreen (Esc)</span>
       </button>
     </div>
@@ -424,8 +428,8 @@
       } catch (err) {
         alert(err.message);
         initBtn.disabled = false;
-        initBtn.innerHTML = `<i data-lucide="play-circle"></i><span>Launch Live Session</span>`;
-        lucide.createIcons();
+        initBtn.innerHTML = `<i class="fa-solid fa-circle-play"></i><span>Launch Live Session</span>`;
+        
       }
     });
 
@@ -436,7 +440,7 @@
       // Header End action
       document.getElementById('sessionHeaderActions').innerHTML = `
         <button class="btn btn-danger" onclick="endCurrentSession()">
-          <i data-lucide="stop-circle"></i>
+          <i class="fa-solid fa-stop-circle"></i>
           <span>End Attendance</span>
         </button>
       `;
@@ -453,7 +457,7 @@
       // Start countdown timer
       startSessionTimer();
 
-      lucide.createIcons();
+      
     }
 
     async function fetchSessionDetails(token) {
@@ -484,14 +488,14 @@
           <tr>
             <td colspan="5">
               <div class="empty-state" style="padding: 36px 0;">
-                <div class="empty-icon-wrap"><i data-lucide="clock"></i></div>
+                <div class="empty-icon-wrap"><i class="fa-solid fa-clock"></i></div>
                 <div class="empty-title">Waiting for Student Scans</div>
                 <div class="empty-subtitle">Live verifications will appear here instantly as students scan and verify.</div>
               </div>
             </td>
           </tr>
         `;
-        lucide.createIcons();
+        
         return;
       }
 
@@ -507,7 +511,7 @@
           <td><span class="badge badge-success">Verified</span></td>
         </tr>
       `).join('');
-      lucide.createIcons();
+      
     }
 
     function connectWebSocket(token) {
@@ -518,8 +522,8 @@
 
       ws.onopen = () => {
         document.getElementById('connectionStatusBadge').className = 'badge badge-success';
-        document.getElementById('connectionStatusBadge').innerHTML = `<i data-lucide="wifi"></i><span>Connected</span>`;
-        lucide.createIcons();
+        document.getElementById('connectionStatusBadge').innerHTML = `<i class="fa-solid fa-wifi"></i><span>Connected</span>`;
+        
       };
 
       ws.onmessage = (event) => {
@@ -535,7 +539,7 @@
 
       ws.onclose = () => {
         document.getElementById('connectionStatusBadge').className = 'badge badge-warning';
-        document.getElementById('connectionStatusBadge').innerHTML = `<i data-lucide="wifi-off"></i><span>Reconnecting...</span>`;
+        document.getElementById('connectionStatusBadge').innerHTML = `<i class="fa-solid fa-wifi-off"></i><span>Reconnecting...</span>`;
         setTimeout(() => {
           if (currentSessionToken) connectWebSocket(currentSessionToken);
         }, 3000);

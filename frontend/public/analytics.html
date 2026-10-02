@@ -6,7 +6,6 @@
   <title>Institutional Analytics | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     .chart-container-card {
@@ -23,6 +22,7 @@
       height: 240px;
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -43,7 +43,7 @@
         <div class="grid-cols-4">
           <div class="card stat-card">
             <div class="stat-icon primary">
-              <i data-lucide="activity"></i>
+              <i class="fa-solid fa-chart-line"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Total Verified Scans</span>
@@ -53,7 +53,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon success">
-              <i data-lucide="users"></i>
+              <i class="fa-solid fa-users"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Active Cohort Students</span>
@@ -63,7 +63,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon secondary">
-              <i data-lucide="radio"></i>
+              <i class="fa-solid fa-tower-broadcast"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Attendance Sessions</span>
@@ -73,7 +73,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon warning">
-              <i data-lucide="shield-check"></i>
+              <i class="fa-solid fa-shield-halved"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Geofence Compliance</span>
@@ -89,7 +89,7 @@
             <div class="card chart-container-card">
               <div class="card-header">
                 <div class="card-title">
-                  <i data-lucide="trending-up"></i>
+                  <i class="fa-solid fa-arrow-trend-up"></i>
                   <span>Attendance Trend Over Time</span>
                 </div>
                 <span class="badge badge-primary">Session Records</span>
@@ -100,7 +100,7 @@
               </div>
 
               <div id="trendEmptyState" class="empty-state" style="display: none; padding: 48px 0;">
-                <div class="empty-icon-wrap"><i data-lucide="chart-spline"></i></div>
+                <div class="empty-icon-wrap"><i class="fa-solid fa-chart-line"></i></div>
                 <div class="empty-title">No Attendance Analytics Available Yet</div>
                 <div class="empty-subtitle">Trend graphs will render once student attendance records are captured.</div>
               </div>
@@ -112,7 +112,7 @@
             <div class="card chart-container-card">
               <div class="card-header">
                 <div class="card-title">
-                  <i data-lucide="pie-chart"></i>
+                  <i class="fa-solid fa-pie-chart"></i>
                   <span>Verification Methods</span>
                 </div>
               </div>
@@ -122,7 +122,7 @@
               </div>
 
               <div id="methodsEmptyState" class="empty-state" style="display: none; padding: 48px 0;">
-                <div class="empty-icon-wrap"><i data-lucide="pie-chart"></i></div>
+                <div class="empty-icon-wrap"><i class="fa-solid fa-pie-chart"></i></div>
                 <div class="empty-title">No Verification Data</div>
                 <div class="empty-subtitle">Method breakdown will show here after verification scans.</div>
               </div>
@@ -134,7 +134,7 @@
             <div class="card chart-container-card">
               <div class="card-header">
                 <div class="card-title">
-                  <i data-lucide="bar-chart-3"></i>
+                  <i class="fa-solid fa-bar-chart-3"></i>
                   <span>Subject-Wise Attendance</span>
                 </div>
               </div>
@@ -144,7 +144,7 @@
               </div>
 
               <div id="subjectEmptyState" class="empty-state" style="display: none; padding: 48px 0;">
-                <div class="empty-icon-wrap"><i data-lucide="book-open"></i></div>
+                <div class="empty-icon-wrap"><i class="fa-solid fa-book-open"></i></div>
                 <div class="empty-title">No Subject Attendance Data</div>
                 <div class="empty-subtitle">Subject comparative performance will appear when session logs are recorded.</div>
               </div>
@@ -156,7 +156,7 @@
             <div class="card chart-container-card">
               <div class="card-header">
                 <div class="card-title">
-                  <i data-lucide="alert-octagon"></i>
+                  <i class="fa-solid fa-alert-octagon"></i>
                   <span>Student Standing & Risk Distribution</span>
                 </div>
               </div>
@@ -166,7 +166,7 @@
               </div>
 
               <div id="riskEmptyState" class="empty-state" style="display: none; padding: 48px 0;">
-                <div class="empty-icon-wrap"><i data-lucide="shield-alert"></i></div>
+                <div class="empty-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></div>
                 <div class="empty-title">No Defaulters Recorded</div>
                 <div class="empty-subtitle">Cohort risk modeling will evaluate students once attendance percentages calculate.</div>
               </div>
@@ -349,7 +349,7 @@
       const empty = document.getElementById(`${type}EmptyState`);
       if (wrap) wrap.style.display = 'none';
       if (empty) empty.style.display = 'flex';
-      lucide.createIcons();
+      
     }
   </script>
 </body>

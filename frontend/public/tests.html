@@ -6,7 +6,7 @@
   <title>Tests & Evaluations | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -26,7 +26,7 @@
         <div class="card">
           <div class="card-header">
             <div class="card-title">
-              <i data-lucide="file-check-2"></i>
+              <i class="fa-solid fa-file-circle-check"></i>
               <span>Academic Tests & Performance</span>
             </div>
           </div>
@@ -47,7 +47,7 @@
                 <tr>
                   <td colspan="6">
                     <div class="empty-state">
-                      <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+                      <div class="empty-icon-wrap"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
                       <div class="empty-title">Loading Tests...</div>
                     </div>
                   </td>
@@ -88,14 +88,14 @@
             <tr>
               <td colspan="6">
                 <div class="empty-state">
-                  <div class="empty-icon-wrap"><i data-lucide="clipboard-x"></i></div>
+                  <div class="empty-icon-wrap"><i class="fa-solid fa-clipboard-question"></i></div>
                   <div class="empty-title">No Tests Scheduled</div>
                   <div class="empty-subtitle">You have no upcoming or graded assessments in the database.</div>
                 </div>
               </td>
             </tr>
           `;
-          lucide.createIcons();
+          
           return;
         }
 
@@ -119,7 +119,7 @@
           `;
         }).join('');
 
-        lucide.createIcons();
+        
       } catch (err) {
         console.warn('Tests loading notice:', err.message);
       }

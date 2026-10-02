@@ -6,7 +6,6 @@
   <title>Campus Events | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     .events-grid {
       display: grid;
@@ -44,6 +43,7 @@
       margin-bottom: 12px;
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -63,7 +63,7 @@
         <div id="eventsContainer" class="events-grid">
           <div class="card" style="grid-column: 1 / -1;">
             <div class="empty-state">
-              <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+              <div class="empty-icon-wrap"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
               <div class="empty-title">Loading Campus Events...</div>
             </div>
           </div>
@@ -113,7 +113,7 @@
           <div class="event-card">
             <div>
               <div class="event-date-chip">
-                <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                <i class="fa-solid fa-calendar" style="width: 14px; height: 14px;"></i>
                 <span>${d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })} • ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
               </div>
 
@@ -129,7 +129,7 @@
             <div style="padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
               <span class="badge badge-primary">Department Event</span>
               <button class="btn btn-secondary btn-sm" onclick="alert('RSVP confirmed for ${escapeHtml(e.title)}')">
-                <i data-lucide="bookmark"></i>
+                <i class="fa-solid fa-bookmark"></i>
                 <span>Register</span>
               </button>
             </div>
@@ -137,7 +137,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      
     }
 
     function renderEmpty() {
@@ -145,13 +145,13 @@
       container.innerHTML = `
         <div class="card" style="grid-column: 1 / -1;">
           <div class="empty-state">
-            <div class="empty-icon-wrap"><i data-lucide="calendar-heart"></i></div>
+            <div class="empty-icon-wrap"><i class="fa-solid fa-calendar-star"></i></div>
             <div class="empty-title">No Events Scheduled</div>
             <div class="empty-subtitle">There are no upcoming campus hackathons or academic events at this time.</div>
           </div>
         </div>
       `;
-      lucide.createIcons();
+      
     }
   </script>
 </body>

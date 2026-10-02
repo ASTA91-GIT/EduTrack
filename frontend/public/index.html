@@ -6,7 +6,6 @@
   <title>EduTrack | Intelligent Classroom Presence & Academic Intelligence</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     .landing-nav {
       position: sticky;
@@ -124,20 +123,21 @@
       .landing-nav { padding: 14px 20px; }
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <!-- Navigation Header -->
   <header class="landing-nav">
     <a href="index.html" class="sidebar-brand" style="padding: 0;">
       <div class="brand-icon-wrap">
-        <i data-lucide="graduation-cap"></i>
+        <i class="fa-solid fa-graduation-cap"></i>
       </div>
       <div class="brand-title">Edu<span>Track</span></div>
     </a>
 
     <div style="display: flex; align-items: center; gap: 14px;">
       <button class="icon-action-btn" id="themeBtn" title="Toggle Theme" aria-label="Toggle Theme">
-        <i data-lucide="sun"></i>
+        <i class="fa-solid fa-sun"></i>
       </button>
       <a href="login.html" class="btn btn-secondary btn-sm">Sign In</a>
       <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
@@ -147,7 +147,7 @@
   <!-- Hero Section -->
   <section class="landing-hero">
     <div class="hero-badge">
-      <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i>
+      <i class="fa-solid fa-shield-halved" style="width: 16px; height: 16px;"></i>
       <span>Next-Gen EdTech Presence & Analytics</span>
     </div>
 
@@ -161,11 +161,11 @@
 
     <div class="hero-actions">
       <a href="login.html" class="btn btn-primary btn-lg">
-        <i data-lucide="rocket"></i>
+        <i class="fa-solid fa-rocket"></i>
         <span>Launch Portal</span>
       </a>
       <a href="verify.html" class="btn btn-secondary btn-lg">
-        <i data-lucide="scan"></i>
+        <i class="fa-solid fa-qrcode"></i>
         <span>Scan Student QR</span>
       </a>
     </div>
@@ -175,7 +175,7 @@
   <section class="feature-grid-3">
     <div class="feature-card">
       <div class="feature-icon-wrap">
-        <i data-lucide="radio" style="width: 26px; height: 26px;"></i>
+        <i class="fa-solid fa-tower-broadcast" style="width: 26px; height: 26px;"></i>
       </div>
       <h3 style="font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px;">
         Live Dynamic QR Codes
@@ -187,7 +187,7 @@
 
     <div class="feature-card">
       <div class="feature-icon-wrap" style="color: var(--secondary);">
-        <i data-lucide="map-pin" style="width: 26px; height: 26px;"></i>
+        <i class="fa-solid fa-location-dot" style="width: 26px; height: 26px;"></i>
       </div>
       <h3 style="font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px;">
         30m GPS Geofence Security
@@ -199,7 +199,7 @@
 
     <div class="feature-card">
       <div class="feature-icon-wrap" style="color: var(--success);">
-        <i data-lucide="activity" style="width: 26px; height: 26px;"></i>
+        <i class="fa-solid fa-chart-line" style="width: 26px; height: 26px;"></i>
       </div>
       <h3 style="font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px;">
         Instant WebSocket Push
@@ -213,7 +213,7 @@
   <!-- Footer -->
   <footer class="landing-footer">
     <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
-      <i data-lucide="graduation-cap" style="width: 18px; height: 18px; color: var(--primary);"></i>
+      <i class="fa-solid fa-graduation-cap" style="width: 18px; height: 18px; color: var(--primary);"></i>
       <strong style="color: var(--text);">EduTrack Academic Management Platform</strong>
     </div>
     <p>Empowering colleges and universities with verifiable classroom intelligence.</p>
@@ -231,14 +231,10 @@
       const nxt = cur === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', nxt);
       localStorage.setItem('edutrack_theme', nxt);
-      themeBtn.innerHTML = `<i data-lucide="${nxt === 'light' ? 'moon' : 'sun'}"></i>`;
-      lucide.createIcons();
+      themeBtn.innerHTML = nxt === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-      if (window.lucide) {
-        lucide.createIcons();
-      }
 
       // If user is already logged in, redirect to their dashboard
       const user = getCurrentUser();

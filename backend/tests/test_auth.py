@@ -20,11 +20,11 @@ def override_get_db():
     finally:
         db.close()
 
-app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_db():
+    app.dependency_overrides[get_db] = override_get_db
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
     
@@ -41,6 +41,7 @@ def setup_db():
     
     yield
     Base.metadata.drop_all(bind=engine)
+    app.dependency_overrides.pop(get_db, None)
 
 def test_login_success():
     response = client.post("/api/v1/auth/login/json", json={
@@ -61,10 +62,13 @@ def test_login_invalid_password():
     })
     assert response.status_code == 401
 
-def test_login_invalid_role():
+def test_login_unified_role():
+    # Unified login detects actual database role
     response = client.post("/api/v1/auth/login/json", json={
         "email": "test@student.com",
         "password": "password123",
         "role": "teacher"
     })
-    assert response.status_code == 401
+    assert response.status_code == 200
+    assert response.json()["role"] == "student"
+

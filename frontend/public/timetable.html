@@ -6,7 +6,6 @@
   <title>Academic Timetable | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     .day-filter-tabs {
       display: flex;
@@ -75,6 +74,7 @@
       transform: translateY(-2px);
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -91,7 +91,7 @@
           </div>
           <div style="display: flex; gap: 10px;">
             <a href="attendance.html" class="btn btn-primary">
-              <i data-lucide="radio"></i>
+              <i class="fa-solid fa-tower-broadcast"></i>
               <span>Live Attendance</span>
             </a>
           </div>
@@ -112,7 +112,7 @@
         <div id="timetableContainer" class="timetable-grid">
           <div class="card" style="grid-column: 1 / -1;">
             <div class="empty-state">
-              <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+              <div class="empty-icon-wrap"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
               <div class="empty-title">Loading Timetable Schedule...</div>
             </div>
           </div>
@@ -199,7 +199,7 @@
 
             <div style="display: flex; align-items: center; gap: 12px; font-size: 12.5px; color: var(--text-muted);">
               <span style="display: flex; align-items: center; gap: 4px;">
-                <i data-lucide="map-pin" style="width: 14px; height: 14px;"></i>
+                <i class="fa-solid fa-location-dot" style="width: 14px; height: 14px;"></i>
                 <span>${escapeHtml(item.room || 'Room TBA')}</span>
               </span>
             </div>
@@ -208,12 +208,12 @@
           <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end;">
             ${isTeacher ? `
               <a href="attendance.html?subject=${encodeURIComponent(item.subject)}&class_name=${encodeURIComponent(item.class_name)}" class="btn btn-primary btn-sm">
-                <i data-lucide="play"></i>
+                <i class="fa-solid fa-play"></i>
                 <span>Start Session</span>
               </a>
             ` : `
               <a href="verify.html" class="btn btn-secondary btn-sm">
-                <i data-lucide="scan"></i>
+                <i class="fa-solid fa-qrcode"></i>
                 <span>Verify Presence</span>
               </a>
             `}
@@ -221,7 +221,7 @@
         </div>
       `).join('');
 
-      lucide.createIcons();
+      
     }
 
     function renderEmptyState() {
@@ -229,7 +229,7 @@
       container.innerHTML = `
         <div class="card" style="grid-column: 1 / -1;">
           <div class="empty-state">
-            <div class="empty-icon-wrap"><i data-lucide="calendar-x"></i></div>
+            <div class="empty-icon-wrap"><i class="fa-solid fa-calendar-xmark"></i></div>
             <div class="empty-title">No Timetable Classes Found</div>
             <div class="empty-subtitle">
               ${selectedDay === 'all' 
@@ -239,7 +239,7 @@
           </div>
         </div>
       `;
-      lucide.createIcons();
+      
     }
   </script>
 </body>

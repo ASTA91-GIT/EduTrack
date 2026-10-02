@@ -6,7 +6,7 @@
   <title>System Settings | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -28,7 +28,7 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title">
-                <i data-lucide="palette"></i>
+                <i class="fa-solid fa-palette"></i>
                 <span>Appearance & Theme</span>
               </div>
             </div>
@@ -39,13 +39,13 @@
 
             <div style="display: flex; gap: 16px;">
               <button class="btn btn-secondary" id="themeDarkBtn" onclick="setAppTheme('dark')" style="flex: 1; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                <i data-lucide="moon" style="width: 24px; height: 24px;"></i>
+                <i class="fa-solid fa-moon" style="width: 24px; height: 24px;"></i>
                 <span style="font-weight: 600;">Global Dark Mode</span>
                 <span style="font-size: 11px; color: var(--text-muted);">#070A12 Deep Canvas</span>
               </button>
 
               <button class="btn btn-secondary" id="themeLightBtn" onclick="setAppTheme('light')" style="flex: 1; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                <i data-lucide="sun" style="width: 24px; height: 24px;"></i>
+                <i class="fa-solid fa-sun" style="width: 24px; height: 24px;"></i>
                 <span style="font-weight: 600;">Global Light Mode</span>
                 <span style="font-size: 11px; color: var(--text-muted);">#F6F7FB Clean Surface</span>
               </button>
@@ -56,7 +56,7 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title">
-                <i data-lucide="map-pin"></i>
+                <i class="fa-solid fa-location-dot"></i>
                 <span>Attendance Geofence Settings</span>
               </div>
               <span class="badge badge-primary">Institutional Policy</span>
@@ -93,7 +93,7 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title">
-                <i data-lucide="shield"></i>
+                <i class="fa-solid fa-shield"></i>
                 <span>Session & Security</span>
               </div>
             </div>
@@ -104,7 +104,7 @@
                 <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">End your authenticated session on this browser</div>
               </div>
               <button class="btn btn-danger btn-sm" onclick="logout()">
-                <i data-lucide="log-out"></i>
+                <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Sign Out</span>
               </button>
             </div>
@@ -137,8 +137,8 @@
       
       const themeBtn = document.getElementById('themeToggleBtn');
       if (themeBtn) {
-        themeBtn.innerHTML = `<i data-lucide="${theme === 'light' ? 'moon' : 'sun'}"></i>`;
-        lucide.createIcons();
+        themeBtn.innerHTML = `<i class="fa-solid fa-${theme === 'light' ? 'moon' : 'sun'}"></i>`;
+        
       }
     }
 

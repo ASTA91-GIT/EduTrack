@@ -6,7 +6,7 @@
   <title>Manage Students | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -26,7 +26,7 @@
         <div class="card">
           <div class="card-header">
             <div class="card-title">
-              <i data-lucide="users"></i>
+              <i class="fa-solid fa-users"></i>
               <span>All Students</span>
             </div>
             <span class="badge badge-primary" id="studentCountBadge">--</span>
@@ -46,7 +46,7 @@
                 <tr>
                   <td colspan="4">
                     <div class="empty-state">
-                      <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+                      <div class="empty-icon-wrap"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
                       <div class="empty-title">Loading Students...</div>
                     </div>
                   </td>
@@ -89,14 +89,14 @@
             <tr>
               <td colspan="4">
                 <div class="empty-state">
-                  <div class="empty-icon-wrap"><i data-lucide="user-x"></i></div>
+                  <div class="empty-icon-wrap"><i class="fa-solid fa-user-x"></i></div>
                   <div class="empty-title">No Students Registered Yet</div>
                   <div class="empty-subtitle">Student profiles will appear here once registered.</div>
                 </div>
               </td>
             </tr>
           `;
-          lucide.createIcons();
+          
           return;
         }
 
@@ -120,7 +120,7 @@
           </tr>
         `).join('');
 
-        lucide.createIcons();
+        
       } catch (err) {
         console.warn('Student directory error:', err.message);
       }

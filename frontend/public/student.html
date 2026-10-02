@@ -6,7 +6,6 @@
   <title>Student Command Center | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     .health-gauge-card {
@@ -57,6 +56,7 @@
       box-shadow: 0 4px 16px var(--primary-glow);
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -70,7 +70,7 @@
         <div class="quick-scan-banner">
           <div class="quick-scan-info">
             <div class="scan-icon-wrap">
-              <i data-lucide="qr-code"></i>
+              <i class="fa-solid fa-qrcode"></i>
             </div>
             <div>
               <h2 style="font-size: 16px; font-weight: 700; color: var(--text);">Live Attendance Active?</h2>
@@ -80,7 +80,7 @@
             </div>
           </div>
           <a href="verify.html" class="btn btn-primary">
-            <i data-lucide="scan"></i>
+            <i class="fa-solid fa-qrcode"></i>
             <span>Scan & Verify Presence</span>
           </a>
         </div>
@@ -92,7 +92,7 @@
           </div>
           <div style="display: flex; gap: 10px;">
             <a href="timetable.html" class="btn btn-secondary">
-              <i data-lucide="calendar"></i>
+              <i class="fa-solid fa-calendar"></i>
               <span>View Timetable</span>
             </a>
           </div>
@@ -102,7 +102,7 @@
         <div class="grid-cols-4">
           <div class="card stat-card">
             <div class="stat-icon primary">
-              <i data-lucide="clipboard-check"></i>
+              <i class="fa-solid fa-clipboard-check"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Overall Attendance</span>
@@ -112,7 +112,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon success">
-              <i data-lucide="check-circle-2"></i>
+              <i class="fa-solid fa-circle-check"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Classes Attended</span>
@@ -122,7 +122,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon warning">
-              <i data-lucide="shield-alert"></i>
+              <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Required Threshold</span>
@@ -132,7 +132,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon secondary">
-              <i data-lucide="flame"></i>
+              <i class="fa-solid fa-fire"></i>
             </div>
             <div class="stat-content">
               <span class="stat-label">Attendance Health</span>
@@ -149,14 +149,14 @@
             <div class="card">
               <div class="card-header">
                 <div class="card-title">
-                  <i data-lucide="book-open"></i>
+                  <i class="fa-solid fa-book-open"></i>
                   <span>Subject Attendance Breakdown</span>
                 </div>
                 <span class="badge badge-primary">Current Semester</span>
               </div>
               <div id="subjectPerformanceList">
                 <div class="empty-state">
-                  <div class="empty-icon-wrap"><i data-lucide="book-x"></i></div>
+                  <div class="empty-icon-wrap"><i class="fa-solid fa-book"></i></div>
                   <div class="empty-title">Loading subject performance...</div>
                   <div class="empty-subtitle">Fetching verified records from academic server</div>
                 </div>
@@ -167,7 +167,7 @@
             <div class="card">
               <div class="card-header">
                 <div class="card-title">
-                  <i data-lucide="trending-up"></i>
+                  <i class="fa-solid fa-arrow-trend-up"></i>
                   <span>Attendance Recovery Planner</span>
                 </div>
                 <span class="badge badge-secondary">Real-Time Simulation</span>
@@ -177,7 +177,7 @@
               </p>
               <div id="recoveryContainer">
                 <div class="empty-state">
-                  <div class="empty-icon-wrap"><i data-lucide="shield-check"></i></div>
+                  <div class="empty-icon-wrap"><i class="fa-solid fa-shield-halved"></i></div>
                   <div class="empty-title">All Subjects in Safe Standing</div>
                   <div class="empty-subtitle">No recovery actions needed at this time. Keep up the high presence!</div>
                 </div>
@@ -191,14 +191,14 @@
             <div class="card">
               <div class="card-header">
                 <div class="card-title">
-                  <i data-lucide="calendar-clock"></i>
+                  <i class="fa-solid fa-calendar-week"></i>
                   <span>Today's Classes</span>
                 </div>
                 <span class="badge badge-primary" id="currentDayBadge">Today</span>
               </div>
               <div id="todayScheduleList">
                 <div class="empty-state">
-                  <div class="empty-icon-wrap"><i data-lucide="calendar-off"></i></div>
+                  <div class="empty-icon-wrap"><i class="fa-solid fa-calendar-xmark"></i></div>
                   <div class="empty-title">No Classes Scheduled</div>
                   <div class="empty-subtitle">No lectures or lab sessions assigned for today.</div>
                 </div>
@@ -209,7 +209,7 @@
             <div class="card">
               <div class="card-header">
                 <div class="card-title">
-                  <i data-lucide="chart-spline"></i>
+                  <i class="fa-solid fa-chart-line"></i>
                   <span>Attendance Trend</span>
                 </div>
               </div>
@@ -217,7 +217,7 @@
                 <canvas id="attendanceTrendChart"></canvas>
               </div>
               <div id="chartEmptyState" class="empty-state" style="display: none; padding: 24px 0;">
-                <div class="empty-icon-wrap"><i data-lucide="line-chart"></i></div>
+                <div class="empty-icon-wrap"><i class="fa-solid fa-chart-line"></i></div>
                 <div class="empty-title">No Historical Trend Yet</div>
                 <div class="empty-subtitle">Trend graph will populate as multiple attendance sessions are recorded.</div>
               </div>
@@ -271,11 +271,11 @@
 
         const healthEl = document.getElementById('healthStatusVal');
         if (overall >= 75) {
-          healthEl.innerHTML = `<span style="color: var(--success);"><i data-lucide="check-circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Good Standing</span>`;
+          healthEl.innerHTML = `<span style="color: var(--success);"><i class="fa-solid fa-circle-check" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Good Standing</span>`;
         } else if (overall >= 60) {
-          healthEl.innerHTML = `<span style="color: var(--warning);"><i data-lucide="alert-triangle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Low Presence</span>`;
+          healthEl.innerHTML = `<span style="color: var(--warning);"><i class="fa-solid fa-triangle-exclamation" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Low Presence</span>`;
         } else {
-          healthEl.innerHTML = `<span style="color: var(--danger);"><i data-lucide="shield-alert" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Critical Risk</span>`;
+          healthEl.innerHTML = `<span style="color: var(--danger);"><i class="fa-solid fa-triangle-exclamation" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Critical Risk</span>`;
         }
 
         // 2. Subject Breakdown
@@ -285,7 +285,7 @@
         if (subjects.length === 0) {
           subContainer.innerHTML = `
             <div class="empty-state">
-              <div class="empty-icon-wrap"><i data-lucide="folder-check"></i></div>
+              <div class="empty-icon-wrap"><i class="fa-solid fa-folder-closed"></i></div>
               <div class="empty-title">No Attendance Records Yet</div>
               <div class="empty-subtitle">Your subject attendance stats will appear automatically once sessions are recorded.</div>
             </div>
@@ -324,7 +324,7 @@
 
         // Render trend chart if data exists
         renderTrendChart(data.history || []);
-        lucide.createIcons();
+        
       } catch (err) {
         console.warn('Dashboard fetch notice:', err.message);
         document.getElementById('overallAttendanceVal').textContent = '0.0%';
@@ -344,7 +344,7 @@
         if (atRisk.length === 0) {
           container.innerHTML = `
             <div class="empty-state" style="padding: 24px 0;">
-              <div class="empty-icon-wrap" style="color: var(--success);"><i data-lucide="shield-check"></i></div>
+              <div class="empty-icon-wrap" style="color: var(--success);"><i class="fa-solid fa-shield-halved"></i></div>
               <div class="empty-title">All Subjects Meeting Attendance Criteria</div>
               <div class="empty-subtitle">Attendance is at or above the mandatory ${data.threshold || 75}% threshold.</div>
             </div>
@@ -371,7 +371,7 @@
             </div>
           `;
         }
-        lucide.createIcons();
+        
       } catch (err) {
         console.warn('Recovery plan error:', err);
       }
@@ -388,7 +388,7 @@
         if (todayClasses.length === 0) {
           scheduleContainer.innerHTML = `
             <div class="empty-state" style="padding: 28px 0;">
-              <div class="empty-icon-wrap"><i data-lucide="calendar-check"></i></div>
+              <div class="empty-icon-wrap"><i class="fa-solid fa-calendar-check"></i></div>
               <div class="empty-title">No Classes Today</div>
               <div class="empty-subtitle">You have no scheduled lectures for ${escapeHtml(todayDay)}.</div>
             </div>
@@ -410,7 +410,7 @@
             </div>
           `;
         }
-        lucide.createIcons();
+        
       } catch (err) {
         console.warn('Timetable error:', err);
       }

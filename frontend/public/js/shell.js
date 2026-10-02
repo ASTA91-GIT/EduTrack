@@ -1,5 +1,5 @@
 /**
- * EduTrack Shared App Shell (Sidebar, Topbar, Theme Toggle, Profile, Lucide Icons)
+ * EduTrack Shared App Shell (Sidebar, Topbar, Theme Toggle, Profile, Font Awesome 6 Icons)
  */
 
 (function () {
@@ -26,7 +26,7 @@ function renderAppShell(config = {}) {
     <aside class="sidebar" id="appSidebar">
       <a href="${dashboardLink}" class="sidebar-brand">
         <div class="brand-icon-wrap">
-          <i data-lucide="graduation-cap"></i>
+          <i class="fa-solid fa-graduation-cap"></i>
         </div>
         <div class="brand-title">Edu<span>Track</span></div>
       </a>
@@ -35,7 +35,7 @@ function renderAppShell(config = {}) {
         <div>
           <div class="nav-section-title">Overview</div>
           <a href="${dashboardLink}" class="nav-item ${activePage === 'dashboard' ? 'active' : ''}">
-            <i data-lucide="layout-dashboard"></i>
+            <i class="fa-solid fa-table-columns"></i>
             <span>Dashboard</span>
           </a>
         </div>
@@ -43,23 +43,23 @@ function renderAppShell(config = {}) {
         <div>
           <div class="nav-section-title">Academics</div>
           <a href="attendance.html" class="nav-item ${activePage === 'attendance' ? 'active' : ''}">
-            <i data-lucide="clipboard-check"></i>
+            <i class="fa-solid fa-clipboard-check"></i>
             <span>Attendance</span>
           </a>
           <a href="timetable.html" class="nav-item ${activePage === 'timetable' ? 'active' : ''}">
-            <i data-lucide="calendar-days"></i>
+            <i class="fa-solid fa-calendar-days"></i>
             <span>Timetable</span>
           </a>
           <a href="lectures.html" class="nav-item ${activePage === 'lectures' ? 'active' : ''}">
-            <i data-lucide="presentation"></i>
+            <i class="fa-solid fa-chalkboard-user"></i>
             <span>Lectures</span>
           </a>
           <a href="resources.html" class="nav-item ${activePage === 'resources' ? 'active' : ''}">
-            <i data-lucide="folder-open"></i>
+            <i class="fa-solid fa-folder-open"></i>
             <span>Resources</span>
           </a>
           <a href="events.html" class="nav-item ${activePage === 'events' ? 'active' : ''}">
-            <i data-lucide="calendar-heart"></i>
+            <i class="fa-solid fa-calendar-check"></i>
             <span>Events</span>
           </a>
         </div>
@@ -67,11 +67,11 @@ function renderAppShell(config = {}) {
         <div>
           <div class="nav-section-title">Insights</div>
           <a href="analytics.html" class="nav-item ${activePage === 'analytics' ? 'active' : ''}">
-            <i data-lucide="chart-no-axes-combined"></i>
+            <i class="fa-solid fa-chart-line"></i>
             <span>Analytics</span>
           </a>
           <a href="reports.html" class="nav-item ${activePage === 'reports' ? 'active' : ''}">
-            <i data-lucide="file-bar-chart"></i>
+            <i class="fa-solid fa-file-export"></i>
             <span>Reports</span>
           </a>
         </div>
@@ -79,15 +79,15 @@ function renderAppShell(config = {}) {
 
       <div class="sidebar-footer">
         <a href="profile.html" class="nav-item ${activePage === 'profile' ? 'active' : ''}" style="padding: 8px 12px;">
-          <i data-lucide="circle-user-round"></i>
+          <i class="fa-solid fa-circle-user"></i>
           <span>Profile</span>
         </a>
         <a href="settings.html" class="nav-item ${activePage === 'settings' ? 'active' : ''}" style="padding: 8px 12px;">
-          <i data-lucide="settings"></i>
+          <i class="fa-solid fa-gear"></i>
           <span>Settings</span>
         </a>
         <a href="javascript:void(0)" onclick="logout()" class="nav-item" style="padding: 8px 12px; color: var(--danger);">
-          <i data-lucide="log-out"></i>
+          <i class="fa-solid fa-right-from-bracket"></i>
           <span>Logout</span>
         </a>
 
@@ -108,7 +108,7 @@ function renderAppShell(config = {}) {
     <header class="topbar">
       <div class="topbar-left">
         <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation">
-          <i data-lucide="menu"></i>
+          <i class="fa-solid fa-bars"></i>
         </button>
         <div class="breadcrumb-nav">
           <a href="${dashboardLink}">EduTrack</a>
@@ -119,21 +119,21 @@ function renderAppShell(config = {}) {
 
       <div class="topbar-right">
         <div class="search-input-wrap">
-          <i data-lucide="search"></i>
+          <i class="fa-solid fa-magnifying-glass"></i>
           <input type="text" placeholder="Search academics..." id="globalSearchInput" />
         </div>
 
         <button class="icon-action-btn" id="themeToggleBtn" title="Toggle Theme" aria-label="Toggle light/dark theme">
-          <i data-lucide="${document.documentElement.getAttribute('data-theme') === 'light' ? 'moon' : 'sun'}"></i>
+          <i class="fa-solid ${document.documentElement.getAttribute('data-theme') === 'light' ? 'fa-moon' : 'fa-sun'}"></i>
         </button>
 
         <a href="notifications.html" class="icon-action-btn" title="Notifications" aria-label="Notifications">
-          <i data-lucide="bell"></i>
+          <i class="fa-solid fa-bell"></i>
           <span class="badge-dot"></span>
         </a>
 
         <a href="profile.html" class="icon-action-btn" title="My Profile" aria-label="User profile">
-          <i data-lucide="circle-user-round"></i>
+          <i class="fa-solid fa-circle-user"></i>
         </a>
       </div>
     </header>
@@ -181,16 +181,8 @@ function initAppShell(config = {}) {
       localStorage.setItem('edutrack_theme', next);
 
       // Re-render icon
-      themeBtn.innerHTML = `<i data-lucide="${next === 'light' ? 'moon' : 'sun'}"></i>`;
-      if (window.lucide) {
-        window.lucide.createIcons();
-      }
+      themeBtn.innerHTML = `<i class="fa-solid ${next === 'light' ? 'fa-moon' : 'fa-sun'}"></i>`;
     });
-  }
-
-  // Initialize Lucide icons
-  if (window.lucide) {
-    window.lucide.createIcons();
   }
 }
 

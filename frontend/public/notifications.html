@@ -6,7 +6,6 @@
   <title>Notifications | EduTrack</title>
   <link rel="stylesheet" href="styles/global.css">
   <link rel="icon" type="image/svg+xml" href="assets/edutrack-icon.svg">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     .notif-item {
       background: var(--surface);
@@ -29,6 +28,7 @@
       background: var(--surface-elevated);
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
   <div class="app-container">
@@ -48,7 +48,7 @@
         <div id="notifsContainer" style="max-width: 860px;">
           <div class="card">
             <div class="empty-state">
-              <div class="empty-icon-wrap"><i data-lucide="loader-2"></i></div>
+              <div class="empty-icon-wrap"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
               <div class="empty-title">Loading Notifications...</div>
             </div>
           </div>
@@ -95,7 +95,7 @@
       container.innerHTML = items.map(n => `
         <div class="notif-item ${!n.is_read ? 'unread' : ''}">
           <div class="stat-icon ${!n.is_read ? 'primary' : 'secondary'}" style="width: 40px; height: 40px;">
-            <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+            <i class="fa-solid fa-bell" style="width: 20px; height: 20px;"></i>
           </div>
           <div style="flex: 1;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
@@ -107,7 +107,7 @@
         </div>
       `).join('');
 
-      lucide.createIcons();
+      
     }
 
     function renderEmpty() {
@@ -115,13 +115,13 @@
       container.innerHTML = `
         <div class="card">
           <div class="empty-state">
-            <div class="empty-icon-wrap"><i data-lucide="bell-off"></i></div>
+            <div class="empty-icon-wrap"><i class="fa-solid fa-bell-slash"></i></div>
             <div class="empty-title">No New Notifications</div>
             <div class="empty-subtitle">You are all caught up on academic alerts, announcements, and presence logs.</div>
           </div>
         </div>
       `;
-      lucide.createIcons();
+      
     }
   </script>
 </body>

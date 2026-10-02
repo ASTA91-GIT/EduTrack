@@ -106,12 +106,7 @@ async def login_json(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
         )
-    # Role check — if the user's actual role doesn't match the selected role, reject
-    if user.role != body.role:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect role for this account",
-        )
+    # Role check removed to allow one login form for all roles
     tokens = create_tokens({"sub": user.public_id})
     return {
         "user_id": user.public_id,

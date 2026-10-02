@@ -3,16 +3,15 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
-    const role = document.querySelector('input[name="role"]:checked')?.value;
 
-    if(!email || !password || !role) {
-        alert("Please fill all fields and select your role.");
+    if(!email || !password) {
+        alert("Please fill all fields.");
         return;
     }
 
     try {
         if (typeof login === "function") {
-            const user = await login(email, password, role);
+            const user = await login(email, password, "unknown");
             
             // Redirect based on role returned from server (source of truth)
             if(user.role === "teacher") {

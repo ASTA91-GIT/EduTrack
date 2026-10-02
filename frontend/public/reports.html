@@ -3,59 +3,136 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Reports</title>
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="reports/reports.css" />
+  <title>EduTrack – Reports & Analytics</title>
+  <link rel="stylesheet" href="styles/global.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .dashboard-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    .header {
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
+        background: rgba(255, 255, 255, 0.8); padding: 1.5rem; border-radius: 12px;
+        backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .header h1 { color: #512da8; }
+    .nav-actions button {
+        background: #512da8; color: white; border: none; padding: 0.5rem 1.5rem;
+        border-radius: 8px; cursor: pointer; font-weight: 600; margin-left: 0.5rem;
+    }
+    .charts-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;
+    }
+    .chart-container {
+        background: white; padding: 1.5rem; border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+  </style>
 </head>
 <body>
   <script src="js/auth.js"></script>
+  <script>protectPage();</script> <!-- Any logged in user -->
 
-  <header>
-    <div class="logo">EduTrack</div>
-    <nav>
-      <ul>
-        <li><a href="dashboard.html">Dashboard</a></li>
-        <li><a href="attendance.html">Attendance</a></li>
-        <li><a href="events.html">Events</a></li>
-        <li><a href="tests.html">Tests</a></li>
-        <li><a href="assignments.html">Assignments</a></li>
-        <li><a href="reports.html" class="active">Reports</a></li>
-        <li><a href="notifications.html">Notifications</a></li>
-      </ul>
-    </nav>
-    <div class="profile">
-      <i class="bx bx-user-circle" id="userIcon"></i>
-    </div>
-  </header>
+  <div class="dashboard-container">
+    <header class="header">
+      <div>
+        <h1>Reports & Analytics</h1>
+        <p>Your Data Insights</p>
+      </div>
+      <div class="nav-actions">
+        <button id="back-btn">Back to Dashboard</button>
+        <button id="logout-btn">Logout</button>
+      </div>
+    </header>
 
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <img id="sidebarAvatar" src="/teacher/assets/default-profile.png" alt="Avatar" />
-      <h3 id="sidebarName">User Name</h3>
-      <p id="sidebarRole">Role</p>
+    <div id="loading" class="text-center mt-4 mb-4">
+      <div class="loading"></div>
     </div>
-    <div class="sidebar-content">
-      <button id="logoutBtn" class="logout-btn">Logout</button>
+
+    <div id="reports-content" style="display: none;">
+      <div class="charts-grid" id="charts-container">
+        <!-- Charts injected here -->
+      </div>
     </div>
   </div>
 
-  <main class="reports">
-    <div class="welcome">
-      <h1 id="welcomeMessage">Welcome!</h1>
-      <p id="roleMessage"></p>
-    </div>
+  <script>
+    document.getElementById("logout-btn").addEventListener("click", logout);
+    document.getElementById("back-btn").addEventListener("click", () => {
+        const user = getCurrentUser();
+        if(user.role === 'admin') window.location.href = 'dashboard.html';
+        else if(user.role === 'teacher') window.location.href = 'teacher.html';
+        else window.location.href = 'student.html';
+    });
 
-    <div id="reportCards" class="cards">
-      <!-- Cards will be dynamically generated -->
-    </div>
+    async function loadReports() {
+        const user = getCurrentUser();
+        const container = document.getElementById("charts-container");
+        
+        try {
+            if (user.role === 'student') {
+                const res = await authFetch(`${API_URL}/v1/dashboard/student`);
+                const data = await res.json();
+                
+                // Subject Comparison Chart
+                container.innerHTML += `
+                    <div class="chart-container">
+                        <h3>Subject Attendance</h3>
+                        <canvas id="studentBarChart"></canvas>
+                    </div>
+                `;
+                
+                const ctx = document.getElementById('studentBarChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.subjects.map(s => s.subject),
+                        datasets: [{
+                            label: 'Attendance %',
+                            data: data.subjects.map(s => s.percentage),
+                            backgroundColor: '#512da8'
+                        }]
+                    },
+                    options: { scales: { y: { min: 0, max: 100 } } }
+                });
+                
+            } else {
+                // Admin or Teacher gets trend data
+                const trendRes = await authFetch(`${API_URL}/v1/dashboard/analytics/attendance-trend`);
+                const trendData = await trendRes.json();
+                
+                container.innerHTML += `
+                    <div class="chart-container">
+                        <h3>Institution Attendance Trend</h3>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                `;
+                
+                const ctx = document.getElementById('trendChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: trendData.dates,
+                        datasets: [{
+                            label: 'Students Present',
+                            data: trendData.counts,
+                            borderColor: '#512da8',
+                            tension: 0.1,
+                            fill: false
+                        }]
+                    },
+                    options: { scales: { y: { beginAtZero: true } } }
+                });
+            }
 
-    <div class="charts">
-      <canvas id="attendanceChart"></canvas>
-      <canvas id="gradesChart"></canvas>
-    </div>
-  </main>
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("reports-content").style.display = "block";
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="reports/reports.js"></script>
+        } catch (err) {
+            console.error(err);
+            alert("Error loading reports.");
+        }
+    }
+
+    loadReports();
+  </script>
 </body>
 </html>

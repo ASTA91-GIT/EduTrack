@@ -91,6 +91,40 @@ async def login(
         **tokens
     }
 
+# JSON-based login (used by the frontend which sends JSON, not form data)
+from pydantic import BaseModel as _BaseModel
+
+class _LoginRequest(_BaseModel):
+    email: str
+    password: str
+    role: str = "student"
+
+@router.post("/login/json", response_model=Dict[str, Any])
+async def login_json(
+    body: _LoginRequest,
+    db: Session = Depends(database.get_db)
+):
+    user = db.query(models.User).filter(models.User.email == body.email).first()
+    if not user or not verify_password(body.password, user.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+        )
+    # Role check — if the user's actual role doesn't match the selected role, reject
+    if user.role != body.role:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect role for this account",
+        )
+    tokens = create_tokens({"sub": user.public_id})
+    return {
+        "user_id": user.public_id,
+        "full_name": user.name,
+        "email": user.email,
+        "role": user.role,
+        **tokens,
+    }
+
 @router.post("/refresh", response_model=Dict[str, Any])
 async def refresh_token(
     refresh_token: str = Body(..., embed=True),

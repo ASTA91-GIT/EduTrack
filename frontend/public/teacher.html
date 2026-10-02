@@ -3,86 +3,328 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Teacher Dashboard</title>
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="teacher/teacher.css" />
+  <title>EduTrack – Faculty Dashboard</title>
+  <link rel="stylesheet" href="styles/global.css" />
+  <style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 1.5rem;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .header h1 { color: #512da8; margin-bottom: 0.25rem; }
+    .nav-actions button {
+        background: #512da8;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s;
+        margin-left: 0.5rem;
+    }
+    .nav-actions button:hover { background: #3f2382; }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        text-align: center;
+        transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-5px); }
+    .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+    .stat-card .value { font-size: 2.5rem; font-weight: 700; color: #512da8; }
+
+    .main-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    
+    .section-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .section-card h2 { color: #333; margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; color: #555; font-weight: 600; }
+    .form-group select, .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: inherit;
+    }
+    .btn-primary {
+        background: #512da8;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        width: 100%;
+        font-size: 1rem;
+    }
+    .btn-primary:hover { background: #3f2382; }
+
+    .qr-container {
+        text-align: center;
+        margin-top: 1.5rem;
+        display: none;
+    }
+    .qr-container img {
+        max-width: 250px;
+        border: 10px solid white;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border-radius: 12px;
+    }
+    .session-info {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #e3f2fd;
+        border-radius: 8px;
+        color: #1565c0;
+        font-weight: 600;
+    }
+
+    .session-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .session-item {
+        padding: 1rem;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .session-item.active { border-color: #4caf50; background: #f1f8e9; }
+    .badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    .badge.active { background: #4caf50; color: white; }
+    .badge.closed { background: #9e9e9e; color: white; }
+  </style>
 </head>
-
 <body>
-  <!-- HEADER -->
-  <header>
-    <div class="logo">EduTrack</div>
-    <nav>
-      <ul>
-        <li><a href="teacher.html" class="active">Dashboard</a></li>
-        <li><a href="manage-students.html">Manage Students</a></li>
-        <li><a href="attendance.html">Attendance</a></li>
-        <li><a href="reports.html">Reports</a></li>
-      </ul>
-    </nav>
-    <div class="profile" id="profileBtn">
-      <i class="bx bx-user-circle"></i>
-    </div>
-  </header>
+  <script src="js/auth.js"></script>
+  <script>protectPage("teacher");</script>
 
-  <!-- MAIN DASHBOARD -->
-  <main class="dashboard">
-    <div class="stats-container">
-      <div class="stat-card">
-        <h3 id="totalStudents">0</h3>
-        <p>Total Students</p>
+  <div class="dashboard-container">
+    <header class="header">
+      <div>
+        <h1 id="welcome-message">Faculty Dashboard</h1>
+        <p>Manage Attendance & Sessions</p>
       </div>
-      <div class="stat-card">
-        <h3 id="todayClasses">0</h3>
-        <p>Classes Today</p>
+      <div class="nav-actions">
+        <button onclick="window.location.href='reports.html'">Reports</button>
+        <button id="logout-btn">Logout</button>
       </div>
-      <div class="stat-card">
-        <h3 id="attendancePercent">0%</h3>
-        <p>Attendance %</p>
-      </div>
-      <div class="stat-card">
-        <h3 id="quickActions">✏️</h3>
-        <p>Quick Actions</p>
-      </div>
+    </header>
+
+    <div id="loading" class="text-center mt-4 mb-4">
+      <div class="loading"></div>
+      <p>Loading dashboard...</p>
     </div>
 
-    <div class="welcome">
-      <h1>Welcome, <span id="teacherNameDisplay">Teacher Name</span></h1>
-      <p>Manage students, take attendance, and view reports easily from your dashboard.</p>
-    </div>
-  </main>
+    <div id="dashboard-content" style="display: none;">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Students</h3>
+          <div class="value" id="stat-students">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Sessions Created</h3>
+          <div class="value" id="stat-sessions">0</div>
+        </div>
+      </div>
 
-  <!-- PROFILE SIDEBAR -->
-  <div id="profileSidebar" class="profile-sidebar">
-    <div class="sidebar-header">
-      <img id="profileAvatar" src="/teacher/assets/default-profile.png" alt="Avatar" />
-      <h3 id="sidebarName">Teacher Name</h3>
-      <p id="sidebarRole">Teacher</p>
-    </div>
-    <div class="sidebar-content">
-      <label for="teacherName">Name:</label>
-      <input type="text" id="teacherName" placeholder="Enter your name" />
-      
-      <label for="teacherEmail">Email:</label>
-      <input type="email" id="teacherEmail" placeholder="Enter your email" />
-      
-      <label for="teacherPassword">Password:</label>
-      <input type="password" id="teacherPassword" placeholder="Enter new password" />
-      
-      <label for="profileUpload">Profile Image:</label>
-      <input type="file" id="profileUpload" accept="image/*" />
-      
-      <button id="saveProfileBtn">Save Info</button>
-      <button id="logoutBtn" class="logout-btn">Logout</button>
+      <div class="main-grid">
+        <!-- Create Session -->
+        <div class="section-card">
+          <h2>Start Attendance Session</h2>
+          <div class="form-group">
+            <label>Subject</label>
+            <select id="session-subject">
+              <option value="Data Structures">Data Structures</option>
+              <option value="Database Systems">Database Systems</option>
+              <option value="Operating Systems">Operating Systems</option>
+              <option value="Computer Networks">Computer Networks</option>
+              <option value="Software Engineering">Software Engineering</option>
+              <option value="Machine Learning">Machine Learning</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Class/Section</label>
+            <select id="session-class">
+              <option value="CS-A">CS-A</option>
+              <option value="CS-B">CS-B</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Duration (Minutes)</label>
+            <input type="number" id="session-duration" value="5" min="1" max="60">
+          </div>
+          <button class="btn-primary" id="start-session-btn">Generate QR Code</button>
+
+          <div id="qr-container" class="qr-container">
+            <h3>Scan to Mark Attendance</h3>
+            <img id="qr-image" src="" alt="QR Code">
+            <div class="session-info">
+              Code: <span id="session-token"></span><br>
+              <span id="session-timer">Expires in: --:--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Sessions -->
+        <div class="section-card">
+          <h2>Recent Sessions</h2>
+          <div class="session-list" id="recent-sessions">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <script src="js/auth.js"></script>
-  <script src="teacher/teacher.js"></script>
   <script>
-    //document.addEventListener("DOMContentLoaded", () => {
-    //  protectPage("teacher"); // Only teachers allowed
+    document.getElementById("logout-btn").addEventListener("click", logout);
+    let sessionTimerInterval;
+
+    async function loadDashboard() {
+      try {
+        const res = await authFetch(`${API_URL}/v1/dashboard/faculty`);
+        if (!res.ok) throw new Error("Failed to load dashboard data");
+        
+        const data = await res.json();
+        
+        document.getElementById("welcome-message").textContent = `Welcome, Prof. ${data.user.name}`;
+        document.getElementById("stat-students").textContent = data.total_students;
+        document.getElementById("stat-sessions").textContent = data.total_sessions;
+
+        const sessionsContainer = document.getElementById("recent-sessions");
+        sessionsContainer.innerHTML = "";
+        
+        if (data.recent_sessions.length === 0) {
+            sessionsContainer.innerHTML = "<p>No recent sessions.</p>";
+        } else {
+            data.recent_sessions.forEach(s => {
+                const isActive = s.status === 'active';
+                const date = new Date(s.created_at).toLocaleString();
+                const html = `
+                    <div class="session-item ${isActive ? 'active' : ''}">
+                        <div>
+                            <strong>${s.subject} (${s.class_name})</strong><br>
+                            <small style="color:#666">${date}</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="badge ${s.status}">${s.status}</span><br>
+                            <small><b>${s.attendee_count}</b> Attended</small>
+                        </div>
+                    </div>
+                `;
+                sessionsContainer.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("dashboard-content").style.display = "block";
+
+      } catch (err) {
+        console.error(err);
+        alert("Error loading dashboard data.");
+      }
+    }
+
+    // Start Session & QR Code
+    document.getElementById("start-session-btn").addEventListener("click", async () => {
+        const subject = document.getElementById("session-subject").value;
+        const className = document.getElementById("session-class").value;
+        const duration = parseInt(document.getElementById("session-duration").value);
+
+        try {
+            const res = await authFetch(`${API_URL}/v1/attendance_sessions/session`, {
+                method: "POST",
+                body: JSON.stringify({
+                    subject: subject,
+                    class_name: className,
+                    duration_minutes: duration
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.detail || "Failed to create session");
+            }
+
+            const sessionData = await res.json();
+            
+            // Show QR
+            document.getElementById("qr-container").style.display = "block";
+            // Use the QR image endpoint
+            document.getElementById("qr-image").src = `${API_URL}/v1/attendance_sessions/session/${sessionData.session_token}/qr`;
+            document.getElementById("session-token").textContent = sessionData.session_token;
+
+            // Start Timer
+            clearInterval(sessionTimerInterval);
+            let timeRemaining = duration * 60;
+            const timerEl = document.getElementById("session-timer");
+            
+            sessionTimerInterval = setInterval(() => {
+                if (timeRemaining <= 0) {
+                    clearInterval(sessionTimerInterval);
+                    timerEl.textContent = "Session Expired";
+                    timerEl.style.color = "red";
+                    loadDashboard(); // Refresh to show closed status
+                    return;
+                }
+                const m = Math.floor(timeRemaining / 60);
+                const s = timeRemaining % 60;
+                timerEl.textContent = `Expires in: ${m}:${s.toString().padStart(2, '0')}`;
+                timerEl.style.color = "#1565c0";
+                timeRemaining--;
+            }, 1000);
+
+            // Refresh dashboard list to show the new active session
+            loadDashboard();
+
+        } catch(err) {
+            alert(err.message);
+        }
     });
+
+    loadDashboard();
   </script>
 </body>
 </html>

@@ -1,49 +1,55 @@
 from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from .database import engine, get_db
+from fastapi.staticfiles import StaticFiles
+from .database import engine, get_db, Base
 from . import models
-from .routes import users, auth
 import os
-from dotenv import load_dotenv
+import json
 import time
+import logging
 
-# Load environment variables from .env file
+from dotenv import load_dotenv
 load_dotenv()
 
-# Parse CORS origins from environment variable
-cors_origins = os.getenv("BACKEND_CORS_ORIGINS", "[\"http://localhost:8080\",\"http://localhost:3000\"]")
-try:
-    import json
-    cors_origins = json.loads(cors_origins)
-except:
-    cors_origins = ["http://localhost:8080", "http://localhost:3000"]
+logger = logging.getLogger(__name__)
 
 # Create database tables
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="EduTrack API", description="API for Automated Attendance System", version="1.0.0")
+# Parse CORS origins
+cors_origins_raw = os.getenv(
+    "BACKEND_CORS_ORIGINS",
+    '["http://localhost:8080","http://localhost:3000","http://127.0.0.1:5500","http://localhost:5500","http://127.0.0.1:8000"]'
+)
+try:
+    cors_origins = json.loads(cors_origins_raw)
+except Exception:
+    cors_origins = ["*"]
 
-# CORS middleware with improved security using environment variables
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=cors_origins,  # Use origins from environment variable
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Restrict to specific methods
-    allow_headers=["Content-Type", "Authorization", "Accept"],  # Restrict to specific headers
-    expose_headers=["Content-Length"],
-    max_age=600,  # Cache preflight requests for 10 minutes
+app = FastAPI(
+    title="EduTrack API",
+    description="Automated Student Attendance Monitoring & Analytics",
+    version="2.0.0",
 )
 
-# Simple in-memory rate limiting (per IP, per window)
-RATE_LIMIT_REQUESTS = int(os.getenv("RATE_LIMIT_REQUESTS", "100"))
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ---------- Rate limiter ----------
+RATE_LIMIT_REQUESTS = int(os.getenv("RATE_LIMIT_REQUESTS", "200"))
 RATE_LIMIT_WINDOW_SEC = int(os.getenv("RATE_LIMIT_WINDOW_SEC", "60"))
-_rate_store = {}
+_rate_store: dict = {}
 
 @app.middleware("http")
-async def error_and_rate_middleware(request: Request, call_next):
+async def rate_limit_middleware(request: Request, call_next):
     try:
-        # Rate limit
         ip = request.client.host if request.client else "unknown"
         now = time.time()
         window = int(now // RATE_LIMIT_WINDOW_SEC)
@@ -52,37 +58,46 @@ async def error_and_rate_middleware(request: Request, call_next):
         if count >= RATE_LIMIT_REQUESTS:
             return JSONResponse(status_code=429, content={"detail": "Too Many Requests"})
         _rate_store[key] = count + 1
-
-        response = await call_next(request)
-        return response
-    except Exception as exc:
+        return await call_next(request)
+    except Exception:
         return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
 
-# Include routers with API versioning
+# ---------- Routers ----------
 API_V1_PREFIX = "/api/v1"
-app.include_router(auth.router, prefix=f"{API_V1_PREFIX}/auth", tags=["Authentication"])
-# users router kept under v1 for consistency if exists
-try:
-    app.include_router(users.router, prefix=f"{API_V1_PREFIX}/users", tags=["Users"])
-except Exception:
-    pass
 
-# Placeholder includes for new route modules if present
-try:
-    from .routes import notifications, reports, attendance, students, appeals, attendance_sessions
-    app.include_router(attendance.router, prefix=f"{API_V1_PREFIX}/attendance", tags=["Attendance"])
-    app.include_router(notifications.router, prefix=f"{API_V1_PREFIX}/notifications", tags=["Notifications"])
-    app.include_router(reports.router, prefix=f"{API_V1_PREFIX}/reports", tags=["Reports"])
-    app.include_router(students.router, prefix=f"{API_V1_PREFIX}/students", tags=["Students"])
-    app.include_router(appeals.router, prefix=f"{API_V1_PREFIX}/appeals", tags=["Appeals"])
-    app.include_router(attendance_sessions.router, prefix=f"{API_V1_PREFIX}/attendance_sessions", tags=["Attendance Sessions"])
-except Exception:
-    pass
+# Auth is mandatory
+from .routes import auth as auth_routes
+app.include_router(auth_routes.router, prefix=f"{API_V1_PREFIX}/auth", tags=["Authentication"])
 
+# Optional routers — each loaded independently so one broken file doesn't break everything
+_optional_routers = [
+    ("dashboard",           "dashboard",            "Dashboard"),
+    ("ai",                  "ai",                   "AI Chatbot"),
+    ("attendance",          "attendance",           "Attendance"),
+    ("attendance_sessions", "attendance_sessions",  "Attendance Sessions"),
+    ("academic",            "academic",             "Academic"),
+    ("users",               "users",                "Users"),
+]
+
+for module_name, prefix, tag in _optional_routers:
+    try:
+        mod = __import__(f"backend.app.routes.{module_name}", fromlist=["router"])
+        app.include_router(mod.router, prefix=f"{API_V1_PREFIX}/{prefix}", tags=[tag])
+        logger.info(f"Loaded router: {module_name}")
+    except Exception as e:
+        logger.warning(f"Could not load router '{module_name}': {e}")
+
+# ---------- Root ----------
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to EduTrack API"}
+    return {"message": "Welcome to EduTrack API", "version": "2.0.0"}
 
 @app.get(f"{API_V1_PREFIX}/health")
 def health_check(db=Depends(get_db)):
     return {"status": "healthy", "database": "connected"}
+
+# ---------- Serve frontend static files (must be last) ----------
+_frontend_dir = os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "public")
+if os.path.isdir(_frontend_dir):
+    app.mount("/", StaticFiles(directory=_frontend_dir, html=True), name="frontend")
+    logger.info(f"Serving frontend from {_frontend_dir}")

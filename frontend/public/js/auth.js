@@ -13,12 +13,12 @@ function getToken() {
 }
 
 // Function to login (call backend)
-async function login(email, password) {
+async function login(email, password, role) {
   try {
-    const res = await fetch(`${API_URL}/auth/login`, {
+    const res = await fetch(`${API_URL}/v1/auth/login/json`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, role }),
     });
 
     if (!res.ok) {
@@ -37,6 +37,41 @@ async function login(email, password) {
       role: data.role || "student", // adjust if backend sends role differently
       id: data.user_id,
       full_name: data.full_name,
+    };
+
+    localStorage.setItem("aamsCurrentUser", JSON.stringify(user));
+    return user;
+  } catch (err) {
+    alert(err.message);
+    throw err;
+  }
+}
+
+// Function to register (call backend)
+async function register(name, email, password, role) {
+  try {
+    const res = await fetch(`${API_URL}/v1/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, role }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || "Registration failed");
+    }
+
+    const data = await res.json();
+
+    // Save token
+    localStorage.setItem("edutrack_token", data.access_token);
+
+    // Store minimal user object
+    const user = {
+      email,
+      role: data.user.role || "student",
+      id: data.user.id,
+      full_name: data.user.name,
     };
 
     localStorage.setItem("aamsCurrentUser", JSON.stringify(user));

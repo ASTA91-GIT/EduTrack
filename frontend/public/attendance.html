@@ -3,66 +3,74 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Attendance</title>
-  <link rel="stylesheet" href="attendance/attendance.css" />
+  <title>EduTrack – Attendance Analytics</title>
+  <link rel="stylesheet" href="styles/global.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .chart-container { margin-top: 2rem; }
+  </style>
 </head>
-
 <body>
   <script src="js/auth.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // Protect attendance page: only students
-      protectPage("student");
-
-      // Update back button dynamically based on role
-      const user = getCurrentUser();
-      const dashboardLink = document.querySelector('.actions a');
-      if (user.role === "teacher") {
-        dashboardLink.href = "teacher.html";
-      } else if (user.role === "student") {
-        dashboardLink.href = "student.html"; // adjust if you have a student dashboard
-      }
-    });
-  </script>
-
-  <header>
-    <div class="nav">
-      <div class="brand">
-        <div class="logo">📋</div>
-        <span>Attendance Page</span>
-      </div>
-      <div class="actions">
-        <a href="teacher.html" class="pill">⬅ Back to Dashboard</a>
-      </div>
-    </div>
+  <script>protectPage();</script>
+  
+  <header style="padding: 1rem 2rem; background: #512da8; color: white; display: flex; justify-content: space-between;">
+    <h2>Attendance Analytics</h2>
+    <a href="#" onclick="window.history.back()" style="color: white; text-decoration: none;">⬅ Back</a>
   </header>
 
-  <main class="container">
-    <section class="card">
-      <h2>Mark Attendance</h2>
-      <form id="attendanceFilter">
-        <select id="branchSelect" required></select>
-        <select id="divisionSelect" required></select>
-        <select id="subjectSelect" required></select>
-        <input type="date" id="attendanceDate" required />
-        <button type="submit">Load Students</button>
-      </form>
+  <div class="container">
+    <h2>Detailed Attendance Trends</h2>
+    <div class="chart-container">
+      <canvas id="attendanceChart"></canvas>
+    </div>
+  </div>
 
-      <table id="attendanceTable">
-        <thead>
-          <tr>
-            <th>Roll No</th>
-            <th>Name</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-
-      <button id="saveAttendance" class="save-btn">💾 Save Attendance</button>
-    </section>
-  </main>
-
-  <script src="attendance/attendance.js"></script>
+  <script>
+    async function loadAttendanceChart() {
+      try {
+        const user = getCurrentUser();
+        // If teacher/admin, get trend
+        if (user.role !== 'student') {
+          const res = await authFetch(`${API_URL}/v1/dashboard/analytics/attendance-trend`);
+          const data = await res.json();
+          
+          const ctx = document.getElementById('attendanceChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.dates,
+              datasets: [{
+                label: 'Students Present (Institution Wide)',
+                data: data.counts,
+                backgroundColor: '#2196f3',
+              }]
+            }
+          });
+        } else {
+          // If student, get their subject distribution
+          const res = await authFetch(`${API_URL}/v1/dashboard/student`);
+          const data = await res.json();
+          
+          const ctx = document.getElementById('attendanceChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'polarArea',
+            data: {
+              labels: data.subjects.map(s => s.subject),
+              datasets: [{
+                label: 'Attendance %',
+                data: data.subjects.map(s => s.percentage),
+                backgroundColor: ['#4caf50', '#ff9800', '#f44336', '#2196f3', '#9c27b0'],
+              }]
+            }
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadAttendanceChart();
+  </script>
 </body>
 </html>

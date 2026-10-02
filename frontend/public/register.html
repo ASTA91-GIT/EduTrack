@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack | Login</title>
+  <title>EduTrack | Register</title>
 
-  <!-- Security -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="no-referrer">
   <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; script-src 'self'; connect-src 'self' http://127.0.0.1:8000 http://localhost:8000; font-src 'self' https://cdnjs.cloudflare.com; frame-ancestors 'none'; base-uri 'self'">
-
+  
   <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
@@ -24,10 +22,10 @@
   <div class="background-container"></div>
   
   <div class="login-container">
-    <form id="loginForm">
+    <form id="registerForm">
       <img src="images/logo.png" alt="EduTrack Logo" class="logo" />
 
-      <h1>Login to EduTrack</h1>
+      <h1>Create Account</h1>
 
       <div class="role-selection">
         <label>
@@ -40,28 +38,19 @@
         </label>
       </div>
 
-      <input type="email" id="loginEmail" placeholder="Institutional Email" required />
-      <input type="password" id="loginPassword" placeholder="Password" required />
+      <input type="text" id="regName" placeholder="Full Name" required />
+      <input type="email" id="regEmail" placeholder="Institutional Email" required />
+      <input type="password" id="regPassword" placeholder="Password" required />
 
-      <button type="submit">Login</button>
+      <button type="submit">Sign Up</button>
 
       <div style="margin-top: 15px; text-align: center; color: white;">
-        Don't have an account? <a href="register.html" style="color: #ff9800; text-decoration: none;">Create Account</a>
-      </div>
-
-      <!-- Quick Navigation Links for testing -->
-      <div class="page-links">
-        <p>Quick Navigation:</p>
-        <a href="manage-students.html">Student</a> |
-        <a href="teacher.html">Teacher</a> |
-        <a href="attendance.html">Attendance</a> |
-        <a href="dashboard.html">Dashboard</a> |
-        <a href="reports.html">Reports</a>
+        Already have an account? <a href="login.html" style="color: #ff9800; text-decoration: none;">Login</a>
       </div>
     </form>
   </div>
 
   <script src="js/auth.js"></script>
-  <script src="login/mainlogin.js"></script>
+  <script src="login/register.js"></script>
 </body>
 </html>

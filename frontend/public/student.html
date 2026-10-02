@@ -3,124 +3,512 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Student</title>
-  <link rel="stylesheet" href="students/manage-students.css" />
+  <title>EduTrack – Student Dashboard</title>
+  <link rel="stylesheet" href="styles/global.css" />
+  <style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 1.5rem;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .header h1 { color: #512da8; }
+    .nav-actions button {
+        background: #512da8;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s;
+    }
+    .nav-actions button:hover { background: #3f2382; }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        text-align: center;
+        transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-5px); }
+    .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+    .stat-card .value { font-size: 2.5rem; font-weight: 700; color: #512da8; }
+    .stat-card .desc { color: #888; font-size: 0.85rem; margin-top: 0.5rem; }
+
+    .subjects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .subject-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .subject-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 1rem;
+    }
+    .subject-header h3 { color: #333; margin: 0; }
+    .badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    .badge.safe { background: #e8f5e9; color: #2e7d32; }
+    .badge.recovering { background: #e3f2fd; color: #1565c0; }
+    .badge.at_risk { background: #fff3e0; color: #ef6c00; }
+    .badge.critical { background: #ffebee; color: #c62828; }
+    
+    .progress-container { margin: 1rem 0; }
+    .progress-bar {
+        height: 10px;
+        background: #eee;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .progress-fill {
+        height: 100%;
+        background: #512da8;
+        border-radius: 5px;
+        transition: width 0.5s ease;
+    }
+    .progress-fill.danger { background: #f44336; }
+    .progress-fill.warning { background: #ff9800; }
+    .progress-fill.success { background: #4caf50; }
+    
+    .subject-details {
+        display: flex;
+        justify-content: space-between;
+        color: #666;
+        font-size: 0.9rem;
+    }
+    
+    .recovery-info {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #512da8;
+        font-size: 0.9rem;
+        color: #444;
+    }
+    
+    .whatif-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+    }
+    .whatif-controls {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    .whatif-controls input {
+        width: 100px;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+    }
+    .whatif-controls select {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        flex-grow: 1;
+    }
+    .whatif-controls button {
+        background: #512da8;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    .whatif-result {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: #f0f4ff;
+        border-radius: 8px;
+        display: none;
+    }
+    
+    /* Chatbot Styles */
+    #chatbot-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #512da8, #7c4dff);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(81, 45, 168, 0.4);
+        z-index: 1000;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    #chatbot-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(81, 45, 168, 0.6); }
+    
+    #chatbot-panel {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 350px;
+        height: 500px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        display: none;
+        flex-direction: column;
+        z-index: 1000;
+        overflow: hidden;
+    }
+    .chat-header {
+        background: #512da8;
+        color: white;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .chat-header h3 { margin: 0; font-size: 1.1rem; }
+    .close-chat { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+    .chat-messages {
+        flex-grow: 1;
+        padding: 1rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        background: #f8f9fa;
+    }
+    .message { max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
+    .msg-user { background: #512da8; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .msg-ai { background: white; color: #333; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; }
+    .chat-input {
+        padding: 1rem;
+        background: white;
+        border-top: 1px solid #eee;
+        display: flex;
+        gap: 0.5rem;
+    }
+    .chat-input input {
+        flex-grow: 1;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        outline: none;
+    }
+    .chat-input button {
+        background: #512da8;
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .typing-indicator { display: none; align-self: flex-start; color: #888; font-size: 0.85rem; margin-left: 1rem; }
+  </style>
 </head>
-
-<script src="js/auth.js"></script>
-<script>
-  protectPage("student");  // only students allowed
-</script>
-
 <body>
-  <!-- Header / Navbar -->
-  <header class="nav">
-    <div class="brand">
-      <div class="logo">🎓</div>
-      <span>Student Dashboard</span>
-    </div>
-    <div class="actions">
-      <span id="welcome-message"></span>
-      <button id="logout-btn">Logout</button>
-    </div>
-  </header>
+  <script src="js/auth.js"></script>
+  <script>protectPage("student");</script>
 
-  <!-- Navigation Links -->
-  <nav class="student-nav">
-    <a href="attendance.html">Attendance</a> |
-    <a href="reports.html">Reports</a>
-  </nav>
+  <div class="dashboard-container">
+    <header class="header">
+      <div>
+        <h1 id="welcome-message">Student Dashboard</h1>
+        <p>Your Attendance Overview & Recovery Planner</p>
+      </div>
+      <div class="nav-actions">
+        <button onclick="window.location.href='reports.html'">View Reports</button>
+        <button id="logout-btn">Logout</button>
+      </div>
+    </header>
 
-  <!-- Main Content -->
-  <main class="container">
-    <div class="dashboard-header">
-      <h1>Student Dashboard</h1>
-      <p id="dashboard-subtitle">Welcome back! Here's your academic summary.</p>
+    <div id="loading" class="text-center mt-4 mb-4">
+      <div class="loading"></div>
+      <p>Loading your data...</p>
     </div>
 
-    <div class="dashboard-cards">
-      <!-- Attendance Card -->
-      <div class="card" id="attendance-card">
-        <div class="card-header">
-          <h3 class="card-title">Attendance</h3>
-          <div class="card-icon">📊</div>
+    <div id="dashboard-content" style="display: none;">
+      <!-- Overall Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Overall Attendance</h3>
+          <div class="value" id="stat-overall">0%</div>
+          <div class="desc" id="stat-overall-desc">0 / 0 classes</div>
         </div>
-        <div class="attendance-progress">
-          <div class="progress-bar">
-            <div class="progress-value" style="width: 0%"></div>
-          </div>
-          <div class="progress-info">
-            <span id="attendance-percent">0%</span>
-            <span id="attendance-count">0/0 days</span>
-          </div>
+        <div class="stat-card">
+          <h3>Subjects at Risk</h3>
+          <div class="value" id="stat-risk" style="color: #e53935;">0</div>
+          <div class="desc">Below 75% threshold</div>
+        </div>
+        <div class="stat-card">
+          <h3>Safe Subjects</h3>
+          <div class="value" id="stat-safe" style="color: #4caf50;">0</div>
+          <div class="desc">Above 75% threshold</div>
         </div>
       </div>
 
-      <!-- Grades Card -->
-      <div class="card" id="grades-card">
-        <div class="card-header">
-          <h3 class="card-title">Grades</h3>
-          <div class="card-icon">📝</div>
+      <!-- What-if Simulator -->
+      <div class="whatif-section">
+        <h2>What-If Simulator</h2>
+        <p style="color: #666; margin-top: 0.5rem;">See how attending future classes affects your percentage.</p>
+        <div class="whatif-controls">
+          <label>If I attend the next</label>
+          <input type="number" id="whatif-classes" value="1" min="1" max="50">
+          <label>classes in</label>
+          <select id="whatif-subject">
+            <option value="">All Subjects</option>
+          </select>
+          <button id="whatif-btn">Simulate</button>
         </div>
-        <div class="grades-list" id="grades-list">
-          <!-- Grades will be injected dynamically -->
-        </div>
+        <div id="whatif-result" class="whatif-result"></div>
       </div>
 
-      <!-- Upcoming Assignments -->
-      <div class="card" id="assignments-card">
-        <div class="card-header">
-          <h3 class="card-title">Upcoming Assignments</h3>
-          <div class="card-icon">📅</div>
-        </div>
-        <div class="assignments-list" id="assignments-list">
-          <!-- Assignments will be injected dynamically -->
-        </div>
-      </div>
-
-      <!-- Today's Schedule -->
-      <div class="card" id="schedule-card">
-        <div class="card-header">
-          <h3 class="card-title">Today's Schedule</h3>
-          <div class="card-icon">⏰</div>
-        </div>
-        <div class="schedule-list" id="schedule-list">
-          <!-- Schedule will be injected dynamically -->
-        </div>
+      <!-- Subject Breakdown (Recovery Planner) -->
+      <h2>Subject Breakdown & Recovery Planner</h2>
+      <div class="subjects-grid" id="subjects-container">
+        <!-- Injected via JS -->
       </div>
     </div>
-  </main>
+  </div>
+
+  <!-- Chatbot UI -->
+  <div id="chatbot-btn">🤖</div>
+  <div id="chatbot-panel">
+    <div class="chat-header">
+      <h3>EduTrack AI</h3>
+      <button class="close-chat" id="close-chat">✕</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="message msg-ai">Hi! I'm EduTrack AI. I can help you understand your attendance and how to recover from low percentages. Ask me anything!</div>
+    </div>
+    <div class="typing-indicator" id="chat-typing">EduTrack AI is thinking...</div>
+    <div class="chat-input">
+      <input type="text" id="chat-input" placeholder="Ask about your attendance..." autocomplete="off">
+      <button id="chat-send">➤</button>
+    </div>
+  </div>
 
   <script>
-    // Display logged-in student name
-    const user = JSON.parse(localStorage.getItem("aamsCurrentUser"));
-    const welcomeDiv = document.getElementById("welcome-message");
-    if (user) {
-      welcomeDiv.innerHTML = `<strong>${user.name}</strong> (${user.email})`;
-    } else {
-      welcomeDiv.innerHTML = `Guest`;
-    }
-
-    // Logout button
     document.getElementById("logout-btn").addEventListener("click", logout);
-  </script>
-  <script src="js/auth.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    // Role-based access:
-    // - student.html & attendance.html → "student"
-    // - manage-students.html, reports.html, teacher.html → "teacher"
-    protectPage("teacher"); // or "student" depending on page
 
-    // Update back/dashboard link dynamically
-    const user = getCurrentUser();
-    const dashboardLink = document.querySelector('.actions a, nav a');
-    if(dashboardLink && user){
-        if(user.role === "teacher") dashboardLink.href = "teacher.html";
-        if(user.role === "student") dashboardLink.href = "student.html";
+    // Load Dashboard Data
+    async function loadDashboard() {
+      try {
+        const res = await authFetch(`${API_URL}/v1/dashboard/student`);
+        if (!res.ok) throw new Error("Failed to load dashboard data");
+        
+        const data = await res.json();
+        
+        // Update welcome
+        document.getElementById("welcome-message").textContent = `Welcome, ${data.user.name}!`;
+
+        // Update overall stats
+        document.getElementById("stat-overall").textContent = `${data.overall_percentage}%`;
+        document.getElementById("stat-overall-desc").textContent = `${data.total_present} / ${data.total_classes} classes`;
+        document.getElementById("stat-risk").textContent = data.subjects_at_risk;
+        document.getElementById("stat-safe").textContent = data.subjects_safe;
+
+        // Populate what-if dropdown
+        const select = document.getElementById("whatif-subject");
+        data.subjects.forEach(s => {
+          const opt = document.createElement("option");
+          opt.value = s.subject;
+          opt.textContent = s.subject;
+          select.appendChild(opt);
+        });
+
+        // Populate subject cards
+        const container = document.getElementById("subjects-container");
+        container.innerHTML = "";
+
+        data.subjects.forEach(sub => {
+          const card = document.createElement("div");
+          card.className = "subject-card";
+          
+          let colorClass = "success";
+          if (sub.risk === "CRITICAL") colorClass = "danger";
+          else if (sub.risk === "AT_RISK") colorClass = "warning";
+
+          let recoveryHtml = "";
+          if (sub.classes_needed > 0) {
+            recoveryHtml = `
+              <div class="recovery-info" style="border-color: #f44336; background: #ffebee;">
+                <strong>Action Required:</strong> You need to attend the next <strong>${sub.classes_needed}</strong> classes consecutively to reach ${sub.threshold}%.
+              </div>`;
+          } else {
+             recoveryHtml = `
+              <div class="recovery-info" style="border-color: #4caf50; background: #e8f5e9;">
+                <strong>On Track:</strong> You can safely miss <strong>${sub.classes_missable}</strong> future classes and stay above ${sub.threshold}%.
+              </div>`;
+          }
+
+          card.innerHTML = `
+            <div class="subject-header">
+              <h3>${sub.subject}</h3>
+              <span class="badge ${sub.risk.toLowerCase()}">${sub.risk.replace("_", " ")}</span>
+            </div>
+            <div class="subject-details">
+              <span>Attendance</span>
+              <strong>${sub.percentage}%</strong>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div class="progress-fill ${colorClass}" style="width: ${sub.percentage}%"></div>
+              </div>
+            </div>
+            <div class="subject-details">
+              <span>Present: ${sub.present}</span>
+              <span>Total: ${sub.total}</span>
+            </div>
+            ${recoveryHtml}
+          `;
+          container.appendChild(card);
+        });
+
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("dashboard-content").style.display = "block";
+
+      } catch (error) {
+        console.error(error);
+        alert("Error loading dashboard data.");
+      }
     }
-});
-</script>
 
+    // What-If Simulator
+    document.getElementById("whatif-btn").addEventListener("click", async () => {
+      const classes = document.getElementById("whatif-classes").value;
+      const subject = document.getElementById("whatif-subject").value;
+      
+      try {
+        const url = new URL(`${API_URL}/v1/dashboard/student/whatif`);
+        url.searchParams.append("attend_next", classes);
+        if (subject) url.searchParams.append("subject", subject);
+
+        const res = await authFetch(url);
+        if (!res.ok) throw new Error("Simulation failed");
+        
+        const data = await res.json();
+        const resDiv = document.getElementById("whatif-result");
+        resDiv.style.display = "block";
+        
+        let html = "<h4>Projected Results:</h4><ul>";
+        data.results.forEach(r => {
+          html += `<li><strong>${r.subject}:</strong> ${r.current_percentage}% → <strong>${r.projected_percentage}%</strong> 
+            ${r.would_meet_threshold ? '(Target Met ✅)' : '(Still Short ❌)'}</li>`;
+        });
+        html += "</ul>";
+        resDiv.innerHTML = html;
+
+      } catch (err) {
+        alert("Error running simulation");
+      }
+    });
+
+    // Chatbot Logic
+    const chatBtn = document.getElementById("chatbot-btn");
+    const chatPanel = document.getElementById("chatbot-panel");
+    const closeChat = document.getElementById("close-chat");
+    const chatInput = document.getElementById("chat-input");
+    const chatSend = document.getElementById("chat-send");
+    const chatMessages = document.getElementById("chat-messages");
+    const chatTyping = document.getElementById("chat-typing");
+
+    chatBtn.addEventListener("click", () => {
+      chatPanel.style.display = "flex";
+      chatBtn.style.display = "none";
+      chatInput.focus();
+    });
+
+    closeChat.addEventListener("click", () => {
+      chatPanel.style.display = "none";
+      chatBtn.style.display = "flex";
+    });
+
+    function appendMessage(text, sender) {
+      const div = document.createElement("div");
+      div.className = `message ${sender === 'user' ? 'msg-user' : 'msg-ai'}`;
+      div.textContent = text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function sendChatMessage() {
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+
+      appendMessage(msg, "user");
+      chatInput.value = "";
+      chatTyping.style.display = "block";
+
+      try {
+        const res = await authFetch(`${API_URL}/v1/ai/chat`, {
+          method: "POST",
+          body: JSON.stringify({ message: msg })
+        });
+        
+        const data = await res.json();
+        chatTyping.style.display = "none";
+        
+        if (data.success) {
+          appendMessage(data.message, "ai");
+        } else {
+          appendMessage("Error: " + data.message, "ai");
+        }
+      } catch (err) {
+        chatTyping.style.display = "none";
+        appendMessage("Sorry, I'm having trouble connecting right now.", "ai");
+      }
+    }
+
+    chatSend.addEventListener("click", sendChatMessage);
+    chatInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendChatMessage();
+    });
+
+    // Initial load
+    loadDashboard();
+  </script>
 </body>
 </html>

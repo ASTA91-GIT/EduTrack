@@ -3,80 +3,151 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduTrack – Dashboard</title>
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="Referrer-Policy" content="no-referrer">
-  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' https://unpkg.com 'unsafe-inline'; script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; connect-src 'self' http://127.0.0.1:8000 http://localhost:8000; font-src 'self' https://unpkg.com; frame-ancestors 'none'; base-uri 'self'">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="dashboard/dashboard.css" />
+  <title>EduTrack – Admin Dashboard</title>
+  <link rel="stylesheet" href="styles/global.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .dashboard-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    .header {
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
+        background: rgba(255, 255, 255, 0.8); padding: 1.5rem; border-radius: 12px;
+        backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .header h1 { color: #512da8; }
+    .nav-actions button {
+        background: #512da8; color: white; border: none; padding: 0.5rem 1.5rem;
+        border-radius: 8px; cursor: pointer; font-weight: 600; margin-left: 0.5rem;
+    }
+    .stats-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem; margin-bottom: 2rem;
+    }
+    .stat-card {
+        background: white; padding: 1.5rem; border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;
+    }
+    .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; }
+    .stat-card .value { font-size: 2.5rem; font-weight: 700; color: #512da8; }
+    .charts-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    }
+    .chart-container {
+        background: white; padding: 1.5rem; border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+  </style>
 </head>
 <body>
   <script src="js/auth.js"></script>
-  <script>protectPage(["teacher","student"]);</script>
+  <script>protectPage("admin");</script>
 
-  <header>
-    <div class="logo">EduTrack</div>
-    <nav>
-      <ul>
-        <li><a href="dashboard.html">Dashboard</a></li>
-        <li><a href="attendance.html">Attendance</a></li>
-        <li><a href="reports.html">Reports</a></li>
-        <li><a href="events.html">Events</a></li>
-        <li><a href="tests.html">Tests</a></li>
-        <li><a href="assignments.html">Assignments</a></li>
-        <li><a href="notifications.html">Notifications</a></li>
-      </ul>
-    </nav>
-    <div class="profile">
-      <i class="bx bx-user-circle" id="userIcon"></i>
-    </div>
-  </header>
-
-  <aside id="userSidebar" class="user-sidebar">
-    <div class="sidebar-header">
-      <img id="sidebarAvatar" src="/teacher/assets/default-profile.png" alt="Avatar" />
-      <h3 id="sidebarName">User Name</h3>
-      <p id="sidebarRole">Role</p>
-    </div>
-    <div class="sidebar-content">
-      <h4>Personal Info</h4>
-      <label>Name:</label>
-      <input type="text" id="teacherName" />
-      <label>Role:</label>
-      <input type="text" id="teacherRole" />
-      <label>Email:</label>
-      <input type="email" id="teacherEmail" />
-      <label>Password:</label>
-      <input type="password" id="teacherPassword" />
-      <label>Profile Image:</label>
-      <input type="file" id="profileUpload" accept="image/*" />
-      <button id="saveInfoBtn">Save Info</button>
-      <button id="logoutBtn" class="logout-btn">Logout</button>
-    </div>
-  </aside>
-
-  <main class="dashboard">
-    <div class="welcome">
-      <h1 id="welcomeMessage">Welcome!</h1>
-      <p id="roleMessage">Your dashboard overview</p>
-    </div>
-
-    <div class="cards" id="dashboardCards"></div>
-
-    <div class="charts">
-      <div class="chart-card">
-        <h3>Attendance Overview</h3>
-        <canvas id="attendanceChart"></canvas>
+  <div class="dashboard-container">
+    <header class="header">
+      <div>
+        <h1>Admin Dashboard</h1>
+        <p>Institution-wide Analytics</p>
       </div>
-      <div class="chart-card">
-        <h3>Upcoming Tests</h3>
-        <canvas id="testsChart"></canvas>
+      <div class="nav-actions">
+        <button id="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <div id="loading" class="text-center mt-4 mb-4">
+      <div class="loading"></div>
+    </div>
+
+    <div id="dashboard-content" style="display: none;">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Students</h3>
+          <div class="value" id="stat-students">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Total Faculty</h3>
+          <div class="value" id="stat-faculty">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Total Sessions</h3>
+          <div class="value" id="stat-sessions">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Active Sessions</h3>
+          <div class="value" id="stat-active">0</div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-container">
+          <h3 style="margin-bottom:1rem;color:#333;">Student Risk Distribution</h3>
+          <canvas id="riskChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <h3 style="margin-bottom:1rem;color:#333;">Recent Attendance Trend</h3>
+          <canvas id="trendChart"></canvas>
+        </div>
       </div>
     </div>
-  </main>
+  </div>
 
-  <script src="dashboard/dashboard.js"></script>
+  <script>
+    document.getElementById("logout-btn").addEventListener("click", logout);
+
+    async function loadDashboard() {
+      try {
+        const res = await authFetch(`${API_URL}/v1/dashboard/admin`);
+        if (!res.ok) throw new Error("Failed to load admin data");
+        const data = await res.json();
+
+        document.getElementById("stat-students").textContent = data.total_students;
+        document.getElementById("stat-faculty").textContent = data.total_faculty;
+        document.getElementById("stat-sessions").textContent = data.total_sessions;
+        document.getElementById("stat-active").textContent = data.active_sessions;
+
+        // Render Risk Chart
+        const riskCtx = document.getElementById('riskChart').getContext('2d');
+        const rd = data.risk_distribution || {};
+        new Chart(riskCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Safe', 'Recovering', 'At Risk', 'Critical'],
+                datasets: [{
+                    data: [rd.SAFE || 0, rd.RECOVERING || 0, rd.AT_RISK || 0, rd.CRITICAL || 0],
+                    backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336']
+                }]
+            }
+        });
+
+        // Load Trend Chart
+        const trendRes = await authFetch(`${API_URL}/v1/dashboard/analytics/attendance-trend`);
+        if (trendRes.ok) {
+            const trendData = await trendRes.json();
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: trendData.dates,
+                    datasets: [{
+                        label: 'Students Present',
+                        data: trendData.counts,
+                        borderColor: '#512da8',
+                        tension: 0.1,
+                        fill: false
+                    }]
+                },
+                options: { scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("dashboard-content").style.display = "block";
+
+      } catch (err) {
+        console.error(err);
+        alert("Error loading admin dashboard");
+      }
+    }
+
+    loadDashboard();
+  </script>
 </body>
 </html>

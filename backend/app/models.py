@@ -1,10 +1,9 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Float, JSON, ForeignKey, Index, Text
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Float, JSON, ForeignKey, Index, Text, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
 
-Base = declarative_base()
+from .database import Base
 
 def generate_uuid():
     return str(uuid.uuid4())
@@ -144,3 +143,47 @@ class AttendanceSessionRecord(Base):
     # Relationships
     session = relationship("AttendanceSession", backref="records")
     student = relationship("User", backref="attendance_session_records")
+
+# Academic Models (Tests, Grades, Assignments, Events)
+class Test(Base):
+    __tablename__ = "tests"
+    id = Column(Integer, primary_key=True)
+    faculty_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    subject = Column(String(255), nullable=False)
+    title = Column(String(255), nullable=False)
+    max_score = Column(Float, nullable=False)
+    test_date = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    
+    faculty = relationship("User", backref="created_tests")
+
+class TestScore(Base):
+    __tablename__ = "test_scores"
+    id = Column(Integer, primary_key=True)
+    test_id = Column(Integer, ForeignKey("tests.id", ondelete="CASCADE"), nullable=False)
+    student_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    score = Column(Float, nullable=False)
+    
+    test = relationship("Test", backref="scores")
+    student = relationship("User", backref="test_scores")
+    __table_args__ = (
+        Index('uq_student_test', 'student_id', 'test_id', unique=True),
+    )
+
+class Event(Base):
+    __tablename__ = "events"
+    id = Column(Integer, primary_key=True)
+    title = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
+    event_date = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+class Assignment(Base):
+    __tablename__ = "assignments"
+    id = Column(Integer, primary_key=True)
+    faculty_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    subject = Column(String(255), nullable=False)
+    title = Column(String(255), nullable=False)
+    due_date = Column(DateTime, nullable=False)
+    
+    faculty = relationship("User", backref="created_assignments")

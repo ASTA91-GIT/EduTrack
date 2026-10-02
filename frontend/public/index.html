@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack | Smart Attendance & Analytics</title>
+  <link rel="stylesheet" href="styles/global.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <style>
+    /* Landing Page Specific Styles */
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1e0b3c 0%, #0d041c 100%);
+      color: white;
+      overflow-x: hidden;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 5%;
+      background: rgba(30, 11, 60, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: #ff9800;
+    }
+    
+    .btn-primary {
+      background: #512da8;
+      color: white;
+      padding: 10px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s, transform 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn-primary:hover {
+      background: #673ab7;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #ff9800;
+      padding: 10px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid #ff9800;
+      transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background: #ff9800;
+      color: white;
+    }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 100px 5%;
+      min-height: 70vh;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      background: -webkit-linear-gradient(45deg, #ff9800, #ffc107);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin-bottom: 40px;
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+    }
+
+    /* Features Section */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      padding: 80px 5%;
+      background: #0d041c;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      color: #512da8;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    .feature-card p {
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #666;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <i class="fa-solid fa-graduation-cap" style="color: #ff9800;"></i> EduTrack
+    </div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="login.html">Login</a>
+      <a href="register.html" class="btn-primary" style="margin-left: 20px;">Get Started</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>The Future of Academic Tracking</h1>
+    <p>Empower your institution with AI-driven attendance recovery, real-time QR scanning, and powerful interactive dashboards.</p>
+    <div class="hero-buttons">
+      <a href="register.html" class="btn-primary">Create Account</a>
+      <a href="login.html" class="btn-secondary">Sign In</a>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="feature-card">
+      <i class="fa-solid fa-qrcode feature-icon"></i>
+      <h3>Live QR Attendance</h3>
+      <p>Teachers can instantly generate expiring QR codes for lectures. Students scan to log attendance seamlessly, eliminating roll calls.</p>
+    </div>
+    
+    <div class="feature-card">
+      <i class="fa-solid fa-robot feature-icon" style="color: #ff9800;"></i>
+      <h3>Local AI Assistant</h3>
+      <p>A built-in secure Ollama chatbot analyzes your attendance and academic risk in real-time, completely locally without exposing private data.</p>
+    </div>
+
+    <div class="feature-card">
+      <i class="fa-solid fa-chart-pie feature-icon" style="color: #2196f3;"></i>
+      <h3>Recovery Planner</h3>
+      <p>Automatically calculate exactly how many classes you must attend (or can afford to miss) to stay above your institution's threshold.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 EduTrack. Built for the Hackathon.</p>
+  </footer>
+
+</body>
+</html>

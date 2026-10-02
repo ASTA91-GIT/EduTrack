@@ -88,9 +88,7 @@ for module_name, prefix, tag in _optional_routers:
         logger.warning(f"Could not load router '{module_name}': {e}")
 
 # ---------- Root ----------
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to EduTrack API", "version": "2.0.0"}
+# Root is handled by StaticFiles index.html
 
 @app.get(f"{API_V1_PREFIX}/health")
 def health_check(db=Depends(get_db)):
